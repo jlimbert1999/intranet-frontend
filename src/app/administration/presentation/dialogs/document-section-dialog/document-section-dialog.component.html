@@ -1,0 +1,30 @@
+<form [formGroup]="sectionForm" (ngSubmit)="save()">
+  <div class="flex flex-col gap-y-4">
+    <div>
+      <input
+        pInputText
+        formControlName="name"
+        type="text"
+        pSize="small"
+        placeholder="Nombre"
+        class="w-full"
+      />
+    </div>
+    <div>
+      <p-multiselect
+        formControlName="categoriesIds"
+        placeholder="Seleccione las categorias"
+        [options]="categories()"
+        optionLabel="name"
+        [fluid]="true"
+        display="chip"
+        appendTo="body"
+        optionValue="id"
+      />
+    </div>
+  </div>
+  <div class="p-dialog-footer">
+    <p-button label="Cancelar" severity="secondary" (onClick)="close()" />
+    <p-button type="submit" label="Guardar" [disabled]="sectionForm.invalid" />
+  </div>
+</form>

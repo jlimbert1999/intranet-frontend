@@ -1,0 +1,32 @@
+<!-- <div class="max-w-6xl mx-auto">
+    <p-accordion value="0" [multiple]="true" (onOpen)="openCategory($event.index)">
+        @for (category of categories(); track $index) {
+            <p-accordion-panel [value]="$index" [value]="category.id">
+                <p-accordion-header>
+                    <ng-template #toggleicon let-active="active">
+                        @if (active) {
+                            <i class="pi pi-minus"></i>
+                        } @else {
+                            <i class="pi pi-plus"></i>
+                        }
+                    </ng-template>
+                    <span class="flex items-center gap-2 w-full">
+                        <span class="font-bold whitespace-nowrap text-2xl">{{category.name|titlecase}}</span>
+                        <p-badge [value]="category.totalDocuments" class="ml-auto mr-4" />
+                    </span>
+                </p-accordion-header>
+                <p-accordion-content>
+                </p-accordion-content>
+            </p-accordion-panel>
+        }
+    </p-accordion>
+
+</div> -->
+<div class="flex-1 flex h-full bg-red-100">
+  <div class="w-1/4 bg-amber-100 p-6 h-full">
+    <div class="card flex justify-center">
+      <p-menu [model]="items" styleClass="w-full" class="w-full"/>
+    </div>
+  </div>
+  <div class="w-3/4 bg-fuchsia-100 p-2"></div>
+</div>

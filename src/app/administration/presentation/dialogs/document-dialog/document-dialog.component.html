@@ -1,0 +1,48 @@
+<form [formGroup]="documentForm" (ngSubmit)="save()">
+  <div class="flex flex-col gap-y-4">
+    @if(data){
+      <section class="py-[5px]">
+        <div class="mx-auto px-4 sm:container">
+          <div>
+            <h2 class="mb-2 text-2xl font-semibold">
+              {{ data.category.name | titlecase }}
+            </h2>
+            <p class="text-sm font-medium text-body-color">
+              {{ data.section.name | uppercase }}
+            </p>
+          </div>
+        </div>
+      </section>
+    }
+    @else {
+      <p-select
+        [options]="categories()"
+        optionLabel="name"
+        appendTo="body"
+        placeholder="Seleccione una categoria"
+        class="w-full"
+        (onChange)="onSelectCategory($event.value)"
+      />
+      <p-select
+        [options]="sections()"
+        optionLabel="section.name"
+        placeholder="Seleccione una seccion"
+        formControlName="relationId"
+        optionValue="id"
+        appendTo="body"
+        class="w-full"
+      />
+    }
+   
+    <div>
+      <file-uploader
+        [uploadedFiles]="uploadedDocuments()"
+        (onSelectFiles)="onSelectFiles($event)"
+      />
+    </div>
+  </div>
+  <div class="p-dialog-footer">
+    <p-button label="Cancelar" severity="secondary" (onClick)="close()" />
+    <p-button type="submit" label="Guardar" [disabled]="documentForm.invalid" />
+  </div>
+</form>

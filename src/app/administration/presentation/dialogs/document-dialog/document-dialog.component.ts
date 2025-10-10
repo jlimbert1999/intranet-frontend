@@ -23,13 +23,15 @@ import {
   DocumentsToManageResponse,
   CategoriesWithSectionsResponse,
 } from '../../../infrastructure';
-import { FileUploaderComponent } from '../../../../shared';
 import { DocumentService } from '../../services';
+import { DocumentFileUploaderComponent } from '../../components';
+import { DocumentsToManage } from '../../../domain';
 
 interface UploadedDocument {
   id: string;
   fileName: string;
   originalName: string;
+  fiscalYear: Date;
 }
 
 @Component({
@@ -40,7 +42,7 @@ interface UploadedDocument {
     ButtonModule,
     SelectModule,
     InputTextModule,
-    FileUploaderComponent,
+    DocumentFileUploaderComponent,
   ],
   templateUrl: './document-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,7 +52,7 @@ export class DocumentDialogComponent {
   private docService = inject(DocumentService);
   private diagloRef = inject(DynamicDialogRef);
 
-  readonly data: DocumentsToManageResponse = inject(DynamicDialogConfig).data;
+  readonly data: DocumentsToManage = inject(DynamicDialogConfig).data;
 
   documentForm: FormGroup = this.formBuilder.nonNullable.group({
     relationId: ['', Validators.required],
@@ -62,14 +64,15 @@ export class DocumentDialogComponent {
 
   sections = signal<SectionCategoriesResponse[]>([]);
   uploadedDocuments = signal<UploadedDocument[]>([]);
-  files: File[] = [];
+  documentsToUpload = signal<{ file: File; fiscalYear: Date }[]>([]);
 
   ngOnInit() {
+    console.log(this.data);
     this.loadForm();
   }
 
-  onSelectFiles(files: File[]) {
-    this.files = files;
+  onSelectFiles(files: { file: File; fiscalYear: Date }[]) {
+    this.documentsToUpload.set(files);
   }
 
   save() {
@@ -77,9 +80,15 @@ export class DocumentDialogComponent {
     const relationId = this.data
       ? this.data.id
       : this.documentForm.value['relationId'];
-    this.docService.syncDocuments(relationId, this.files, this.uploadedDocuments()).subscribe((resp) => {
-      this.diagloRef.close(resp);
-    });
+    this.docService
+      .syncDocuments(
+        relationId,
+        this.documentsToUpload(),
+        this.uploadedDocuments()
+      )
+      .subscribe((resp) => {
+        this.diagloRef.close(resp);
+      });
   }
 
   close() {

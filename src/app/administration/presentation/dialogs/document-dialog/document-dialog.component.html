@@ -35,9 +35,9 @@
     }
    
     <div>
-      <file-uploader
-        [uploadedFiles]="uploadedDocuments()"
-        (onSelectFiles)="onSelectFiles($event)"
+      <document-file-uploader
+        [(uploadedDocuments)]="uploadedDocuments"
+        [(documentsToUpload)]="documentsToUpload"
       />
     </div>
   </div>

@@ -1,32 +1,37 @@
-<!-- <div class="max-w-6xl mx-auto">
-    <p-accordion value="0" [multiple]="true" (onOpen)="openCategory($event.index)">
-        @for (category of categories(); track $index) {
-            <p-accordion-panel [value]="$index" [value]="category.id">
-                <p-accordion-header>
-                    <ng-template #toggleicon let-active="active">
-                        @if (active) {
-                            <i class="pi pi-minus"></i>
-                        } @else {
-                            <i class="pi pi-plus"></i>
-                        }
-                    </ng-template>
-                    <span class="flex items-center gap-2 w-full">
-                        <span class="font-bold whitespace-nowrap text-2xl">{{category.name|titlecase}}</span>
-                        <p-badge [value]="category.totalDocuments" class="ml-auto mr-4" />
-                    </span>
-                </p-accordion-header>
-                <p-accordion-content>
-                </p-accordion-content>
-            </p-accordion-panel>
-        }
-    </p-accordion>
-
-</div> -->
-<div class="flex-1 flex h-full bg-red-100">
-  <div class="w-1/4 bg-amber-100 p-6 h-full">
-    <div class="card flex justify-center">
-      <p-menu [model]="items" styleClass="w-full" class="w-full"/>
+<div class="h-full bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-6">
+      <h1 class="text-lg md:text-3xl font-bold text-gray-900 mb-2">
+        Buscar Documentos Institucionales
+      </h1>
+      <p class="text-sm md:text-lg text-gray-600 max-w-3xl mx-auto">
+        Encuentra documentos, resoluciones, circulares y archivos oficiales de
+        la institución
+      </p>
     </div>
-  </div>
-  <div class="w-3/4 bg-fuchsia-100 p-2"></div>
+
+    @if(!isMobile()){
+      <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+        <filter-form-documents />
+      </div>
+    }
+    @else {
+      <div class="flex justify-end gap-2 mb-6">
+        <button
+          pButton
+          icon="pi pi-sliders-h"
+          class="p-button-outlined"
+          (click)="openSidebar()"
+        ></button>
+      </div>
+      <p-drawer
+        [(visible)]="sidebarVisible"
+        position="bottom"
+        header="Filtros"
+        [style]="{ 'height': '70vh' }"
+      >
+        <filter-form-documents />
+      </p-drawer>
+    }
+
 </div>

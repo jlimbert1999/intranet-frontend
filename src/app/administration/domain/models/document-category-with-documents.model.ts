@@ -1,26 +1,37 @@
-interface DocumentCategoryWithDocumentsModel {
+interface DocumentsToManageProps {
+  id: number;
+  section: CategoryItem;
+  category: SectionItem;
+  documents: DocumentItem[];
+}
+
+interface CategoryItem {
   id: number;
   name: string;
-  description: string | null;
-  documents: DocumentItem[];
+}
+
+interface SectionItem {
+  id: number;
+  name: string;
 }
 
 interface DocumentItem {
   id: string;
   originalName: string;
   fileName: string;
+  fiscalYear: Date;
 }
 
-export class DocumentCategoryWithDocuments {
+export class DocumentsToManage {
   id: number;
-  name: string;
-  description: string | null;
+  section: CategoryItem;
+  category: SectionItem;
   documents: DocumentItem[];
 
-  constructor({ id, name, description, documents }: DocumentCategoryWithDocumentsModel) {
+  constructor({ id, section, category, documents }: DocumentsToManageProps) {
     this.id = id;
-    this.name = name;
-    this.description = description;
+    this.section = section;
+    this.category = category;
     this.documents = documents;
   }
 }

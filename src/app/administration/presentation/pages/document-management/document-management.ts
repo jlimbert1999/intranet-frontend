@@ -84,7 +84,7 @@ export default class DocumentManagement {
     this.dialogService.open(DocumentDialogComponent, {
       header: 'Crear documentacion',
       modal: true,
-      width: '40vw',
+      width: '50vw',
     });
   }
 
@@ -92,7 +92,7 @@ export default class DocumentManagement {
     this.dialogService.open(DocumentDialogComponent, {
       header: 'Editar documentacion',
       modal: true,
-      width: '40vw',
+      width: '50vw',
       data: item,
     });
   }

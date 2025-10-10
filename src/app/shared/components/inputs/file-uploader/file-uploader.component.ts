@@ -17,7 +17,7 @@ interface UploadedFile {
 }
 
 @Component({
-  selector: 'file-uploader',
+  selector: 'document-file-uploader',
   imports: [CommonModule, FileUpload, ButtonModule, PrimengFileIconPipe],
   template: `
     <div class="card h-full">

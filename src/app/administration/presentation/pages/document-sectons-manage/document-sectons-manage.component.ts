@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
+import { TableModule, TablePageEvent } from 'primeng/table';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
-import { TableModule, TablePageEvent } from 'primeng/table';
 
-import { DocumentSectionDialogComponent } from '../../dialogs';
-import { DocumentSectionService } from '../../services';
-import { SearchInputComponent } from '../../../../shared';
 import { DocSectionWithCategoriesResponse } from '../../../infrastructure';
+import { DocumentSectionDialogComponent } from '../../dialogs';
+import { SearchInputComponent } from '../../../../shared';
+import { DocumentSectionService } from '../../services';
 
 @Component({
   selector: 'app-document-sectons-manage',

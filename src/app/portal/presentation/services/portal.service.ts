@@ -1,8 +1,16 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import {
+  computed,
+  inject,
+  Injectable,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { map, of, tap } from 'rxjs';
 
 import {
+  CategoriesWithSectionsResponse,
   CategoryWithTotalDocumentsResponse,
   DocumentMapper,
   documentResponse,
@@ -16,6 +24,12 @@ interface GetDocumentsByCategoryProps {
   limit?: number;
 }
 
+interface filterDocuments {
+  categoryId: number;
+  offset: number;
+  limit?: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -23,8 +37,19 @@ export class PortalService {
   private readonly URL = `${environment.baseUrl}/portal`;
   private htttp = inject(HttpClient);
 
-  _categories = signal<CategoryWithTotalDocumentsResponse[]>([]);
-  categories = computed(() => this._categories());
+  categories = toSignal(this.getCategories(), { initialValue: [] });
+
+  categoriesWithSections = toSignal(this.getCategoriesWithSections(), {
+    initialValue: [],
+  });
+  selectedCategoryId = signal<number | null>(null);
+  sections = computed(() => {
+    const id = this.selectedCategoryId();
+    return id
+      ? this.categoriesWithSections().find((item) => item.id === id)
+          ?.sectionCategories.map((item) => item.section) ?? []
+      : [];
+  });
 
   private documentsCache: Record<string, DocumentFile[]> = {};
 
@@ -35,11 +60,9 @@ export class PortalService {
   }
 
   private getCategories() {
-    return this.htttp
-      .get<CategoryWithTotalDocumentsResponse[]>(`${this.URL}/categories`)
-      .subscribe((resp) => {
-        this._categories.set(resp);
-      });
+    return this.htttp.get<CategoryWithTotalDocumentsResponse[]>(
+      `${this.URL}/categories`
+    );
   }
 
   getDocumentsByCategory(props: GetDocumentsByCategoryProps) {
@@ -60,5 +83,15 @@ export class PortalService {
           this.documentsCache[key] = documents;
         })
       );
+  }
+
+  getCategoriesWithSections() {
+    return this.htttp.get<CategoriesWithSectionsResponse[]>(
+      `${this.URL}/categories-sections`
+    );
+  }
+
+  filterDocuments({ categoryId }: filterDocuments) {
+    return this.htttp.post<any[]>(`${this.URL}/documents`, { categoryId });
   }
 }

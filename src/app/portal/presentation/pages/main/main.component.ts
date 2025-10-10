@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-
+import { RouterModule } from '@angular/router';
 import { AppCarouselComponent } from '../../components';
 import { HeroSlideService } from '../../../../administration/presentation/services';
-import { RouterModule } from '@angular/router';
+
+
 
 @Component({
   selector: 'app-main',

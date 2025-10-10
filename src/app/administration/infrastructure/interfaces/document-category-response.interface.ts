@@ -1,4 +1,4 @@
-export interface documentCategoryResponse {
+export interface DocumentCategoryResponse {
   id: number;
   name: string;
 }

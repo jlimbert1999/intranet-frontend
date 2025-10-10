@@ -8,19 +8,18 @@ export interface DocumentsToManageResponse {
 interface CategoryItem {
   id: number;
   name: string;
-  description: null;
 }
 
 interface SectionItem {
   id: number;
   name: string;
-  description: null;
 }
 
 interface DocumentItem {
   id: string;
   fileName: string;
   originalName: string;
+  fiscalYear: number;
   createdAt: Date;
   updatedAt: Date;
 }

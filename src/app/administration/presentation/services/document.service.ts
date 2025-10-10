@@ -5,11 +5,13 @@ import { forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import {
   CategoriesWithSectionsResponse,
+  DocumentCategoryResponse,
+  DocumentsToManageMapper,
   DocumentsToManageResponse,
-  documentCategoryResponse,
 } from '../../infrastructure';
 import { environment } from '../../../../environments/environment';
 import { FileUploadService } from '../../../shared';
+import { DocumentsToManage } from '../../domain';
 
 interface GetDocumentsToManageProps {
   limit: number;
@@ -26,6 +28,12 @@ interface UploadedDocument {
   id: string;
   fileName: string;
   originalName: string;
+  fiscalYear: Date;
+}
+
+interface DocumentItem {
+  file: File;
+  fiscalYear: Date;
 }
 
 @Injectable({
@@ -38,7 +46,7 @@ export class DocumentService {
 
   private http = inject(HttpClient);
 
-  private cache = new Map<string, DocumentsToManageResponse[]>();
+  private cache = new Map<string, DocumentsToManage[]>();
 
   limit = signal<number>(10);
 
@@ -76,7 +84,7 @@ export class DocumentService {
   }
 
   getSections() {
-    return this.http.get<documentCategoryResponse[]>(`${this.URL}/sections`);
+    return this.http.get<DocumentCategoryResponse[]>(`${this.URL}/sections`);
   }
 
   getDocumentsByCategory() {
@@ -106,40 +114,47 @@ export class DocumentService {
         params,
       })
       .pipe(
-        tap((resp) => {
-          console.log(resp);
-          this.cache.set(key, resp.items);
-          this.dataSize.set(resp.total);
+        map(({ items, total }) => ({
+          items: items.map((item) =>
+            DocumentsToManageMapper.fromResponse(item)
+          ),
+          total,
+        })),
+        tap((result) => {
+          console.log(result);
+          this.cache.set(key, result.items);
+          this.dataSize.set(result.total);
         }),
-        map(({ items }) => items)
+        map((result) => result.items)
       );
   }
 
   syncDocuments(
     relationId: number,
-    files: File[],
+    documents: DocumentItem[],
     uploadedDocuments: UploadedDocument[] = []
   ) {
-    return this.buildUploadTask(files).pipe(
-      switchMap((uploadedFiles) =>
+    return this.buildUploadTask(documents).pipe(
+      switchMap((uploadedResult) =>
         this.http.put<DocumentsToManageResponse>(
           `${this.URL}/sync/${relationId}`,
           {
             documents: [
-              ...uploadedFiles.map(({ originalName, fileName }) => ({
-                originalName,
-                fileName,
-              })),
-              ...uploadedDocuments.map(({ originalName, fileName, id }) => ({
-                //  * fileName in uploaded documents for manage no is a url
-                id,
-                fileName,
-                originalName,
-              })),
+              ...uploadedResult,
+              ...uploadedDocuments.map(
+                ({ originalName, fileName, id, fiscalYear }) => ({
+                  //  * fileName in uploaded documents for manage no is a url
+                  id,
+                  fileName,
+                  originalName,
+                  fiscalYear: fiscalYear.getFullYear(),
+                })
+              ),
             ],
           }
         )
       ),
+      map((resp) => DocumentsToManageMapper.fromResponse(resp)),
       tap((res) => {
         this.dataSize.update((value) => (value += 1));
         this.updateDocumentsCache(res);
@@ -147,17 +162,20 @@ export class DocumentService {
     );
   }
 
-  private buildUploadTask(files: File[]) {
-    return files.length > 0
-      ? forkJoin(
-          files.map((file) =>
-            this.fileUploadService.uploadFile(file, 'document')
-          )
-        )
-      : of([]);
+  private buildUploadTask(documents: DocumentItem[]) {
+    const uploadItems = documents.map((doc) =>
+      this.fileUploadService.uploadFile(doc.file, 'document').pipe(
+        map(({ fileName, originalName }) => ({
+          fileName,
+          originalName,
+          fiscalYear: doc.fiscalYear.getFullYear(),
+        }))
+      )
+    );
+    return documents.length > 0 ? forkJoin(uploadItems) : of([]);
   }
 
-  private updateDocumentsCache(newItem: DocumentsToManageResponse) {
+  private updateDocumentsCache(newItem: DocumentsToManage) {
     this.cache.forEach((docs) => {
       return docs.map((item) => {
         if (item.id !== newItem.id) return item;

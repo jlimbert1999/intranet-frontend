@@ -1,15 +1,16 @@
-import { DocumentCategoryWithDocuments } from '../../domain';
-import { DocumentCategoryWithDocumentsResponse } from '../interfaces/document-category-response.interface';
+import { DocumentsToManage } from '../../domain';
+import { DocumentsToManageResponse } from '../interfaces/document-response.interface';
 
-export class DocumentCategoryWithDocumentsMapper {
-  static fromResponse(
-    response: DocumentCategoryWithDocumentsResponse
-  ): DocumentCategoryWithDocuments {
-    return new DocumentCategoryWithDocuments({
+export class DocumentsToManageMapper {
+  static fromResponse(response: DocumentsToManageResponse): DocumentsToManage {
+    return new DocumentsToManage({
       id: response.id,
-      name: response.name,
-      description: response.description,
-      documents: response.documents,
+      section: response.section,
+      category: response.category,
+      documents: response.documents.map((item) => ({
+        ...item,
+        fiscalYear: new Date(item.fiscalYear, 0, 1),
+      })),
     });
   }
 }

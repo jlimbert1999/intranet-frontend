@@ -1,1 +1,20 @@
-<p>document-category-dialog works!</p>,
+<form [formGroup]="categoryForm" (ngSubmit)="save()">
+  <div class="flex flex-col gap-1">
+    <input
+      pInputText
+      type="text"
+      formControlName="name"
+      placeholder="Nombre"
+      class="w-full"
+    />
+    @if(isInvalid("name")){
+    <p-message severity="error" size="small" variant="simple">
+      {{ categoryForm.get("name")?.errors | formErrorMessages }}
+    </p-message>
+    }
+  </div>
+  <div class="p-dialog-footer">
+    <p-button label="Cancelar" severity="secondary" (onClick)="close()" />
+    <p-button type="submit" label="Guardar" [disabled]="categoryForm.invalid" />
+  </div>
+</form>

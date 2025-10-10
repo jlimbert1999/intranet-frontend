@@ -2,24 +2,22 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: 'portal',
+    path: '',
     loadComponent: () =>
       import(
         './portal/presentation/layouts/portal-layout/portal-layout.component'
       ),
     children: [
       {
+        path: '',
+        loadComponent: () =>
+          import('./portal/presentation/pages/main/main.component'),
+      },
+      {
         path: 'repository',
         loadComponent: () =>
           import(
             './portal/presentation/pages/document-repository/document-repository.component'
-          ),
-      },
-      {
-        path: 'repository/category/:id',
-        loadComponent: () =>
-          import(
-            './portal/presentation/pages/documents-by-category/documents-by-category.component'
           ),
       },
     ],
@@ -61,6 +59,6 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '', redirectTo: 'portal', pathMatch: 'full' },
-  { path: '**', redirectTo: 'portal' },
+  { path: '', redirectTo: '', pathMatch: 'full' },
+  { path: '**', redirectTo: '' },
 ];

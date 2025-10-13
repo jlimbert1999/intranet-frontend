@@ -1,52 +1,169 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { DataViewModule } from 'primeng/dataview';
 
 import { PrimengFileIconPipe } from '../../../../shared';
 import { DocumentFile } from '../../../domain';
+import { SelectButton } from 'primeng/selectbutton';
+import { FormsModule } from '@angular/forms';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
 @Component({
   selector: 'document-list',
-  imports: [CommonModule, TableModule, ButtonModule, PrimengFileIconPipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TableModule,
+    ButtonModule,
+    DataViewModule,
+    PrimengFileIconPipe,
+    ButtonModule,
+    SelectButton,
+    PaginatorModule,
+  ],
   template: `
-    <p-table [value]="documents()"  responsiveLayout="stack" showGridlines scrollHeight="flex">
+    <p-dataview #dv [value]="dataSource()" [layout]="layout">
       <ng-template #header>
-        <tr>
-          <th>Nombre</th>
-          <th>Gestión</th>
-          <th>Seccion</th>
-          <th style="width: 4rem"></th>
-        </tr>
-      </ng-template>
-      <ng-template #body let-doc>
-        <tr>
-          <td>
-            <div class="flex items-center gap-2">
+        <div class="flex justify-between items-center">
+          <p class="text-xl font-medium">Listado de Documentos ({{dataSize()}})</p>
+          <p-selectbutton
+            [(ngModel)]="layout"
+            [options]="options"
+            [allowEmpty]="false"
+          >
+            <ng-template #item let-item>
               <i
-                [ngClass]="doc.originalName | primengFileIcon"
-                style="font-size: 1.5rem"
+                class="pi "
+                [ngClass]="{
+                  'pi-bars': item === 'list',
+                  'pi-table': item === 'grid'
+                }"
               ></i>
-              <span>{{ doc.originalName }}</span>
-            </div>
-          </td>
-          <td>{{ doc.fiscalYear }}</td>
-          <td>{{ doc.createdAt | date : 'shortDate' }}</td>
-          <td>
-            <p-button
-              icon="pi pi-download"
-              [rounded]="true"
-              [text]="true"
-              size="small"
-            />
-          </td>
-        </tr>
+            </ng-template>
+          </p-selectbutton>
+        </div>
       </ng-template>
-    </p-table>
+      <ng-template #list let-items>
+        @for (item of items; track $index; let first=$first) {
+        <div
+          class="flex flex-col sm:flex-row sm:items-center p-4 gap-4"
+          [ngClass]="{ 'border-t border-surface-200': !first }"
+        >
+          <div
+            class="flex justify-center items-center h-20 w-full md:w-20 bg-slate-100 rounded-2xl"
+          >
+            <i
+              [ngClass]="item.originalName | primengFileIcon"
+              style="font-size: 2.5rem;"
+            ></i>
+          </div>
+          <div
+            class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-4"
+          >
+            <div
+              class="flex flex-row md:flex-col justify-between items-start gap-4"
+            >
+              <div>
+                <span class="font-medium text-surface-500 text-xs">
+                  Gestión {{ item.fiscalYear }}
+                </span>
+                <div class="md:text-xl font-medium mt-2">
+                  {{ item.originalName }}
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex items-center flex-row sm:flex-col justify-between md:items-end gap-4"
+            >
+              <span class="text-sm font-semibold">
+                {{ item.createdAt | date : 'short' }}
+              </span>
+              <div class="flex justify-end md:justify-center">
+                <button
+                  pButton
+                  icon="pi pi-download"
+                  [outlined]="true"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </ng-template>
+      <ng-template #grid let-items>
+        <div class="grid grid-cols-12 gap-4">
+          @for (item of items; track $index) {
+          <div
+            class="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-6 p-2"
+          >
+            <div
+              class="p-6 border border-surface-200 bg-surface-0 rounded flex flex-col"
+            >
+              <div class="bg-surface-50 flex justify-center rounded p-4">
+                <i
+                  [ngClass]="item.originalName | primengFileIcon"
+                  style="font-size: 4rem;"
+                ></i>
+              </div>
+              <div class="pt-6">
+                <div class="flex flex-row justify-between products-start gap-2">
+                  <div>
+                    <span class="font-medium text-surface-500 text-sm">
+                      Gestión {{ item.fiscalYear }}
+                    </span>
+                    <div class="text-lg font-medium mt-1">
+                      {{ item.originalName }}
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between mt-6">
+                  <span class="text-lg font-semibold">
+                    {{ item.createdAt | date : 'short' }}
+                  </span>
+                  <button pButton icon="pi pi-download" outlined></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          }
+        </div>
+      </ng-template>
+      <ng-template #footer>
+        <p-paginator
+          [rows]="10"
+          [totalRecords]="dataSize()"
+          [rowsPerPageOptions]="[10, 20, 30, 50]"
+          (onPageChange)="changePage($event)"
+        />
+      </ng-template>
+    </p-dataview>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentListComponent {
-  documents = input.required<DocumentFile[]>();
+  dataSource = input.required<DocumentFile[]>();
+
+  dataSize = input.required<number>();
+
+  onPageChange = output<{ index: number; limit: number }>();
+
+  layout: 'list' | 'grid' = 'list';
+
+  options = ['list', 'grid'];
+
+  changePage(event: PaginatorState) {
+    this.onPageChange.emit({
+      index: event.page ?? 0,
+      limit: event.rows ?? 10,
+    });
+  }
 }

@@ -1,33 +1,23 @@
-import {
-  computed,
-  inject,
-  Injectable,
-  linkedSignal,
-  signal,
-} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, of, tap } from 'rxjs';
 
 import {
   CategoriesWithSectionsResponse,
   CategoryWithTotalDocumentsResponse,
-  DocumentMapper,
-  documentResponse,
 } from '../../infrastructure';
 import { environment } from '../../../../environments/environment';
 import { DocumentFile } from '../../domain';
 
-interface GetDocumentsByCategoryProps {
-  categoryId: number;
-  offset: number;
+interface FilterDocumentsParams {
+  categoryId?: number;
+  sectionId?: number;
+  orderDirection?: 'DESC' | 'ASC';
+  fiscalYear?: number;
+  offset?: number;
   limit?: number;
-}
-
-interface filterDocuments {
-  categoryId: number;
-  offset: number;
-  limit?: number;
+  term?: string;
 }
 
 @Injectable({
@@ -35,9 +25,7 @@ interface filterDocuments {
 })
 export class PortalService {
   private readonly URL = `${environment.baseUrl}/portal`;
-  private htttp = inject(HttpClient);
-
-  categories = toSignal(this.getCategories(), { initialValue: [] });
+  private http = inject(HttpClient);
 
   categoriesWithSections = toSignal(this.getCategoriesWithSections(), {
     initialValue: [],
@@ -46,52 +34,53 @@ export class PortalService {
   sections = computed(() => {
     const id = this.selectedCategoryId();
     return id
-      ? this.categoriesWithSections().find((item) => item.id === id)
+      ? this.categoriesWithSections()
+          .find((item) => item.id === id)
           ?.sectionCategories.map((item) => item.section) ?? []
       : [];
   });
 
   private documentsCache: Record<string, DocumentFile[]> = {};
+   totalDocuments = signal(0);
 
-  list = signal<Record<string, CategoryWithTotalDocumentsResponse>>({});
 
-  constructor() {
-    this.getCategories();
-  }
 
-  private getCategories() {
-    return this.htttp.get<CategoryWithTotalDocumentsResponse[]>(
-      `${this.URL}/categories`
-    );
-  }
 
-  getDocumentsByCategory(props: GetDocumentsByCategoryProps) {
-    const { categoryId, offset, limit = 10 } = props;
+  filterDocuments(filterParams?: FilterDocumentsParams) {
+    const { limit = 10, offset = 0, ...props } = filterParams ?? {};
 
-    const key = `${categoryId}-${offset}-${limit}`;
+    const key = `${offset}-${limit}`;
 
-    if (this.documentsCache[key]) return of(this.documentsCache[key]);
+    const isFilterMode = Object.values(props).some((item) => item !== null);
 
-    return this.htttp
-      .post<documentResponse[]>(
-        `${this.URL}/category/${categoryId}/documents`,
-        {}
+    if (!isFilterMode && this.documentsCache[key]) {
+      return of(this.documentsCache[key]);
+    }
+
+    const params = new HttpParams({
+      fromObject: {
+        limit,
+        offset,
+        ...props,
+      },
+    });
+    return this.http
+      .post<{ documents: any[]; total: number }>(
+        `${this.URL}/documents`,
+        params
       )
       .pipe(
-        map((resp) => resp.map((item) => DocumentMapper.fromResponse(item))),
-        tap((documents) => {
+        tap(({ documents, total }) => {
           this.documentsCache[key] = documents;
-        })
+          this.totalDocuments.set(total);
+        }),
+        map(({ documents }) => documents)
       );
   }
 
   getCategoriesWithSections() {
-    return this.htttp.get<CategoriesWithSectionsResponse[]>(
+    return this.http.get<CategoriesWithSectionsResponse[]>(
       `${this.URL}/categories-sections`
     );
-  }
-
-  filterDocuments({ categoryId }: filterDocuments) {
-    return this.htttp.post<any[]>(`${this.URL}/documents`, { categoryId });
   }
 }

@@ -1,37 +1,49 @@
-<div class="h-full bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+<div class="h-full overflow-y-auto bg-gray-50 py-3 px-2">
   <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-6">
-      <h1 class="text-lg md:text-3xl font-bold text-gray-900 mb-2">
-        Buscar Documentos Institucionales
-      </h1>
-      <p class="text-sm md:text-lg text-gray-600 max-w-3xl mx-auto">
-        Encuentra documentos, resoluciones, circulares y archivos oficiales de
-        la institución
-      </p>
+    <div class="bg-white rounded-xl shadow-md p-2 mb-4">
+      <filter-form-documents />
     </div>
-
     @if(!isMobile()){
-      <div class="bg-white rounded-lg shadow-md p-8 mb-8">
-        <filter-form-documents />
-      </div>
-    }
-    @else {
-      <div class="flex justify-end gap-2 mb-6">
-        <button
-          pButton
-          icon="pi pi-sliders-h"
-          class="p-button-outlined"
-          (click)="openSidebar()"
-        ></button>
-      </div>
-      <p-drawer
-        [(visible)]="sidebarVisible"
-        position="bottom"
-        header="Filtros"
-        [style]="{ 'height': '70vh' }"
-      >
-        <filter-form-documents />
-      </p-drawer>
+    
+    } @else {
+    <div class="flex justify-end gap-2 mb-6">
+      <button
+        pButton
+        icon="pi pi-sliders-h"
+        class="p-button-outlined"
+        (click)="openSidebar()"
+      ></button>
+    </div>
+    <p-drawer
+      [(visible)]="sidebarVisible"
+      position="bottom"
+      header="Filtros"
+      [style]="{ height: '70vh' }"
+    >
+      <filter-form-documents />
+    </p-drawer>
     }
 
+    <div class="bg-white rounded-xl shadow-md p-2">
+      <document-list
+        [dataSource]="dataSource.value()"
+        [dataSize]="dataSize()"
+        (onPageChange)="changePage($event)"
+      />
+
+      <!-- Estado vacío -->
+      <!-- <div *ngIf="documents.length === 0 && hasSearched" class="text-center py-12">
+        <i class="pi pi-search text-4xl text-gray-300 mb-4"></i>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No se encontraron documentos</h3>
+        <p class="text-gray-600 mb-4">Intenta ajustar los filtros o usar términos de búsqueda diferentes.</p>
+        <button 
+          pButton 
+          type="button" 
+          label="Limpiar filtros" 
+          class="p-button-outlined"
+          (click)="clearFilters()"
+        ></button>
+      </div> -->
+    </div>
+  </div>
 </div>

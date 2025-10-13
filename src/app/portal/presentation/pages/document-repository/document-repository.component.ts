@@ -38,7 +38,8 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { SelectModule } from 'primeng/select';
 import { DatePicker } from 'primeng/datepicker';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-document-repository',
@@ -66,6 +67,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     DatePicker,
     SelectModule,
     AccordionModule,
+    PaginatorModule,
     FilterFormDocumentsComponent,
   ],
   templateUrl: './document-repository.component.html',
@@ -80,44 +82,38 @@ export default class DocumentRepositoryComponent {
   sidebarVisible = false;
   isMobile = signal(false);
 
-  categoriesList = computed(() => {
-    return this.portalService.categories();
-  });
-
   showAdvancedFilters = signal(false);
 
-  documents = signal<any[]>([]);
-
- 
-
-  filterForm: FormGroup = this.formBuilde.group({
-    categoryId: [null],
+  dataSize = this.portalService.totalDocuments;
+  limit = signal(10);
+  index = signal(0);
+  offset = computed(() => this.limit() * this.index());
+  dataSource = rxResource({
+    params: () => ({ limit: this.limit(), offset: this.offset() }),
+    stream: ({ params }) => {
+      return this.getData({ limit: params.limit, offset: params.offset });
+    },
+    defaultValue: [],
   });
 
   constructor() {
     this.listenLayoutChanges();
   }
 
-  ngOnInit() {
-    // this.getData();
+  ngOnInit() {}
+
+  getData(params: object) {
+    return this.portalService.filterDocuments(params);
   }
 
-  getData() {
-    this.portalService
-      .filterDocuments(this.filterForm.value)
-      .subscribe((resp) => {
-        this.documents.set(resp);
-        console.log(resp);
-      });
+  changePage(event: { index: number; limit: number }) {
+    this.limit.set(event.limit)
+    this.index.set(event.index)
+    console.log(this.offset());
   }
 
   toggleSidebar() {
     this.sidebarVisible = !this.sidebarVisible;
-  }
-
-  selectCategory(value: number) {
-    this.filterForm.get('categoryId')?.setValue(value);
-    this.getData();
   }
 
   private listenLayoutChanges() {

@@ -5,16 +5,16 @@ import {
   output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { SelectButton } from 'primeng/selectbutton';
+import { DataViewModule } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { DataViewModule } from 'primeng/dataview';
 
 import { PrimengFileIconPipe } from '../../../../shared';
 import { DocumentFile } from '../../../domain';
-import { SelectButton } from 'primeng/selectbutton';
-import { FormsModule } from '@angular/forms';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
 @Component({
   selector: 'document-list',
@@ -23,17 +23,17 @@ import { PaginatorModule, PaginatorState } from 'primeng/paginator';
     FormsModule,
     TableModule,
     ButtonModule,
-    DataViewModule,
-    PrimengFileIconPipe,
     ButtonModule,
     SelectButton,
+    DataViewModule,
     PaginatorModule,
+    PrimengFileIconPipe,
   ],
   template: `
     <p-dataview #dv [value]="dataSource()" [layout]="layout">
       <ng-template #header>
         <div class="flex justify-between items-center">
-          <p class="text-xl font-medium">Listado de Documentos ({{dataSize()}})</p>
+          <p class="text-xl font-medium">Listado de Documentos</p>
           <p-selectbutton
             [(ngModel)]="layout"
             [options]="options"
@@ -137,14 +137,21 @@ import { PaginatorModule, PaginatorState } from 'primeng/paginator';
           }
         </div>
       </ng-template>
-      <ng-template #footer>
-        <p-paginator
-          [rows]="10"
-          [totalRecords]="dataSize()"
-          [rowsPerPageOptions]="[10, 20, 30, 50]"
-          (onPageChange)="changePage($event)"
-        />
-      </ng-template>
+      @if(dataSize() > 0){
+        <ng-template #footer>
+          <p-paginator
+            [rows]="10"
+            [totalRecords]="dataSize()"
+            [rowsPerPageOptions]="[10, 20, 30, 50]"
+            (onPageChange)="changePage($event)"
+          />
+        </ng-template>
+      }
+      <ng-template #emptymessage> 
+        <div class="p-4 text-lg">
+            No se encontraron resultados.
+        </div>
+       </ng-template>
     </p-dataview>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

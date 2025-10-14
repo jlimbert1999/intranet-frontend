@@ -41,10 +41,7 @@ export class PortalService {
   });
 
   private documentsCache: Record<string, DocumentFile[]> = {};
-   totalDocuments = signal(0);
-
-
-
+  totalDocuments = signal(0);
 
   filterDocuments(filterParams?: FilterDocumentsParams) {
     const { limit = 10, offset = 0, ...props } = filterParams ?? {};
@@ -61,7 +58,7 @@ export class PortalService {
       fromObject: {
         limit,
         offset,
-        ...props,
+        ...this.cleanFilterProps(props),
       },
     });
     return this.http
@@ -81,6 +78,12 @@ export class PortalService {
   getCategoriesWithSections() {
     return this.http.get<CategoriesWithSectionsResponse[]>(
       `${this.URL}/categories-sections`
+    );
+  }
+
+  private cleanFilterProps(form: object) {
+    return Object.fromEntries(
+      Object.entries(form || {}).filter(([_, v]) => v != null)
     );
   }
 }

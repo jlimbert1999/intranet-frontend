@@ -20,7 +20,7 @@ export default class ContentSettings {
     this.dialogService.open(HeroSlideConfigDialogComponent, {
       header: 'Configuración banner',
       modal: true,
-      width: '40vw',
+      width: '60vw',
     });
   }
 }

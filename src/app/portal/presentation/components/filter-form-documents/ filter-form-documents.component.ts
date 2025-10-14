@@ -2,11 +2,19 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
+  effect,
   inject,
   output,
+  Signal,
   signal,
 } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputIconModule } from 'primeng/inputicon';
@@ -40,33 +48,35 @@ import { PortalService } from '../../services/portal.service';
     <p-panel [toggleable]="true" style="border: none;">
       <ng-template #header>
         <div class="flex items-center gap-2">
-         <p-togglebutton [(ngModel)]="isAdvancedMode" onLabel="Filtro: Avanzado" offLabel="Filtro: Simple" class="w-40" />
+          <p-togglebutton
+            [(ngModel)]="isAdvancedMode"
+            onLabel="Filtro: Avanzado"
+            offLabel="Filtro: Simple"
+            class="w-40"
+          />
         </div>
       </ng-template>
+
       <ng-template #footer>
         <div class="flex justify-end gap-x-2">
           <button
             pButton
-            type="button"
-            icon="pi pi-times"
             label="Limpiar"
-            class="p-button-outlined p-button-secondary"
+            text="true"
             (click)="reset()"
+            size="small"
           ></button>
           <button
             pButton
-            icon="pi pi-search"
             label="Buscar"
-            class="p-button-primary"
-            type="submit"
+            size="small"
+            (focus)="true"
+            (click)="applyFilter()"
           ></button>
         </div>
       </ng-template>
-      <ng-template #icons>
-        <!-- <p-togglebutton onLabel="Avanzado" offLabel="Simple" class="w-24" size="small" [(ngModel)]="isAdvancedMode" /> -->
-      </ng-template>
-      <div>
-        <form [formGroup]="filterForm" (ngSubmit)="applyFilter()">
+      <div class="mt-2">
+        <form [formGroup]="filterForm()">
           <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
             <div class="md:col-span-2">
               <p-iconfield>
@@ -108,68 +118,31 @@ import { PortalService } from '../../services/portal.service';
                 formControlName="sectionId"
               ></p-select>
             </div>
-          </div>
-
-          <div class="pt-2">
-            <button
-              class="mb-2"
-              pButton
-              [text]="true"
-              (click)="toggle()"
-              size="small"
-            >
-              <i
-                class="pi"
-                [ngClass]="showAdvanced() ? 'pi-chevron-up' : 'pi-chevron-down'"
-                pButtonIcon
-              ></i>
-              <span pButtonLabel>
-                {{ showAdvanced() ? 'Menos' : 'Mas' }} filtros</span
-              >
-            </button>
-            <div
-              [class.max-h-0]="!showAdvanced()"
-              [class.max-h-[1000px]]="showAdvanced()"
-              class="transition-all duration-300 overflow-hidden"
-            >
-              <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div>
-                  <p-datepicker
-                    formControlName="fiscalYear"
-                    view="year"
-                    dateFormat="yy"
-                    appendTo="body"
-                    class="w-full"
-                    placeholder="Gestión"
-                  />
-                </div>
-
-                <div>
-                  <p-select
-                    [options]="ORDER_BY_OPTIONS"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Campo"
-                    class="w-full"
-                    appendTo="body"
-                    formControlName="orderBy"
-                  ></p-select>
-                </div>
-
-                <div>
-                  <p-select
-                    [options]="ORDER_DIRECTION_OPTIONS"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Tipo orden"
-                    appendTo="body"
-                    [showClear]="true"
-                    class="w-full"
-                    formControlName="orderDirection"
-                  ></p-select>
-                </div>
-              </div>
+            @if(isAdvancedMode()){
+            <div>
+              <p-datepicker
+                formControlName="fiscalYear"
+                view="year"
+                dateFormat="yy"
+                appendTo="body"
+                class="w-full"
+                placeholder="Gestión"
+              />
             </div>
+
+            <div>
+              <p-select
+                [options]="ORDER_DIRECTION_OPTIONS"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Tipo orden"
+                appendTo="body"
+                [showClear]="true"
+                class="w-full"
+                formControlName="orderDirection"
+              ></p-select>
+            </div>
+            }
           </div>
         </form>
       </div>
@@ -189,13 +162,21 @@ export class FilterFormDocumentsComponent {
   categories = this.portalService.categoriesWithSections;
   sections = this.portalService.sections;
 
-  filterForm = this.formBuilder.group({
-    term: [],
-    categoryId: [],
-    sectionId: [],
-    orderDirection: [],
-    orderBy: [],
-    fiscalYear: [this.CURRENT_DATE],
+  filterForm: Signal<FormGroup> = computed(() => {
+    return this.isAdvancedMode()
+      ? this.formBuilder.group({
+          term: [],
+          categoryId: [],
+          sectionId: [],
+          orderDirection: [],
+          orderBy: [],
+          fiscalYear: [this.CURRENT_DATE],
+        })
+      : this.formBuilder.group({
+          term: [],
+          categoryId: [],
+          sectionId: [],
+        });
   });
 
   showAdvanced = signal(false);
@@ -214,20 +195,22 @@ export class FilterFormDocumentsComponent {
     { label: 'Descendente', value: 'DESC' },
   ];
 
+  constructor() {}
+
   toggle() {
     this.showAdvanced.update((value) => !value);
   }
 
   selectCategory(value: number) {
-    this.filterForm.get('sectionId')?.setValue(null);
+    this.filterForm().get('sectionId')?.setValue(null);
     this.portalService.selectedCategoryId.set(value);
   }
 
   reset() {
-    this.filterForm.reset();
+    this.filterForm().reset();
   }
 
   applyFilter() {
-    this.onFilter.emit(this.filterForm.value);
+    this.onFilter.emit(this.filterForm().value);
   }
 }

@@ -8,14 +8,12 @@ import { FileUploadService } from '../../../shared';
 
 interface HeroSlideItem {
   id?: number;
-  image?: string;
+  image: string;
+  order: number;
   file?: File;
-  order: number;
-}
-
-interface UploadItem {
-  file: File;
-  order: number;
+  title?: string;
+  description?: string;
+  redirectUrl?: string;
 }
 
 @Injectable({
@@ -35,29 +33,29 @@ export class HeroSlideService {
   getCurrentSlides() {
     return this.http
       .get<HeroSlideResponse[]>(this.URL)
-      .pipe(map((resp) => resp.map(({ image }) => image)));
+      .pipe(
+        map((resp) =>
+          resp.map(({ image, title, description, redirecttUrl }) => ({
+            image,
+            title,
+            description,
+            redirecttUrl,
+          }))
+        )
+      );
   }
 
   syncDocuments(items: HeroSlideItem[]) {
-    const itemsToUpload: UploadItem[] = items
-      .filter((item) => item.file !== undefined)
-      .map(({ file, order }) => ({ file: file as File, order }));
-
     const existingSlides = items
-      .filter((item) => item.id && item.image)
-      .map(({ id, image, order }) => ({
-        id,
+      .filter(
+        (item) => item.id && item.image && !item.image.startsWith('blob:')
+      )
+      .map(({ image, ...props }) => ({
         image: image?.split('/').pop(), // * extrack fileName from build url,
-        order,
+        ...props,
       }));
 
-    return this.buildUploadTask(itemsToUpload).pipe(
-      map((uploaded) =>
-        uploaded.map(({ fileName, order }) => ({
-          image: fileName,
-          order,
-        }))
-      ),
+    return this.buildUploadTask(items).pipe(
       map((newSlides) => [...existingSlides, ...newSlides]),
       switchMap((allSlides) => {
         return this.http.put<HeroSlideResponse[]>(this.URL, {
@@ -67,12 +65,25 @@ export class HeroSlideService {
     );
   }
 
-  private buildUploadTask(items: UploadItem[]) {
-    return items.length > 0
+  private buildUploadTask(items: HeroSlideItem[]) {
+    const itemsToUpload = items
+      .filter((item) => item.file !== undefined)
+      .map(({ file, ...props }) => ({
+        file: file as File,
+        ...props,
+      }));
+
+    return itemsToUpload.length > 0
       ? forkJoin(
-          items.map(({ file, order }) =>
-            this.fileUploadService.uploadFile(file, 'hero-section').pipe(
-              map(({ fileName }) => ({ fileName, order })),
+          itemsToUpload.map((item) =>
+            this.fileUploadService.uploadFile(item.file, 'hero-section').pipe(
+              map(({ fileName }) => ({
+                image: fileName,
+                title: item.title,
+                order: item.order,
+                description: item.description,
+                redirectUrl: item.redirectUrl,
+              })),
               catchError(() => EMPTY)
             )
           )

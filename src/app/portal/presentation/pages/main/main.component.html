@@ -1,7 +1,5 @@
-<div class="bg-white py-4 border-b">
-  <div
-    class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-4"
-  >
+<div class="py-4 border-b bg-primary-50">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-4">
     <div class="flex items-center gap-3 text-center md:text-left">
       <img
         src="images/icons/app.png"
@@ -17,13 +15,8 @@
         </p>
       </div>
     </div>
-
-    <img
-      src="images/icons/alcaldia.png"
-      alt="Logo Municipio"
-      class="h-20 hidden md:block"
-    />
+    <img src="images/icons/alcaldia.png" alt="Logo Municipio" class="h-20 hidden md:block"/>
   </div>
 </div>
 
-<app-carousel [images]="slides()"/>
+<app-carousel [slides]="slides()"/>

@@ -43,6 +43,8 @@ export class PortalService {
   private documentsCache: Record<string, DocumentFile[]> = {};
   totalDocuments = signal(0);
 
+
+
   filterDocuments(filterParams?: FilterDocumentsParams) {
     const { limit = 10, offset = 0, ...props } = filterParams ?? {};
 
@@ -73,6 +75,10 @@ export class PortalService {
         }),
         map(({ documents }) => documents)
       );
+  }
+
+  getQuickAccess() {
+    return this.http.get<any[]>(`${this.URL}/quick-access`);
   }
 
   getCategoriesWithSections() {

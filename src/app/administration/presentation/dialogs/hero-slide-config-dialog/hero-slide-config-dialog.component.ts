@@ -66,6 +66,7 @@ export class HeroSlideConfigDialogComponent {
 
   save() {
     const { slides = [] } = this.form.value;
+    console.log(slides);
     this.heroSectionService
       .syncDocuments(
         this.slides().map((item, index) => ({

@@ -1,5 +1,7 @@
-<div class="py-4 border-b bg-primary-50">
-  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-4">
+<div class="py-4 border-b ">
+  <div
+    class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-4"
+  >
     <div class="flex items-center gap-3 text-center md:text-left">
       <img
         src="images/icons/app.png"
@@ -7,7 +9,9 @@
         class="h-16 w-auto hidden md:block"
       />
       <div>
-        <h1 class="text-lg md:text-3xl font-bold text-primary-800 leading-tight">
+        <h1
+          class="text-lg md:text-3xl font-bold text-primary-800 leading-tight"
+        >
           Intranet
         </h1>
         <p class="text-xs md:text-xl text-gray-500">
@@ -15,8 +19,16 @@
         </p>
       </div>
     </div>
-    <img src="images/icons/alcaldia.png" alt="Logo Municipio" class="h-20 hidden md:block"/>
+    <img
+      src="images/icons/alcaldia.png"
+      alt="Logo Municipio"
+      class="h-20 hidden md:block"
+    />
   </div>
 </div>
 
-<app-carousel [slides]="slides()"/>
+<app-carousel [slides]="slides()" />
+
+<quick-access />
+
+<footer-section />

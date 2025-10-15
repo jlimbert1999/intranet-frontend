@@ -2,14 +2,21 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
 
-import { AppCarouselComponent } from '../../components';
+import {
+  AppCarouselComponent,
+  FooterSectionComponent,
+  QuickAccessComponent,
+} from '../../components';
 import { HeroSlideService } from '../../../../administration/presentation/services';
-
-
 
 @Component({
   selector: 'app-main',
-  imports: [AppCarouselComponent, RouterModule],
+  imports: [
+    AppCarouselComponent,
+    RouterModule,
+    QuickAccessComponent,
+    FooterSectionComponent,
+  ],
   templateUrl: './main.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

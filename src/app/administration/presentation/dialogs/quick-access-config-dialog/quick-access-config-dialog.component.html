@@ -1,0 +1,75 @@
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="flex items-center justify-end p-2">
+    <p-button
+      icon="pi pi-plus"
+      size="small"
+      label="Seleccionar"
+      (click)="imageInput.click()"
+    />
+    <input
+      #imageInput
+      type="file"
+      [hidden]="true"
+      [multiple]="true"
+      accept="image/png, image/jpeg, image/jpg"
+      (change)="onFileSelected($event)"
+    />
+  </div>
+  <div
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+    class="flex flex-col gap-y-4 max-h-[600px] p-4 overflow-y-auto border border-slate-300"
+    formArrayName="items"
+  >
+    <div
+      *ngFor="let control of itemsFormArray.controls; let i = index"
+      [formGroupName]="i"
+      cdkDrag
+    >
+      <div
+        class="flex flex-col rounded-xl border border-slate-400 bg-white p-3"
+      >
+        <div class="flex justify-between mb-2">
+          <div class="flex items-center gap-x-2">
+            <div class="font-semibold">Acceso {{ i + 1 }}</div>
+          </div>
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            size="small"
+            (onClick)="removeSlide(i)"
+          />
+        </div>
+        <div class="flex flex-col sm:flex-row items-center gap-x-4">
+          <div class="w-full sm:w-[100px] flex items-center justify-center">
+            <img
+              [src]="quickAccessItems()[i].image"
+              class="object-cover w-[60px] rounded-full"
+            />
+          </div>
+          <div class="w-full flex flex-col gap-4">
+            <p-floatlabel variant="on">
+              <label>Nombre</label>
+              <input pInputText class="w-full" formControlName="name" />
+            </p-floatlabel>
+            <p-floatlabel variant="on">
+              <label>Link</label>
+              <input pInputText class="w-full" formControlName="url" />
+            </p-floatlabel>
+          </div>
+        </div>
+      </div>
+    </div>
+    @if(quickAccessItems().length===0){
+    <div class="font-medium">No se encontraron elementos.</div>
+    }
+  </div>
+  <div class="p-dialog-footer">
+    <button pButton severity="secondary" type="button" (click)="close()">
+      <span pButtonLabel>Cancelar</span>
+    </button>
+    <button pButton type="submit" [disabled]="form.invalid">
+      <span pButtonLabel>Guardar</span>
+    </button>
+  </div>
+</form>

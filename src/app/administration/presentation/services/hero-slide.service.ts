@@ -54,10 +54,10 @@ export class HeroSlideService {
         image: image?.split('/').pop(), // * extrack fileName from build url,
         ...props,
       }));
-
-    return this.buildUploadTask(items).pipe(
-      map((newSlides) => [...existingSlides, ...newSlides]),
-      switchMap((allSlides) => {
+      
+      return this.buildUploadTask(items).pipe(
+        map((newSlides) => [...existingSlides, ...newSlides]),
+        switchMap((allSlides) => {
         return this.http.put<HeroSlideResponse[]>(this.URL, {
           slides: allSlides,
         });

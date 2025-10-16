@@ -11,7 +11,7 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./portal/presentation/pages/main/main.component'),
+          import('./portal/presentation/pages/landing-page/landing-page.component'),
       },
       {
         path: 'repository',

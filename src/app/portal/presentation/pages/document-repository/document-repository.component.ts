@@ -10,21 +10,19 @@ import { CommonModule } from '@angular/common';
 import { PortalService } from '../../services/portal.service';
 import {
   DocumentListComponent,
-  FilterFormDocumentsComponent,
+  FilterDocumentsComponent,
 } from '../../components';
-
-import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-document-repository',
-  imports: [CommonModule, DocumentListComponent, FilterFormDocumentsComponent],
+  imports: [CommonModule, DocumentListComponent, FilterDocumentsComponent],
   templateUrl: './document-repository.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class DocumentRepositoryComponent {
   private portalService = inject(PortalService);
 
-  dataSize = this.portalService.totalDocuments;
+  dataSize = signal(0);
   limit = signal(10);
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
@@ -36,21 +34,28 @@ export default class DocumentRepositoryComponent {
     this.getData();
   }
 
-  getData(filterParams?: object) {
+  getData(filterParams?: object): void {
+    console.log(filterParams);
     this.portalService
       .filterDocuments({
         limit: this.limit(),
         offset: this.offset(),
         ...filterParams,
       })
-      .subscribe((documents) => {
+      .subscribe(({ documents, total }) => {
         this.dataSource.set(documents);
+        this.dataSize.set(total);
       });
+  }
+
+  resetFilter() {
+    this.index.set(0);
+    this.getData();
   }
 
   changePage(event: { index: number; limit: number }) {
     this.limit.set(event.limit);
     this.index.set(event.index);
-    console.log(this.offset());
+    this.getData();
   }
 }

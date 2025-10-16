@@ -11,13 +11,18 @@
     </div>
 
     <div class="bg-white rounded-xl shadow-md p-2 mb-4">
-      <filter-form-documents (onFilter)="getData($event)" />
+      <filter-documents
+        (onFilter)="getData($event)"
+        (onReset)="resetFilter()"
+      />
     </div>
 
     <div class="bg-white rounded-xl shadow-md p-2">
       <document-list
-        [dataSource]="dataSource()"
+        [limit]="limit()"
+        [offset]="offset()"
         [dataSize]="dataSize()"
+        [dataSource]="dataSource()"
         (onPageChange)="changePage($event)"
       />
     </div>

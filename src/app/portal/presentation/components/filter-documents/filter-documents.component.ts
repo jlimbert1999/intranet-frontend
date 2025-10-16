@@ -29,7 +29,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { PortalService } from '../../services/portal.service';
 
 @Component({
-  selector: 'filter-form-documents',
+  selector: 'filter-documents',
   imports: [
     FormsModule,
     CommonModule,
@@ -65,18 +65,13 @@ import { PortalService } from '../../services/portal.service';
             text="true"
             (click)="reset()"
             size="small"
+            type="button"
           ></button>
-          <button
-            pButton
-            label="Buscar"
-            size="small"
-            (focus)="true"
-            (click)="applyFilter()"
-          ></button>
+          <button pButton label="Buscar" size="small" type="submit" (click)="applyFilter()"></button>
         </div>
       </ng-template>
       <div class="mt-2">
-        <form [formGroup]="filterForm()">
+        <form [formGroup]="filterForm()" (ngSubmit)="applyFilter()">
           <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
             <div class="md:col-span-2">
               <p-iconfield>
@@ -150,7 +145,7 @@ import { PortalService } from '../../services/portal.service';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FilterFormDocumentsComponent {
+export class FilterDocumentsComponent {
   private portalService = inject(PortalService);
 
   private formBuilder = inject(FormBuilder);
@@ -158,6 +153,7 @@ export class FilterFormDocumentsComponent {
   private readonly CURRENT_DATE = new Date();
 
   onFilter = output<object>();
+  onReset = output<void>();
 
   categories = this.portalService.categoriesWithSections;
   sections = this.portalService.sections;
@@ -208,6 +204,7 @@ export class FilterFormDocumentsComponent {
 
   reset() {
     this.filterForm().reset();
+    this.onReset.emit();
   }
 
   applyFilter() {

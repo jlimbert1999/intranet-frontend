@@ -3,6 +3,7 @@ import {
   Component,
   input,
   output,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -53,7 +54,7 @@ import { DocumentFile } from '../../../domain';
       </ng-template>
       <ng-template #list let-items>
         @for (item of items; track $index; let first=$first) {
-        <div
+        <!-- <div
           class="flex flex-col sm:flex-row sm:items-center p-4 gap-4"
           [ngClass]="{ 'border-t border-surface-200': !first }"
         >
@@ -95,7 +96,64 @@ import { DocumentFile } from '../../../domain';
               </div>
             </div>
           </div>
+        </div> -->
+        <div
+          class="flex flex-col sm:flex-row sm:items-center p-6 gap-4"
+          [ngClass]="{
+            'border-t border-surface-200 dark:border-surface-700': !first
+          }"
+        >
+          <div class="md:w-40 bg-slate-100 flex justify-center">
+             <i
+              [ngClass]="item.originalName | primengFileIcon"
+              style="font-size: 2.5rem;"
+            ></i>
+          </div>
+          <div
+            class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-6"
+          >
+            <div
+              class="flex flex-row md:flex-col justify-between items-start gap-2"
+            >
+              <div>
+                <span
+                  class="font-medium text-surface-500 dark:text-surface-400 text-sm"
+                  >test</span
+                >
+                <div class="text-lg font-medium mt-2">{{ item.originalName }}</div>
+              </div>
+              <div class="bg-surface-100 p-1" style="border-radius: 30px">
+                <div
+                  class="bg-surface-0 flex items-center gap-2 justify-center py-1 px-2"
+                  style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)"
+                >
+                  <span class="text-surface-900 font-medium text-sm">{{
+                    item.rating
+                  }}</span>
+                  <i class="pi pi-star-fill text-yellow-500"></i>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col md:items-end gap-8">
+              <span class="text-xl font-semibold">{{
+                item.price | currency : 'USD'
+              }}</span>
+              <div class="flex flex-row-reverse md:flex-row gap-2">
+                <button pButton icon="pi pi-heart" [outlined]="true">
+                  
+                </button>
+                <!-- <button
+                  pButton
+                  icon="pi pi-shopping-cart"
+                  label="Buy Now"
+                  [disabled]="item.inventoryStatus === 'OUTOFSTOCK'"
+                  class="flex-auto md:flex-initial whitespace-nowrap"
+                ></button> -->
+              </div>
+            </div>
+          </div>
         </div>
+
         }
       </ng-template>
       <ng-template #grid let-items>
@@ -138,20 +196,19 @@ import { DocumentFile } from '../../../domain';
         </div>
       </ng-template>
       @if(dataSize() > 0){
-        <ng-template #footer>
-          <p-paginator
-            [rows]="10"
-            [totalRecords]="dataSize()"
-            [rowsPerPageOptions]="[10, 20, 30, 50]"
-            (onPageChange)="changePage($event)"
-          />
-        </ng-template>
+      <ng-template #footer>
+        <p-paginator
+          [rows]="limit()"
+          [first]="offset()"
+          [totalRecords]="dataSize()"
+          [rowsPerPageOptions]="[10, 20, 30, 50]"
+          (onPageChange)="changePage($event)"
+        />
+      </ng-template>
       }
-      <ng-template #emptymessage> 
-        <div class="p-4 text-lg">
-            No se encontraron resultados.
-        </div>
-       </ng-template>
+      <ng-template #emptymessage>
+        <div class="p-4 text-lg">No se encontraron resultados.</div>
+      </ng-template>
     </p-dataview>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -160,6 +217,8 @@ export class DocumentListComponent {
   dataSource = input.required<DocumentFile[]>();
 
   dataSize = input.required<number>();
+  limit = input<number>();
+  offset = input<number>(0);
 
   onPageChange = output<{ index: number; limit: number }>();
 

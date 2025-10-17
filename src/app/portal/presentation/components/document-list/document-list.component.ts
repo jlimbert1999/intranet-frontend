@@ -1,9 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  input,
   output,
-  signal,
+  input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,17 +11,15 @@ import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { SelectButton } from 'primeng/selectbutton';
 import { DataViewModule } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
-import { TableModule } from 'primeng/table';
 
+import { DocumentResponse } from '../../../infrastructure';
 import { PrimengFileIconPipe } from '../../../../shared';
-import { DocumentFile } from '../../../domain';
 
 @Component({
   selector: 'document-list',
   imports: [
     CommonModule,
     FormsModule,
-    TableModule,
     ButtonModule,
     ButtonModule,
     SelectButton,
@@ -53,145 +50,92 @@ import { DocumentFile } from '../../../domain';
         </div>
       </ng-template>
       <ng-template #list let-items>
-        @for (item of items; track $index; let first=$first) {
-        <!-- <div
-          class="flex flex-col sm:flex-row sm:items-center p-4 gap-4"
-          [ngClass]="{ 'border-t border-surface-200': !first }"
-        >
+        @for (doc of items; track $index; let first=$first) {
           <div
-            class="flex justify-center items-center h-20 w-full md:w-20 bg-slate-100 rounded-2xl"
-          >
-            <i
-              [ngClass]="item.originalName | primengFileIcon"
-              style="font-size: 2.5rem;"
-            ></i>
-          </div>
-          <div
-            class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-4"
+            class="flex flex-col sm:flex-row sm:items-center p-2 gap-4 border border-surface-300 rounded-xl"
+            [ngClass]="{ 'mt-2': !first }"
           >
             <div
-              class="flex flex-row md:flex-col justify-between items-start gap-4"
+              class="flex justify-center items-center md:w-20 h-20 bg-surface-100 rounded-xl"
             >
-              <div>
-                <span class="font-medium text-surface-500 text-xs">
-                  Gestión {{ item.fiscalYear }}
-                </span>
-                <div class="md:text-xl font-medium mt-2">
-                  {{ item.originalName }}
-                </div>
-              </div>
+              <i
+                [ngClass]="doc.originalName | primengFileIcon"
+                style="font-size: 1.8rem;"
+              ></i>
             </div>
-            <div
-              class="flex items-center flex-row sm:flex-col justify-between md:items-end gap-4"
-            >
-              <span class="text-sm font-semibold">
-                {{ item.createdAt | date : 'short' }}
-              </span>
-              <div class="flex justify-end md:justify-center">
-                <button
-                  pButton
-                  icon="pi pi-download"
-                  [outlined]="true"
-                ></button>
-              </div>
-            </div>
-          </div>
-        </div> -->
-        <div
-          class="flex flex-col sm:flex-row sm:items-center p-6 gap-4"
-          [ngClass]="{
-            'border-t border-surface-200 dark:border-surface-700': !first
-          }"
-        >
-          <div class="md:w-40 bg-slate-100 flex justify-center">
-             <i
-              [ngClass]="item.originalName | primengFileIcon"
-              style="font-size: 2.5rem;"
-            ></i>
-          </div>
-          <div
-            class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-6"
-          >
-            <div
-              class="flex flex-row md:flex-col justify-between items-start gap-2"
-            >
-              <div>
-                <span
-                  class="font-medium text-surface-500 dark:text-surface-400 text-sm"
-                  >test</span
-                >
-                <div class="text-lg font-medium mt-2">{{ item.originalName }}</div>
-              </div>
-              <div class="bg-surface-100 p-1" style="border-radius: 30px">
-                <div
-                  class="bg-surface-0 flex items-center gap-2 justify-center py-1 px-2"
-                  style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)"
-                >
-                  <span class="text-surface-900 font-medium text-sm">{{
-                    item.rating
-                  }}</span>
-                  <i class="pi pi-star-fill text-yellow-500"></i>
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col md:items-end gap-8">
-              <span class="text-xl font-semibold">{{
-                item.price | currency : 'USD'
-              }}</span>
-              <div class="flex flex-row-reverse md:flex-row gap-2">
-                <button pButton icon="pi pi-heart" [outlined]="true">
-                  
-                </button>
-                <!-- <button
-                  pButton
-                  icon="pi pi-shopping-cart"
-                  label="Buy Now"
-                  [disabled]="item.inventoryStatus === 'OUTOFSTOCK'"
-                  class="flex-auto md:flex-initial whitespace-nowrap"
-                ></button> -->
-              </div>
-            </div>
-          </div>
-        </div>
 
+            <div
+              class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-4"
+            >
+              <div class="flex flex-col gap-1">
+                <span class="text-sm">
+                  {{ doc.sectionCategory.category.name | titlecase }} -
+                  {{ doc.fiscalYear }}
+                </span>
+                <h3 class="text-lg font-semibold">
+                  {{ doc.originalName }}
+                </h3>
+                <p class="text-sm text-surface-500">
+                  Subido el {{ doc.createdAt | date : 'dd/MM/yyyy' }}
+                </p>
+              </div>
+
+              <div
+                class="flex flex-row sm:flex-col justify-between items-center gap-2 "
+              >
+                <div class="flex items-center gap-2 text-surface-600">
+                  <i class="pi pi-download text-primary"></i>
+                  <span class="text-sm">{{ doc.downloadCount }} descargas</span>
+                </div>
+                <p-button
+                  icon="pi pi-arrow-down"
+                  size="small"
+                  label="Descargar"
+                  (onClick)="download(doc)"
+                />
+              </div>
+            </div>
+          </div>
         }
       </ng-template>
       <ng-template #grid let-items>
         <div class="grid grid-cols-12 gap-4">
-          @for (item of items; track $index) {
+          @for (doc of items; track $index) {
           <div
             class="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-6 p-2"
           >
-            <div
-              class="p-6 border border-surface-200 bg-surface-0 rounded flex flex-col"
-            >
+            <div class="p-2 border border-surface-300 rounded-xl flex flex-col">
               <div class="bg-surface-50 flex justify-center rounded p-4">
                 <i
-                  [ngClass]="item.originalName | primengFileIcon"
-                  style="font-size: 4rem;"
+                  [ngClass]="doc.originalName | primengFileIcon"
+                  style="font-size: 2.5rem;"
                 ></i>
               </div>
-              <div class="pt-6">
-                <div class="flex flex-row justify-between products-start gap-2">
+              <div class="pt-2">
+                <div class="flex flex-row justify-between products-start gap-1">
                   <div>
-                    <span class="font-medium text-surface-500 text-sm">
-                      Gestión {{ item.fiscalYear }}
+                    <span class="text-sm">
+                      {{ doc.sectionCategory.category.name | titlecase }} -
+                      {{ doc.fiscalYear }}
                     </span>
-                    <div class="text-lg font-medium mt-1">
-                      {{ item.originalName }}
+                    <div class="text-lg mt-1 font-semibold">
+                      {{ doc.originalName }}
                     </div>
                   </div>
                 </div>
-                <div class="flex items-center justify-between mt-6">
-                  <span class="text-lg font-semibold">
-                    {{ item.createdAt | date : 'short' }}
-                  </span>
-                  <button pButton icon="pi pi-download" outlined></button>
+                <div class="flex items-center justify-between mt-4">
+                  <p class="text-sm text-surface-500">
+                    Subido el {{ doc.createdAt | date : 'dd/MM/yyyy' }}
+                  </p>
+                  <p-button
+                    icon="pi pi-arrow-down"
+                    size="small"
+                    label="Descargar"
+                  />
                 </div>
               </div>
             </div>
           </div>
-
           }
         </div>
       </ng-template>
@@ -214,13 +158,15 @@ import { DocumentFile } from '../../../domain';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentListComponent {
-  dataSource = input.required<DocumentFile[]>();
+  dataSource = input.required<DocumentResponse[]>();
 
   dataSize = input.required<number>();
   limit = input<number>();
   offset = input<number>(0);
 
   onPageChange = output<{ index: number; limit: number }>();
+
+  onDowload = output<DocumentResponse>();
 
   layout: 'list' | 'grid' = 'list';
 
@@ -231,5 +177,9 @@ export class DocumentListComponent {
       index: event.page ?? 0,
       limit: event.rows ?? 10,
     });
+  }
+
+  download(doc: DocumentResponse) {
+    this.onDowload.emit(doc);
   }
 }

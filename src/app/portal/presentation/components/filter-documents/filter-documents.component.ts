@@ -67,7 +67,13 @@ import { PortalService } from '../../services/portal.service';
             size="small"
             type="button"
           ></button>
-          <button pButton label="Buscar" size="small" type="submit" (click)="applyFilter()"></button>
+          <button
+            pButton
+            label="Buscar"
+            size="small"
+            type="submit"
+            (click)="applyFilter()"
+          ></button>
         </div>
       </ng-template>
       <div class="mt-2">
@@ -98,6 +104,7 @@ import { PortalService } from '../../services/portal.service';
                 [showClear]="true"
                 class="w-full"
                 formControlName="categoryId"
+                 emptyFilterMessage="Sin resultados"
               ></p-select>
             </div>
 
@@ -106,16 +113,19 @@ import { PortalService } from '../../services/portal.service';
                 [filter]="true"
                 [options]="sections()"
                 placeholder="Sección documento"
+                emptyFilterMessage="Sin resultados"
                 optionValue="id"
                 optionLabel="name"
                 [showClear]="true"
                 class="w-full"
                 formControlName="sectionId"
+                 [disabled]="filterForm().get('categoryId')?.value === null"
               ></p-select>
             </div>
             @if(isAdvancedMode()){
             <div>
               <p-datepicker
+                [maxDate]="CURRENT_DATE"
                 formControlName="fiscalYear"
                 view="year"
                 dateFormat="yy"
@@ -150,7 +160,7 @@ export class FilterDocumentsComponent {
 
   private formBuilder = inject(FormBuilder);
 
-  private readonly CURRENT_DATE = new Date();
+  readonly CURRENT_DATE = new Date();
 
   onFilter = output<object>();
   onReset = output<void>();

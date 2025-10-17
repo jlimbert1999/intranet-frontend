@@ -12,6 +12,7 @@ import {
   DocumentListComponent,
   FilterDocumentsComponent,
 } from '../../components';
+import { DocumentResponse } from '../../../infrastructure';
 
 @Component({
   selector: 'app-document-repository',
@@ -26,7 +27,7 @@ export default class DocumentRepositoryComponent {
   limit = signal(10);
   index = signal(0);
   offset = computed(() => this.limit() * this.index());
-  dataSource = signal<any[]>([]);
+  dataSource = signal<DocumentResponse[]>([]);
 
   constructor() {}
 
@@ -35,7 +36,6 @@ export default class DocumentRepositoryComponent {
   }
 
   getData(filterParams?: object): void {
-    console.log(filterParams);
     this.portalService
       .filterDocuments({
         limit: this.limit(),
@@ -43,8 +43,24 @@ export default class DocumentRepositoryComponent {
         ...filterParams,
       })
       .subscribe(({ documents, total }) => {
+        console.log(documents);
         this.dataSource.set(documents);
         this.dataSize.set(total);
+      });
+  }
+
+  downloadDocument(doc: DocumentResponse) {
+    this.portalService
+      .dowloadDocument(doc.id, doc.fileName, doc.originalName)
+      .subscribe(({ newCount }) => {
+        if (!newCount) return;
+        this.dataSource.update((values) => {
+          const index = values.findIndex((item) => item.id === doc.id);
+          if (index !== -1) {
+            values[index].downloadCount = newCount;
+          }
+          return [...values];
+        });
       });
   }
 

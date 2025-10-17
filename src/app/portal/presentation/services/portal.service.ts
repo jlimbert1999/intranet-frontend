@@ -1,27 +1,27 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { finalize, map, Observable, of, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { finalize, of, switchMap, tap } from 'rxjs';
 
 import {
-  CategoriesWithSectionsResponse,
+  DocumentResponse,
   HomePortalDataResponse,
+  CategoriesWithSectionsResponse,
 } from '../../infrastructure';
 import { environment } from '../../../../environments/environment';
-import { DocumentFile } from '../../domain';
 
 interface FilterDocumentsParams {
   categoryId?: number;
   sectionId?: number;
   orderDirection?: 'DESC' | 'ASC';
-  fiscalYear?: number;
+  fiscalYear?: Date;
   offset?: number;
   limit?: number;
   term?: string;
 }
 
 interface DocumentCache {
-  documents: DocumentFile[];
+  documents: DocumentResponse[];
   total: number;
 }
 
@@ -75,11 +75,19 @@ export class PortalService {
     this.isDocumentSearching.set(true);
 
     return this.http
-      .post<{ documents: any[]; total: number }>(`${this.URL}/documents`, {
-        limit,
-        offset,
-        ...cleanParams,
-      })
+      .post<{ documents: DocumentResponse[]; total: number }>(
+        `${this.URL}/documents`,
+        {
+          limit,
+          offset,
+          ...{
+            ...cleanParams,
+            ...(cleanParams['fiscalYear'] && {
+              fiscalYear: (cleanParams['fiscalYear'] as Date).getFullYear(),
+            }),
+          },
+        }
+      )
       .pipe(
         tap((resp) => {
           if (!isFilterMode) {
@@ -90,6 +98,29 @@ export class PortalService {
           this.isDocumentSearching.set(false);
         })
       );
+  }
+
+  dowloadDocument(
+    docId: string,
+    docUrl: string,
+    fileName: string = 'Sin nombre'
+  ) {
+    return this.http.get(docUrl, { responseType: 'blob' }).pipe(
+      tap((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+      }),
+      switchMap(() =>
+        this.http.patch<{ success: true; newCount?: number }>(
+          `${this.URL}/document/${docId}/increment-download`,
+          {}
+        )
+      )
+    );
   }
 
   getQuickAccess() {

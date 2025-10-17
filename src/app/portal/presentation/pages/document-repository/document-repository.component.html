@@ -23,6 +23,7 @@
         [offset]="offset()"
         [dataSize]="dataSize()"
         [dataSource]="dataSource()"
+        (onDowload)="downloadDocument($event)"
         (onPageChange)="changePage($event)"
       />
     </div>

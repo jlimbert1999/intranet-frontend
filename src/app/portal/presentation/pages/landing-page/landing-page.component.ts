@@ -5,6 +5,7 @@ import {
   PortalLoaderComponent,
   FooterSectionComponent,
   QuickAccessSectionComponent,
+  CommunicationsSectionComponent,
 } from '../../components';
 import { PortalService } from '../../services/portal.service';
 
@@ -14,7 +15,9 @@ import { PortalService } from '../../services/portal.service';
     PortalLoaderComponent,
     HeroSectionComponent,
     QuickAccessSectionComponent,
+    CommunicationsSectionComponent,
     FooterSectionComponent,
+
   ],
   templateUrl: './landing-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

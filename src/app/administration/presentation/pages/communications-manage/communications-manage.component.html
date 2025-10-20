@@ -1,5 +1,5 @@
 <div class="flex items-center justify-between mb-4">
-  <h2 class="text-2xl font-semibold">Categorias</h2>
+  <h2 class="text-2xl font-semibold">Comunicados</h2>
   <p-button
     label="Agregar"
     icon="pi pi-plus"
@@ -12,29 +12,20 @@
 <div class="card">
   <p-table
     #table
-    [value]="dataSource()"
+    [value]="dataSource"
     [totalRecords]="dataSource.length"
     [globalFilterFields]="['name']"
     [paginator]="true"
     [rows]="10"
   >
+   
     <ng-template #caption>
       <div class="flex sm:justify-end">
         <div class="w-full sm:w-1/4">
-          <p-iconfield class="ml-auto">
-            <p-inputicon class="pi pi-search" />
-            <input
-              pInputText
-              type="text"
-              (input)="table.filterGlobal($event.target.value, 'contains')"
-              placeholder="Nombre"
-              class="w-full"
-            />
-          </p-iconfield>
+          <search-input />
         </div>
       </div>
     </ng-template>
-  
     <ng-template #header>
       <tr>
         <th>Nombre</th>

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
-type FileGroup = 'hero-section' | 'document' | 'quick-access';
+type FileGroup = 'hero-section' | 'document' | 'quick-access' | 'communication';
 type MediaType = 'image' | 'audio' | 'video' | 'document';
 export interface UploadedFile {
   fileName: string;

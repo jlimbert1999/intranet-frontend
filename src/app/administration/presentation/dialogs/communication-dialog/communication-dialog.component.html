@@ -1,0 +1,63 @@
+<form [formGroup]="communicationForm" (ngSubmit)="save()">
+  <pre>{{communicationForm.value|json}}</pre>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-2">
+    <div class="sm: col-span-2">
+      <input
+        pInputText
+        formControlName="reference"
+        type="text"
+        placeholder="Titulo"
+        class="w-full"
+      />
+    </div>
+    <div>
+      <input
+        pInputText
+        formControlName="code"
+        type="text"
+        placeholder="Codigo"
+        class="w-full"
+      />
+    </div>
+    <div>
+      <p-select
+        [options]="types()"
+        appendTo="body"
+        formControlName="typeCommunicationId"
+        class="w-full"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Tipo comunicado"
+      />
+    </div>
+  </div>
+  <div class="flex flex-col gap-y-4 mt-4">
+    <div>
+      <p-button
+        size="small"
+        icon="pi pi-upload"
+        variant="outlined"
+        label="Adjuntar PDF"
+        (onClick)="pdfInput.click()"
+      />
+      <input
+        type="file"
+        accept="application/pdf"
+        (change)="onFileSelected($event)"
+        #pdfInput
+        hidden
+      />
+    </div>
+    <div class="h-[200px] relative border">
+      <div class="absolute top-0 left-0 z-10">ahola</div>
+      @if(pdfPreviewUrl()){
+      <iframe [src]="pdfPreviewUrl()" class="pdf-iframe" frameborder="0">
+      </iframe>
+      }
+    </div>
+  </div>
+  <div class="p-dialog-footer">
+    <p-button label="Cancelar" severity="secondary" (onClick)="close()" />
+    <p-button type="submit" label="Guardar" [disabled]="!isFormValid" />
+  </div>
+</form>

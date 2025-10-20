@@ -2,9 +2,12 @@
 @if(!isLoading() && portalData()){ 
     <hero-section [slides]="portalData()?.slides" />
 
+    <communications-section/>
+    
     <quick-access-section [quickAccess]="portalData()!.quickAccess" />
 
     <footer-section />
+
 } 
 @else {
     <portal-loader/>

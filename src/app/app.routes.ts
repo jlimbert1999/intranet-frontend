@@ -11,7 +11,9 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./portal/presentation/pages/landing-page/landing-page.component'),
+          import(
+            './portal/presentation/pages/landing-page/landing-page.component'
+          ),
       },
       {
         path: 'repository',
@@ -55,6 +57,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import(
             './administration/presentation/pages/document-categories/document-categories.component'
+          ),
+      },
+      {
+        path: 'communications-manage',
+        loadComponent: () =>
+          import(
+            './administration/presentation/pages/communications-manage/communications-manage.component'
           ),
       },
     ],

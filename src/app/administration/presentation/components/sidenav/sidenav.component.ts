@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { RouterModule } from '@angular/router';
+
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 
@@ -18,8 +19,9 @@ import { MenuItem } from 'primeng/api';
       <div class="h-full overflow-y-auto">
         <p-menu [model]="items" styleClass="p-2 h-full">
           <ng-template #start>
-            <div class="flex items-center justify-center h-16 px-4 ">
-              <span class="text-xl font-semibold">Dashboard</span>
+            <div class="flex items-center p-2 mb-2">
+              <img src="images/icons/app.png" class="h-8 w-8" alt="Icon app" />
+              <span class="text-lg ml-3 font-semibold">Intranet</span>
             </div>
           </ng-template>
           <ng-template #submenuheader let-item>
@@ -28,8 +30,9 @@ import { MenuItem } from 'primeng/api';
           <ng-template #item let-item>
             <a
               pRipple
-              class="flex items-center p-menu-item-link ml-2"
               [routerLink]="item.routerLink"
+              routerLinkActive="bg-primary-100 rounded-xl"
+              class="flex items-center p-menu-item-link"
             >
               <span [class]="item.icon"></span>
               <span class="ml-2">{{ item.label }}</span>
@@ -71,6 +74,16 @@ export class SidenavComponent {
           label: 'Archivos',
           icon: 'pi pi-file',
           routerLink: 'file-explorer',
+        },
+      ],
+    },
+    {
+      label: 'Institucional',
+      items: [
+        {
+          label: 'Comunicados',
+          icon: 'pi pi-objects-column',
+          routerLink: 'communications-manage',
         },
       ],
     },

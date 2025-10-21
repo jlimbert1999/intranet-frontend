@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
@@ -24,10 +24,10 @@ export class CommunicationService {
 
   crate(form: object, file: File) {
     return this.fileUploadService
-      .uploadFile(file, 'communication')
+      .uploadPdfThumbnail(file, 'communication')
       .pipe(
-        switchMap(({ fileName }) =>
-          this.http.post(`${this.URL}`, { ...form, file: fileName })
+        switchMap(({ fileName, previewName }) =>
+          this.http.post(`${this.URL}`, { ...form, fileName, previewName })
         )
       );
   }

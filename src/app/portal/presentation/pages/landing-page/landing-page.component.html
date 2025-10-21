@@ -2,7 +2,7 @@
 @if(!isLoading() && portalData()){ 
     <hero-section [slides]="portalData()?.slides" />
 
-    <communications-section/>
+    <communications-section [communications]="portalData()!.communications"/>
     
     <quick-access-section [quickAccess]="portalData()!.quickAccess" />
 

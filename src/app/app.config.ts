@@ -14,10 +14,12 @@ import theme from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 
+const primaryColor = palette('{sky}');
+
 const AuraSky = definePreset(theme, {
   semantic: {
-    primary: palette('{blue}'),
-  }
+    primary: primaryColor ,
+  },
 });
 
 export const appConfig: ApplicationConfig = {

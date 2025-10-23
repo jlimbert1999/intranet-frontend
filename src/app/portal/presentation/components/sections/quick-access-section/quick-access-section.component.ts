@@ -7,7 +7,7 @@ import { QuickAccessResponse } from '../../../../../administration/infrastructur
   selector: 'quick-access-section',
   imports: [CommonModule],
   template: `
-    <section class="py-14 bg-gradient-to-b from-sky-50 to-white">
+    <section class="py-14 bg-gradient-to-b from-primary-100 to-white">
       <div class="max-w-6xl mx-auto px-6 text-center">
         <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-3">
           Accesos Directos
@@ -22,7 +22,7 @@ import { QuickAccessResponse } from '../../../../../administration/infrastructur
           <a
             [href]="access.url"
             target="'_blank'"
-            class="group relative bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center border border-gray-100 hover:border-blue-400 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            class="group relative bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center border border-gray-100 hover:border-primary-400 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
             <!-- Imagen circular -->
             <div
@@ -37,14 +37,14 @@ import { QuickAccessResponse } from '../../../../../administration/infrastructur
             </div>
 
             <span
-              class="font-semibold text-gray-700 group-hover:text-blue-600 transition-colors text-center"
+              class="font-semibold text-gray-700 group-hover:text-primary-600 transition-colors text-center"
             >
               {{ access.name }}
             </span>
 
             <!-- Efecto de fondo hover -->
             <div
-              class="absolute inset-0 bg-blue-50/0 group-hover:bg-blue-50/40 rounded-2xl transition-all duration-300"
+              class="absolute inset-0 bg-blue-50/0 group-hover:bg-primary-50/40 rounded-2xl transition-all duration-300"
             ></div>
           </a>
 

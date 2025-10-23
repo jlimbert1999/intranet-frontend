@@ -8,16 +8,17 @@ import {
   CommunicationsSectionComponent,
 } from '../../components';
 import { PortalService } from '../../services/portal.service';
+import { ScrollRestoreDirective } from '../../../../shared';
 
 @Component({
   selector: 'landing-page',
   imports: [
-    PortalLoaderComponent,
     HeroSectionComponent,
+    PortalLoaderComponent,
+    FooterSectionComponent,
     QuickAccessSectionComponent,
     CommunicationsSectionComponent,
-    FooterSectionComponent,
-
+    ScrollRestoreDirective,
   ],
   templateUrl: './landing-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

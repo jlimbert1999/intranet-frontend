@@ -1,15 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+} from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CarouselModule } from 'primeng/carousel';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'communications-section',
-  imports: [CommonModule, CarouselModule, ButtonModule],
+  imports: [RouterModule, CommonModule, CarouselModule, ButtonModule],
   template: `
-    <section class="py-16 bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700 text-white">
-      <div class="container mx-auto px-6">
-        <div class="text-center mb-10">
+    <section class="py-16 bg-primary-700 text-white">
+      <div class="container mx-auto">
+        <div class="text-center mb-10 px-6">
           <h2 class="text-3xl md:text-4xl font-bold mb-2">Comunicados</h2>
           <p class="text-blue-200 text-sm md:text-base max-w-2xl mx-auto">
             Mantente informado con los últimos comunicados institucionales.
@@ -20,66 +25,59 @@ import { ButtonModule } from 'primeng/button';
           [numVisible]="3"
           [numScroll]="1"
           [circular]="true"
-          [responsiveOptions]="[
-            { breakpoint: '1024px', numVisible: 2, numScroll: 1 },
-            { breakpoint: '768px', numVisible: 1, numScroll: 1 }
-          ]"
+          [responsiveOptions]="responsiveOptions"
         >
           <ng-template pTemplate="item" let-com>
-            <div class="p-4">
-              <a
-                [href]="com.pdfUrl"
-                target="_blank"
-                class="block bg-white text-gray-700 rounded-xl overflow-hidden shadow-lg mx-2 hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out"
+            <a
+              class="relative block m-2 overflow-hidden rounded-2xl shadow-md bg-white cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:brightness-90"
+              [routerLink]="['communications', com.id]"
               >
-                <div
-                  class="relative aspect-[3/4] w-full max-h-[400px] bg-gray-100 flex justify-center items-center overflow-hidden"
-                >
-                  @if(com.previewUrl){
-                    <img
-                      [src]="com.previewUrl"
-                      alt="preview"
-                      class="max-h-full max-w-full object-contain transition-transform duration-300"
-                    />
-                  }
-                  @else {
-                    <div class="absolute inset-0 flex flex-col justify-center items-center text-gray-400">
-                      <i class="pi pi-file-pdf mb-4 text-red-500" style="font-size: 2rem;"></i>
-                      <span class="font-medium">Vista previa no disponible</span>
-                    </div>
-                  }
-                  <span class="absolute top-3 right-3 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-md font-semibold">
-                    COMUNICADO
-                  </span>
-                </div>
-
-                <div class="p-4">
-                  <span class="text-xs text-gray-400 block">
-                    {{ com.publicationDate | date : 'longDate' }}
-                  </span>
-                  <h3 class="font-semibold text-lg mt-1 line-clamp-2 leading-snug">
-                    {{ com.reference }} Dolore nisi amet sit ex id minim sit quis id aliquip duis deserunt.
-                  </h3>
-
-                  <p class="text-sm text-gray-500 mb-3">{{ com.code }}</p>
-                </div>
-              </a>
-            </div>
+              <div class="absolute top-2 right-2 z-10">
+                <span class="text-sm font-semibold text-white bg-primary-600/90 px-2 py-1 rounded">
+                  {{ com.type.name | uppercase }}
+                </span>
+              </div>
+              <img
+                [src]="com.previewUrl"
+                [alt]="com.reference"
+                class="w-full h-[400px] sm:h-[520px] object-contain"
+              />
+              <div class="bg-primary-900 p-4">
+                <p class="text-lg opacity-80">
+                  {{ com.publicationDate | date : 'd MMMM, y' }}
+                </p>
+                <h3 class="text-lg font-semibold mt-1 line-clamp-2">
+                  {{ com.reference }}
+                </h3>
+                <p class="text-xs mt-1 opacity-90 truncate">
+                  {{ com.code }}
+                </p>
+              </div>
+            </a>
           </ng-template>
         </p-carousel>
         <div class="text-center mt-4">
-          <button
-            pButton
-            label="Ver más comunicados"
-            [rounded]="true"
-            icon="pi pi-arrow-right"
-          ></button>
+           <a routerLink="communications" pButton [rounded]="true" >
+             <span pButtonLabel>Ver mas comunicados</span>
+             <i class="pi pi-arrow-right" pButtonIcon></i>
+          </a>
         </div>
       </div>
     </section>
+  `,
+  styles: `
+    :host ::ng-deep .p-carousel-item {
+      max-width: 520px;
+      margin: 0 auto;
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommunicationsSectionComponent {
   communications = input.required<any[]>();
+  readonly responsiveOptions = [
+    { breakpoint: '1024px', numVisible: 3, numScroll: 1 },
+    { breakpoint: '768px', numVisible: 2, numScroll: 1 },
+    { breakpoint: '560px', numVisible: 1, numScroll: 1 },
+  ];
 }

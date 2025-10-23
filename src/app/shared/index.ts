@@ -7,3 +7,6 @@ export * from "./pipes/primeng-file-icon.pipe"
 export * from "./pipes/form-error-messages.pipe"
 
 export * from "./services/file-upload.service"
+export * from "./services/scroll-state.service"
+
+export * from "./directives/scroll-restore-directive"

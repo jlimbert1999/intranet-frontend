@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { HttpClient } from '@angular/common/http';
 import { finalize, of, switchMap, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import {
   DocumentResponse,
@@ -131,6 +131,10 @@ export class PortalService {
     return this.http.get<CategoriesWithSectionsResponse[]>(
       `${this.URL}/categories-sections`
     );
+  }
+
+  getOneCommunication(id: string) {
+    return this.http.get(`${this.URL}/communication/${id}`);
   }
 
   private cleanFilterProps(form: object) {

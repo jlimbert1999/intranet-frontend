@@ -22,6 +22,19 @@ export const routes: Routes = [
             './portal/presentation/pages/document-repository/document-repository.component'
           ),
       },
+      {
+        path: 'communications',
+        loadComponent: () =>
+          import('./portal/presentation/pages/communications/communications.component'
+          ),
+      },
+      {
+        path: 'communications/:id',
+        loadComponent: () =>
+          import(
+            './portal/presentation/pages/communication-detail/communication-detail'
+          ),
+      },
     ],
   },
   {

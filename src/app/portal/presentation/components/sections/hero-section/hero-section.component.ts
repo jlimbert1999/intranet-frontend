@@ -8,7 +8,7 @@ import { HeroSlideResponse } from '../../../../../administration/infrastructure'
   selector: 'hero-section',
   imports: [CarouselModule, ButtonModule],
   template: `
-    <div class="py-4 border-b ">
+    <div class="py-6">
       <div
         class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-4"
       >

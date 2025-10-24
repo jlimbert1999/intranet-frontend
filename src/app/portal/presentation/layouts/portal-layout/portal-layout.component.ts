@@ -55,4 +55,12 @@ export default class PortalLayoutComponent implements AfterViewInit {
     //     }
     //   });
   }
+
+    scrolled = false;
+
+  onScroll(event: Event) {
+    console.log(event);
+    const target = event.target as HTMLElement;
+    this.scrolled = target.scrollTop > 50; // Ajusta el umbral a gusto
+  }
 }

@@ -3,7 +3,7 @@ import {
   provideZoneChangeDetection,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -18,7 +18,7 @@ const primaryColor = palette('{sky}');
 
 const AuraSky = definePreset(theme, {
   semantic: {
-    primary: primaryColor ,
+    primary: primaryColor,
   },
 });
 
@@ -26,7 +26,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withComponentInputBinding()),
+    provideRouter(routes, withViewTransitions(), withComponentInputBinding()),
     provideHttpClient(),
     provideAnimationsAsync(),
     providePrimeNG({

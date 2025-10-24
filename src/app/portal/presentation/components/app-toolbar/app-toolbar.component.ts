@@ -1,79 +1,84 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
-import { RouterModule } from '@angular/router';
-
 @Component({
   selector: 'app-toolbar',
-  imports: [MenubarModule, CommonModule, RouterModule],
+  imports: [
+    MenubarModule,
+    CommonModule,
+    RouterModule,
+  
+    RouterModule,
+  ],
   template: `
-    <p-menubar [model]="items" class="sticky top-0 z-50">
+    <p-menubar [model]="items">
       <ng-template #start>
-        <img src="images/icons/app.png" class="w-8 h-8" alt="Icon logo" />
+        <img src="images/icons/app.png" alt="App icon" class="h-10 w-10" />
       </ng-template>
       <ng-template #item let-item let-root="root">
         <a
           pRipple
-          class="flex items-center p-menubar-item-link font-bold rounded"
           [routerLink]="item.routerLink"
+          routerLinkActive="active-menu-item"
+          [routerLinkActiveOptions]="
+            item.routerLinkActiveOptions || { exact: true }
+          "
+          class="flex items-center p-menubar-item-link"
         >
-          <span class="text-primary-900">{{ item.label }}</span>
-          <p-badge
-            *ngIf="item.badge"
-            [ngClass]="{ 'ml-auto': !root, 'ml-2': root }"
-          />
-          <span
-            *ngIf="item.shortcut"
-            class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
-            >{{ item.shortcut }}</span
-          >
+          @if(item.icon){
+          <i [class]="item.icon" class="p-menuitem-icon"></i>
+          }
+          <span class="sm:text-xl">{{ item.label }}</span>
+          @if(item.items){
           <i
-            *ngIf="item.items"
             [ngClass]="[
               'ml-auto pi',
               root ? 'pi-angle-down' : 'pi-angle-right'
             ]"
           ></i>
+          }
         </a>
+      </ng-template>
+      <ng-template #end>
+        <div class="w-12"></div>
       </ng-template>
     </p-menubar>
   `,
-
+  styles: `
+    .p-menubar .active-menu-item {
+      color: var(--p-primary-700);
+      border-radius: var(--radius-xl);
+      background-color: var(--p-primary-100);
+      font-weight: var(--font-weight-bold);
+    }
+    
+   :host ::ng-deep .p-menubar .p-menubar-root-list {
+      justify-content: center; 
+      flex-grow: 1; 
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppToolbarComponent {
   items: MenuItem[] = [
     {
       label: 'Inicio',
-      // icon: 'pi pi-home',
       routerLink: '/',
+      routerLinkActiveOptions: { exact: true },
     },
     {
       label: 'Documentos',
-      // icon: 'pi pi-file ',
-      routerLink: 'repository',
+      routerLink: '/repository',
+      routerLinkActiveOptions: { exact: true },
     },
     {
       label: 'Comunicados',
-      // icon: 'pi pi-file ',
-      routerLink: 'repository',
-    },
-    {
-      label: 'Directorio telefonico',
-      // icon: 'pi pi-file ',
-      routerLink: 'repository',
-    },
-    {
-      label: 'Calendario institucional',
-      // icon: 'pi pi-file ',
-      routerLink: 'repository',
-    },
-    {
-      label: 'Sobre nosotros',
-      // icon: 'pi pi-file ',
-      routerLink: 'repository',
+      routerLink: '/communications',
+      routerLinkActiveOptions: { exact: true },
     },
   ];
+
 }

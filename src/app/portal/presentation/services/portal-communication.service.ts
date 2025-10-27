@@ -1,13 +1,15 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { inject, Injectable } from '@angular/core';
+import { of, tap } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
-import { of, tap } from 'rxjs';
 
 interface GetCommunicationsParams {
   limit: number;
   offset: number;
   term?: string;
+  typeId?: number | null;
 }
 @Injectable({
   providedIn: 'root',
@@ -17,6 +19,10 @@ export class PortalCommunicationService {
   private http = inject(HttpClient);
 
   detailCache: Record<string, any> = {};
+
+  cache: Record<string, { communications: any[]; total: number }> = {};
+
+  types = toSignal(this.getTypes(), { initialValue: [] });
 
   constructor() {}
 
@@ -31,8 +37,36 @@ export class PortalCommunicationService {
     );
   }
 
-  getAll(queryParams: GetCommunicationsParams) {
-    const params = new HttpParams({ fromObject: { ...queryParams } });
-    return this.http.get<any[]>(this.URL);
+  findAll(queryParams: GetCommunicationsParams) {
+    const { term, typeId, limit, offset } = queryParams;
+    const isFilterMode = term || typeId;
+    const key = `${limit}-${offset}`;
+
+    const params = new HttpParams({
+      fromObject: {
+        limit,
+        offset,
+        ...(term && { term }),
+        ...(typeId && { typeId }),
+      },
+    });
+    if (this.cache[key] && !isFilterMode) {
+      return of(this.cache[key]);
+    }
+    return this.http
+      .get<{ communications: any[]; total: number }>(this.URL, {
+        params,
+      })
+      .pipe(
+        tap((resp) => {
+          if (!isFilterMode) {
+            this.cache[key] = resp;
+          }
+        })
+      );
+  }
+
+  getTypes() {
+    return this.http.get<any[]>(`${this.URL}/types`);
   }
 }

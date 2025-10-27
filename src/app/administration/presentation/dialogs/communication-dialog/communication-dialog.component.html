@@ -1,7 +1,6 @@
 <form [formGroup]="communicationForm" (ngSubmit)="save()">
-  <pre>{{communicationForm.value|json}}</pre>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-2">
-    <div class="sm: col-span-2">
+    <div class="sm:col-span-2">
       <input
         pInputText
         formControlName="reference"
@@ -15,7 +14,7 @@
         pInputText
         formControlName="code"
         type="text"
-        placeholder="Codigo"
+        placeholder="Cite"
         class="w-full"
       />
     </div>
@@ -23,7 +22,7 @@
       <p-select
         [options]="types()"
         appendTo="body"
-        formControlName="typeCommunicationId"
+        formControlName="typeId"
         class="w-full"
         optionLabel="name"
         optionValue="id"
@@ -48,11 +47,17 @@
         hidden
       />
     </div>
-    <div class="h-[200px] relative border">
-      <div class="absolute top-0 left-0 z-10">ahola</div>
-      @if(pdfPreviewUrl()){
-      <iframe [src]="pdfPreviewUrl()" class="pdf-iframe" frameborder="0">
-      </iframe>
+    <div class="border border-slate-300 rounded-xl px-4 py-3">
+      @if (selectedFileName()) {
+        <div class="flex items-center space-x-3">
+          <i class="pi pi-file-pdf text-red-500" style="font-size: 2rem"></i>
+          <p class="font-medium">
+            {{ selectedFileName() }}
+          </p>
+        </div>
+      } 
+      @else {
+        <div class="font-medium">Seleccione el PDF a adjuntar</div>
       }
     </div>
   </div>

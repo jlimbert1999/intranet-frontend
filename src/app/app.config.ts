@@ -2,13 +2,21 @@ import {
   ApplicationConfig,
   provideZoneChangeDetection,
   provideBrowserGlobalErrorListeners,
+  LOCALE_ID,
 } from '@angular/core';
-import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withViewTransitions,
+} from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { definePreset, palette } from '@primeuix/themes';
+import localeBo from '@angular/common/locales/es-BO';
+import { registerLocaleData } from '@angular/common';
+
 import { providePrimeNG } from 'primeng/config';
 import theme from '@primeuix/themes/aura';
 
@@ -21,7 +29,7 @@ const AuraSky = definePreset(theme, {
     primary: primaryColor,
   },
 });
-
+registerLocaleData(localeBo, 'es');
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -37,5 +45,6 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
+    { provide: LOCALE_ID, useValue: 'es-BO' },
   ],
 };

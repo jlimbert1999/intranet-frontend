@@ -13,6 +13,7 @@ export interface UploadedFile {
 
 export interface UploadedPdfThumbnail {
   fileName: string;
+  originalName: string;
   previewName: string | null;
 }
 

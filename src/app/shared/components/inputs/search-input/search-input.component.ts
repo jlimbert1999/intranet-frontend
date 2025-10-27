@@ -14,6 +14,7 @@ import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
   selector: 'search-input',
@@ -22,27 +23,29 @@ import { InputTextModule } from 'primeng/inputtext';
     InputTextModule,
     InputIconModule,
     ReactiveFormsModule,
+    FloatLabelModule,
   ],
   template: `
-    <p-iconfield iconPosition="left" class="ml-auto">
-      <p-inputicon>
-        <i class="pi pi-search"></i>
-      </p-inputicon>
-      <input
-        pInputText
-        type="text"
-        [placeholder]="placeholder()"
-        [formControl]="searchControl"
-        class="w-full"
-      />
-    </p-iconfield>
+    <p-floatlabel iconPosition="left" class="ml-auto" variant="on">
+      <p-iconfield>
+        <p-inputicon class="pi pi-search" />
+        <input
+          pInputText
+          type="text"
+          [formControl]="searchControl"
+          class="w-full"
+        />
+      </p-iconfield>
+      <label>{{label()}}</label>
+    </p-floatlabel>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchInputComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
-  placeholder = input<string>('Buscar...');
+  placeholder = input<string>('');
+  label = input<string>('Buscar');
   searchControl = new FormControl('');
   search = output<string>();
 

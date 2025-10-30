@@ -85,6 +85,11 @@ export class SidenavComponent {
           icon: 'pi pi-objects-column',
           routerLink: 'communications-manage',
         },
+        {
+          label: 'Calendario',
+          icon: 'pi pi-objects-column',
+          routerLink: 'calendar-manage',
+        },
       ],
     },
   ];

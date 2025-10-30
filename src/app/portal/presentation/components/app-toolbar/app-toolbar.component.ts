@@ -6,13 +6,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 @Component({
   selector: 'app-toolbar',
-  imports: [
-    MenubarModule,
-    CommonModule,
-    RouterModule,
-  
-    RouterModule,
-  ],
+  imports: [MenubarModule, CommonModule, RouterModule, RouterModule],
   template: `
     <p-menubar [model]="items">
       <ng-template #start>
@@ -31,7 +25,7 @@ import { MenuItem } from 'primeng/api';
           @if(item.icon){
           <i [class]="item.icon" class="p-menuitem-icon"></i>
           }
-          <span class="sm:text-xl">{{ item.label }}</span>
+          <span class="sm:text-xl font-medium">{{ item.label }}</span>
           @if(item.items){
           <i
             [ngClass]="[
@@ -52,7 +46,6 @@ import { MenuItem } from 'primeng/api';
       color: var(--p-primary-700);
       border-radius: var(--radius-xl);
       background-color: var(--p-primary-100);
-      font-weight: var(--font-weight-bold);
     }
     
    :host ::ng-deep .p-menubar .p-menubar-root-list {
@@ -79,6 +72,10 @@ export class AppToolbarComponent {
       routerLink: '/communications',
       routerLinkActiveOptions: { exact: true },
     },
+    {
+      label: 'Calendario',
+      routerLink: '/calendar',
+      routerLinkActiveOptions: { exact: true },
+    },
   ];
-
 }

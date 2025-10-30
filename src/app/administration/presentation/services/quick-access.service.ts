@@ -3,14 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, switchMap, forkJoin, EMPTY, map, of } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
-import { HeroSlideResponse } from '../../infrastructure';
+import { HeroSlideResponse, QuickAccessResponse } from '../../infrastructure';
 import { FileUploadService } from '../../../shared';
 
 interface QuickAccessItem {
   name: string;
   url: string;
-  icon: string;
   order: number;
+  icon: string | null;
   file?: File;
 }
 
@@ -25,17 +25,23 @@ export class QuickAccessService {
   private readonly URL = `${environment.baseUrl}/quick-access`;
 
   findAll() {
-    return this.http.get<HeroSlideResponse[]>(this.URL);
+    return this.http.get<QuickAccessResponse[]>(this.URL);
   }
 
-  syncQuickAccessItems(items: QuickAccessItem[]) {
+  syncItems(items: QuickAccessItem[]) {
     const existingItems = items
-      .filter((item) => item.icon && !item.icon.startsWith('blob:'))
+      .filter(
+        (item) =>
+          item.file === undefined &&
+          item.icon !== null &&
+          !item.icon.startsWith('blob:')
+      )
       .map(({ icon, ...props }) => ({
-        image: icon?.split('/').pop(), // * extrack fileName from build url,
+        icon: icon?.split('/').pop(), // * extrack fileName from build url,
         ...props,
       }));
 
+    console.log(existingItems);
     return this.buildUploadTask(items).pipe(
       map((newItems) => [...existingItems, ...newItems]),
       switchMap((allSItems) => {

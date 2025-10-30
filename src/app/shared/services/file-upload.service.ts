@@ -43,4 +43,17 @@ export class FileUploadService {
       formData
     );
   }
+
+  downloadFile(url: string, name?: string) {
+    this.http.get(url, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = name || 'unknown';
+        link.click();
+        window.URL.revokeObjectURL(downloadUrl);
+      },
+    });
+  }
 }

@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
+import { ProgressBarModule } from 'primeng/progressbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
@@ -27,6 +28,7 @@ import { SearchInputComponent } from '../../../../shared';
     ButtonModule,
     TooltipModule,
     SelectModule,
+    ProgressBarModule,
     SearchInputComponent,
   ],
   templateUrl: './communications.component.html',
@@ -54,4 +56,8 @@ export default class CommunicationsComponent {
     }),
     stream: ({ params }) => this.portalCommunucationService.findAll(params),
   });
+
+  download(item: any) {
+    this.portalCommunucationService.download(item.fileUrl, item.originalName);
+  }
 }

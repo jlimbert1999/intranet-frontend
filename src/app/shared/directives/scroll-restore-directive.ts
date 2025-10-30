@@ -22,7 +22,7 @@ export class ScrollRestoreDirective implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const saved = this.scrollState.get(this.scrollKey());
-    if (saved) this.el.nativeElement.scrollTop = saved;
+    if (saved && this.scrollState.restore()) this.el.nativeElement.scrollTop = saved;
   }
 
   ngOnDestroy(): void {

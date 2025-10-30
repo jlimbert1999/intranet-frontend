@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { AnimateOnScroll } from 'primeng/animateonscroll';
 
 import {
   HeroSectionComponent,
@@ -13,6 +14,7 @@ import { ScrollRestoreDirective } from '../../../../shared';
 @Component({
   selector: 'landing-page',
   imports: [
+    AnimateOnScroll,
     HeroSectionComponent,
     PortalLoaderComponent,
     FooterSectionComponent,
@@ -22,6 +24,40 @@ import { ScrollRestoreDirective } from '../../../../shared';
   ],
   templateUrl: './landing-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [
+    `
+      :host {
+        @keyframes slidedown-icon {
+          0% {
+            transform: translateY(0);
+          }
+
+          50% {
+            transform: translateY(20px);
+          }
+
+          100% {
+            transform: translateY(0);
+          }
+        }
+
+        .slidedown-icon {
+          animation: slidedown-icon;
+          animation-duration: 3s;
+          animation-iteration-count: infinite;
+        }
+
+        .box {
+          background-image: radial-gradient(
+            var(--primary-300),
+            var(--primary-600)
+          );
+          border-radius: 50% !important;
+          color: var(--primary-color-text);
+        }
+      }
+    `,
+  ],
 })
 export default class LandingPageComponent {
   private portalService = inject(PortalService);

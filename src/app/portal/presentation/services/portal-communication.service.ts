@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { of, tap } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
+import { FileUploadService } from '../../../shared';
 
 interface GetCommunicationsParams {
   limit: number;
@@ -15,6 +16,7 @@ interface GetCommunicationsParams {
   providedIn: 'root',
 })
 export class PortalCommunicationService {
+  private fileUploadService = inject(FileUploadService);
   private readonly URL = `${environment.baseUrl}/portal/communications`;
   private http = inject(HttpClient);
 
@@ -68,5 +70,9 @@ export class PortalCommunicationService {
 
   getTypes() {
     return this.http.get<any[]>(`${this.URL}/types`);
+  }
+
+  download(url: string, name: string) {
+    this.fileUploadService.downloadFile(url, name);
   }
 }

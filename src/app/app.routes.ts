@@ -25,7 +25,8 @@ export const routes: Routes = [
       {
         path: 'communications',
         loadComponent: () =>
-          import('./portal/presentation/pages/communications/communications.component'
+          import(
+            './portal/presentation/pages/communications/communications.component'
           ),
       },
       {
@@ -33,6 +34,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import(
             './portal/presentation/pages/communication-detail/communication-detail'
+          ),
+      },
+      {
+        path: 'calendar',
+        loadComponent: () =>
+          import(
+            './portal/presentation/pages/institutional-calendar/institutional-calendar.component'
           ),
       },
     ],
@@ -77,6 +85,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import(
             './administration/presentation/pages/communications-manage/communications-manage.component'
+          ),
+      },
+      {
+        path: 'calendar-manage',
+        loadComponent: () =>
+          import(
+            './administration/presentation/pages/calendar-manage.component/calendar-manage.component'
           ),
       },
     ],

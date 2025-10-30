@@ -31,6 +31,10 @@ export default class ContentSettings {
       header: 'Configuración accesos directos',
       modal: true,
       width: '35vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw',
+      },
     });
   }
 }

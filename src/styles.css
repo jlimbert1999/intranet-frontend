@@ -14,24 +14,17 @@
   width: 100%;
 }
 
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-/* Define keyframe animations */
-@keyframes rotate-out {
-  to {
-    transform: rotate(90deg);
-  }
-}
-@keyframes rotate-in {
-  from {
-    transform: rotate(-90deg);
-  }
-}
-/* Target view transition pseudo-elements */
-::view-transition-old(count),
-::view-transition-new(count) {
-  animation-duration: 200ms;
-  animation-name: -ua-view-transition-fade-in, rotate-in;
-}
-::view-transition-old(count) {
-  animation-name: -ua-view-transition-fade-out, rotate-out;
+@theme {
+  --animate-fade-in: fade-in 0.6s ease-in-out;
 }

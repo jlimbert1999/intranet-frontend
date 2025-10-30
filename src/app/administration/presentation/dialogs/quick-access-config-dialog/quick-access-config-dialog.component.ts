@@ -12,24 +12,25 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
-import { ButtonModule } from 'primeng/button';
 import {
   CdkDragDrop,
   DragDropModule,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
+
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { ButtonModule } from 'primeng/button';
+
 import { QuickAccessService } from '../../services';
 import { CustomFormValidators } from '../../../../../helpers';
 
 interface QuickAccessItem {
   file?: File;
-  image: string;
   order: number;
+  icon: string | null;
 }
 
 @Component({
@@ -63,16 +64,16 @@ export class QuickAccessConfigDialogComponent {
   save() {
     const { items = [] } = this.form.value;
     const itemsToUpload = this.quickAccessItems().map((props, index) => ({
-      ...props,
-      // * Joing form values array with selected files arrray
+      order: props.order,
+      file: props.file,
+      icon: props.icon,
+      // * Joint properties form (name, url)
       ...items[index],
     }));
 
-    this.quickAccessService
-      .syncQuickAccessItems(itemsToUpload)
-      .subscribe(() => {
-        this.dialogRef.close();
-      });
+    this.quickAccessService.syncItems(itemsToUpload).subscribe(() => {
+      this.dialogRef.close();
+    });
   }
 
   close() {
@@ -140,7 +141,7 @@ export class QuickAccessConfigDialogComponent {
     this.itemsFormArray.push(this.createNewItem());
     this.quickAccessItems.update((values) => [
       ...values,
-      { file, image: preview, order: values.length + 1 },
+      { file, icon: preview, order: values.length + 1 },
     ]);
   }
   private createNewItem() {

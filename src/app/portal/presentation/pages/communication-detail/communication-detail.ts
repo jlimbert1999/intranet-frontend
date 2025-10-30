@@ -4,49 +4,48 @@ import {
   Component,
   inject,
   input,
-  signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { SkeletonModule } from 'primeng/skeleton';
 import { ButtonModule } from 'primeng/button';
 
 import { PortalCommunicationService } from '../../services';
-import { PdfDisplayComponent } from '../../../../shared';
+import { PdfDisplayComponent, ScrollStateService } from '../../../../shared';
 
 @Component({
   selector: 'app-communication-detail',
-  imports: [
-    CommonModule,
-    ButtonModule,
-    SkeletonModule,
-    PdfDisplayComponent,
-  ],
+  imports: [CommonModule, ButtonModule, SkeletonModule, PdfDisplayComponent],
   templateUrl: './communication-detail.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CommunicationDetail {
+  private router = inject(Router);
+  private location = inject(Location);
+  private scrollService = inject(ScrollStateService);
   private portalService = inject(PortalCommunicationService);
+
   id = input.required<string>();
 
-  communication = rxResource({
+  communicationResource = rxResource({
     params: () => ({ id: this.id() }),
     stream: ({ params }) => this.portalService.getOne(params.id),
   });
 
-
-  ngOnInit() {}
-
   goBack() {
-    // this.router.navigate(['/']); // o '/comunicados'
+    this.scrollService.keepScroll();
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/communications']);
+    }
   }
 
-  downloadFile() {
-    // const com = this.communication();
-    // if (!com?.fileUrl) return;
-    // const link = document.createElement('a');
-    // link.href = com.fileUrl;
-    // link.download = com.reference || 'comunicado.pdf';
-    // link.click();
+  download() {
+    if (!this.communicationResource.value()) return;
+    const { fileUrl, originalName } = this.communicationResource.value();
+    this.portalService.download(fileUrl, originalName);
   }
 }

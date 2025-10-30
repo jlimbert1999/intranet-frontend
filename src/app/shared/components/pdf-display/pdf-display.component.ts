@@ -26,6 +26,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
       (after-load-complete)="loadComplete()"
       style="width: 100%; height: 100%;"
       (on-progress)="onProgress($event)"
+      [zoom]="zoom()"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +35,7 @@ export class PdfDisplayComponent {
   src = input.required<string>();
   fitToPage = input<boolean>(true);
   isLoading = signal(true);
+  zoom=input(0.6)
 
   progress = signal(0);
 

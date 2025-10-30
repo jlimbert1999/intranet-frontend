@@ -23,6 +23,10 @@ export default class ContentSettings {
       header: 'Configuración banner',
       modal: true,
       width: '60vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw',
+      },
     });
   }
 

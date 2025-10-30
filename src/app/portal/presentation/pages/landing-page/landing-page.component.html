@@ -1,16 +1,13 @@
 <div class="h-full overflow-y-auto" scrollRestore scrollKey="landing-page">
   @if(!isLoading() && portalData()){
-    <div class="animate-fade-in">
-      <hero-section [slides]="portalData()?.slides" />
-      <quick-access-section [quickAccess]="portalData()!.quickAccess" />
-    
-      <div  class="animate-fade-in">
-        <communications-section [communications]="portalData()!.communications" />
-        
-      </div>
-      
-        <footer-section />
+    <!-- <div class="animate-fade-in"></div> -->
+    <hero-section [slides]="portalData()?.slides" />
+    <quick-access-section [quickAccess]="portalData()!.quickAccess" />
+    <div  >
+            <communications-section [communications]="portalData()!.communications" />
+
     </div>
+    <footer-section />
   } 
   @else {
     <portal-loader />

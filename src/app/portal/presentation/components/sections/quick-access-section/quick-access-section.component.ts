@@ -26,7 +26,7 @@ import { QuickAccessResponse } from '../../../../../administration/infrastructur
                p-4 sm:p-6 flex flex-col items-center justify-between 
                transition-all duration-300 hover:shadow-lg 
                hover:-translate-y-1 border border-surface-200 
-               hover:border-primary-300 h-32 sm:h-42 w-full"
+               hover:border-primary-300 h-36 sm:h-44 w-full"
           >
             <div class="w-18 h-18 rounded-xl bg-surface-100 flex items-center justify-center mb-2 group-hover:bg-primary-50">
               <img
@@ -42,7 +42,7 @@ import { QuickAccessResponse } from '../../../../../administration/infrastructur
                  leading-snug line-clamp-2 break-words"
               [title]="access.name"
             >
-              {{ access.name }}
+              {{ access.name }} texto extra
             </span>
           </a>
           }

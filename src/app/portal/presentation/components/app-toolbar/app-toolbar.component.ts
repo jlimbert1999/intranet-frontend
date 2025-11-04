@@ -25,7 +25,7 @@ import { MenuItem } from 'primeng/api';
           @if(item.icon){
           <i [class]="item.icon" class="p-menuitem-icon"></i>
           }
-          <span class="sm:text-xl font-medium">{{ item.label }}</span>
+          <span class="sm:text-xl font-medium  hover:text-primary-700">{{ item.label }}</span>
           @if(item.items){
           <i
             [ngClass]="[

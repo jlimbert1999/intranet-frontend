@@ -5,6 +5,7 @@ export * from "./components/pdf-display/pdf-display.component"
 
 export * from "./pipes/primeng-file-icon.pipe"
 export * from "./pipes/form-error-messages.pipe"
+export * from "./pipes/file-size-pipe"
 
 export * from "./services/file-upload.service"
 export * from "./services/scroll-state.service"

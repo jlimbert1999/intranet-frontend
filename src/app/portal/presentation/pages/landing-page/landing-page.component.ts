@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   AnimateOnScroll,
   AnimateOnScrollModule,
@@ -10,6 +11,7 @@ import {
   FooterSectionComponent,
   QuickAccessSectionComponent,
   CommunicationsSectionComponent,
+  MostDownloadedDocumentsSection,
 } from '../../components';
 import { PortalService } from '../../services/portal.service';
 import { ScrollRestoreDirective } from '../../../../shared';
@@ -17,6 +19,7 @@ import { ScrollRestoreDirective } from '../../../../shared';
 @Component({
   selector: 'landing-page',
   imports: [
+    CommonModule,
     AnimateOnScroll,
     AnimateOnScrollModule,
     HeroSectionComponent,
@@ -24,6 +27,7 @@ import { ScrollRestoreDirective } from '../../../../shared';
     FooterSectionComponent,
     QuickAccessSectionComponent,
     CommunicationsSectionComponent,
+    MostDownloadedDocumentsSection,
     ScrollRestoreDirective,
   ],
   templateUrl: './landing-page.component.html',
@@ -31,7 +35,6 @@ import { ScrollRestoreDirective } from '../../../../shared';
 })
 export default class LandingPageComponent {
   private portalService = inject(PortalService);
-
-  readonly isLoading = this.portalService.isPortalLoading;
-  readonly portalData = this.portalService.portalData;
+  isLoading = this.portalService.isPortalLoading;
+  portalData = this.portalService.portalData;
 }

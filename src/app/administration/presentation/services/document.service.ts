@@ -165,9 +165,10 @@ export class DocumentService {
   private buildUploadTask(documents: DocumentItem[]) {
     const uploadItems = documents.map((doc) =>
       this.fileUploadService.uploadFile(doc.file, 'document').pipe(
-        map(({ fileName, originalName }) => ({
+        map(({ fileName, originalName, sizeBytes }) => ({
           fileName,
           originalName,
+          sizeBytes,
           fiscalYear: doc.fiscalYear.getFullYear(),
         }))
       )

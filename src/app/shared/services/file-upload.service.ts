@@ -9,6 +9,7 @@ export interface UploadedFile {
   fileName: string;
   originalName: string;
   type: MediaType;
+  sizeBytes: number;
 }
 
 export interface UploadedPdfThumbnail {

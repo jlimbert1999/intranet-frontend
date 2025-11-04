@@ -15,11 +15,10 @@ import { ButtonModule } from 'primeng/button';
     AnimateOnScroll,
   ],
   template: `
-    <section class="py-20  bg-gradient-to-b from-primary-600 via-primary-700 to-primary-900 text-white">
-      <div class="max-w-7xl mx-auto px-2"  pAnimateOnScroll
-            enterClass="animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000"
-            threshold="0.1"
-            leaveClass="animate-leave fade-out-0">
+    <section
+      class="py-20  bg-gradient-to-b from-surface-600 via-primary-700 to-primary-900 text-white"
+    >
+      <div class="max-w-7xl mx-auto px-2">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold mb-3">Comunicados</h2>
           <p class="text-primary-100 text-sm md:text-base max-w-2xl mx-auto">

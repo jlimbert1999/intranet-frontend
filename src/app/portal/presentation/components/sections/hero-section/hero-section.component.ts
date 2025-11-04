@@ -49,7 +49,7 @@ import { HeroSlideResponse } from '../../../../../administration/infrastructure'
         [numScroll]="1"
         [autoplayInterval]="6000"
         circular
-        [showIndicators]="false"
+        [showIndicators]="true"
         [showNavigators]="true"
         [contentClass]="'w-full bg-black'"
       >

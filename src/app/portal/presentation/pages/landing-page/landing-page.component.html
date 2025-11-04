@@ -1,15 +1,31 @@
 <div class="h-full overflow-y-auto" scrollRestore scrollKey="landing-page">
   @if(!isLoading() && portalData()){
-    <!-- <div class="animate-fade-in"></div> -->
+  <div
+    pAnimateOnScroll
+    threshold="0.1"
+    enterClass="fade-in-0 scale-in-center animate-duration-1000"
+  >
     <hero-section [slides]="portalData()?.slides" />
+  </div>
+  <div
+    pAnimateOnScroll
+    threshold="0.1"
+    enterClass="fade-in-10 slide-in-from-b-20 animate-duration-800"
+  >
     <quick-access-section [quickAccess]="portalData()!.quickAccess" />
-    <div  >
-            <communications-section [communications]="portalData()!.communications" />
+  </div>
 
-    </div>
-    <footer-section />
-  } 
-  @else {
-    <portal-loader />
+  <div
+    pAnimateOnScroll
+    enterClass="animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000"
+    leaveClass="animate-leave fade-out-0"
+    threshold="0.1"
+  >
+    <communications-section [communications]="portalData()!.communications" />
+  </div>
+  <most-downloaded-documents-section [documents]="portalData()!.documents" />
+  <footer-section />
+  } @else {
+  <portal-loader />
   }
 </div>

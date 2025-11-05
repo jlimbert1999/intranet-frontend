@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/* Fade + scale suave */
+@keyframes fade-in-scale {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Slide desde abajo */
+@keyframes slide-in-from-b-20 {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide desde arriba */
+@keyframes slide-in-from-t-20 {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes franja-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-franja-enter {
+  animation: franja-enter 1s ease-out both;
+}
+
+@keyframes hero-carousel {
+  0% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-hero-carousel {
+  animation: hero-carousel 1.2s ease-out both;
+}
+
+/* Duraciones genéricas */
+.animate-duration-700 {
+  animation-duration: 0.7s;
+  animation-fill-mode: both;
+}
+.animate-duration-800 {
+  animation-duration: 0.8s;
+  animation-fill-mode: both;
+}
+.animate-duration-1000 {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+.animate-duration-1200 {
+  animation-duration: 1.2s;
+  animation-fill-mode: both;
+}
+
+/* Clases de animación */
+.fade-in-0 {
+  animation: fade-in-scale 1s ease-out both;
+}
+.scale-in-center {
+  animation: fade-in-scale 1s ease-out both;
+}
+.slide-in-from-b-20 {
+  animation: slide-in-from-b-20 0.8s ease-out both;
+}
+.slide-in-from-t-20 {
+  animation: slide-in-from-t-20 0.8s ease-out both;
+}

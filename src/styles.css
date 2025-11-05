@@ -1,6 +1,7 @@
 @import "tailwindcss";
-@import "primeicons/primeicons.css";
 @plugin "tailwindcss-primeui";
+@import "primeicons/primeicons.css";
+@import "./styles/animations.css";
 
 .p-dialog-content {
   margin-bottom: 60px;
@@ -44,3 +45,5 @@
 .cdk-drag-placeholder {
   opacity: 0;
 }
+
+

@@ -1,7 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { finalize, of, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+
+import { finalize, of, switchMap, tap } from 'rxjs';
 
 import {
   DocumentResponse,

@@ -1,25 +1,13 @@
-<div class="h-full overflow-y-auto" scrollRestore scrollKey="landing-page">
+<div class="h-full overflow-y-auto overflow-x-hidden" scrollRestore scrollKey="landing-page">
   @if(!isLoading() && portalData()){
-  <div
-    pAnimateOnScroll
-    threshold="0.1"
-    enterClass="fade-in-0 scale-in-center animate-duration-1000"
-  >
-    <hero-section [slides]="portalData()?.slides" />
-  </div>
-  <div
-    pAnimateOnScroll
-    threshold="0.1"
-    enterClass="fade-in-10 slide-in-from-b-20 animate-duration-800"
-  >
-    <quick-access-section [quickAccess]="portalData()!.quickAccess" />
-  </div>
+  <hero-section [slides]="portalData()?.slides" />
+  <quick-access-section [quickAccess]="portalData()?.quickAccess" />
 
   <div
     pAnimateOnScroll
     enterClass="animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000"
-    leaveClass="animate-leave fade-out-0"
     threshold="0.1"
+    [once]="true"
   >
     <communications-section [communications]="portalData()!.communications" />
   </div>

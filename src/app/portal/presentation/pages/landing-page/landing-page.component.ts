@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  AnimateOnScroll,
-  AnimateOnScrollModule,
-} from 'primeng/animateonscroll';
 
 import {
   HeroSectionComponent,
@@ -20,8 +16,6 @@ import { ScrollRestoreDirective } from '../../../../shared';
   selector: 'landing-page',
   imports: [
     CommonModule,
-    AnimateOnScroll,
-    AnimateOnScrollModule,
     HeroSectionComponent,
     PortalLoaderComponent,
     FooterSectionComponent,

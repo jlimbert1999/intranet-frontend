@@ -11,7 +11,10 @@ import { HeroSlideResponse } from '../../../../../administration/infrastructure'
   imports: [RouterModule, CarouselModule, ButtonModule],
   template: `
     <section class="bg-surface-0 border-b border-surface-200 py-4">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-8 animate-franja-enter">
+      <div
+        class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-8
+           animate-enter fade-in-20 slide-in-from-t-10 animate-duration-700"
+      >
         <div class="flex items-center gap-4 text-center md:text-left">
           <img
             src="images/icons/app.png"
@@ -19,7 +22,9 @@ import { HeroSlideResponse } from '../../../../../administration/infrastructure'
             class="h-14 w-auto hidden md:block"
           />
           <div>
-            <h1 class="text-xl md:text-3xl font-extrabold text-primary-700 tracking-tight">
+            <h1
+              class="text-xl md:text-3xl font-extrabold text-primary-700 tracking-tight"
+            >
               Intranet
             </h1>
             <p class="text-sm md:text-lg text-surface-600 font-medium">
@@ -34,7 +39,8 @@ import { HeroSlideResponse } from '../../../../../administration/infrastructure'
         />
       </div>
     </section>
-    <section class="relative animate-hero-carousel">
+
+    <section class="relative animate-enter fade-in-10 slide-in-from-t-10 animate-duration-1000">
       <p-carousel
         [value]="slides() ?? []"
         [numVisible]="1"
@@ -50,18 +56,27 @@ import { HeroSlideResponse } from '../../../../../administration/infrastructure'
             class="relative h-[500px] md:h-[600px] bg-cover bg-center transition-all duration-700"
             [style.backgroundImage]="'url(' + slide.image + ')'"
           >
-            <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent flex flex-col justify-center text-white px-6 md:px-16 space-y-4" >
-              <h2 class="text-4xl md:text-6xl font-bold leading-tight drop-shadow-lg max-w-3xl animate-hero-title">
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent
+                 flex flex-col justify-center text-white px-6 md:px-16 space-y-4"
+            >
+              <h2
+                class="text-4xl md:text-6xl font-extrabold leading-tight drop-shadow-lg max-w-3xl
+                   animate-enter fade-in-20 slide-in-from-t-10 animate-duration-1000"
+              >
                 {{ slide.title }}
               </h2>
-              <p class="max-w-2xl text-lg md:text-2xl opacity-90 line-clamp-3 animate-hero-subtitle">
+
+              <p
+                class="max-w-2xl text-lg md:text-2xl opacity-90 line-clamp-3 animate-enter fade-in-20 slide-in-from-b-10 animate-duration-1000"
+              >
                 {{ slide.description }}
               </p>
 
               @if (slide.redirectUrl) {
               <a
                 pButton
-                class="w-[150px] animate-hero-button"
+                class="w-[150px] animate-enter fade-in-20 slide-in-from-b-10 animate-duration-1000"
                 rounded="true"
                 [routerLink]="'admin'"
               >
@@ -75,7 +90,6 @@ import { HeroSlideResponse } from '../../../../../administration/infrastructure'
       </p-carousel>
     </section>
   `,
-  styleUrl:'./hero-section.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroSectionComponent {

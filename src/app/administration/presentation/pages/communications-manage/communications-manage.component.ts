@@ -63,7 +63,7 @@ export default class CommunicationsManageComponent {
         '640px': '90vw',
       },
     });
-    dialogRef.onClose.subscribe((result) => {
+    dialogRef?.onClose.subscribe((result) => {
       if (!result) return;
       this.dataSize.update((values) => (values += 1));
       this.dataSource.update((values) => [result, ...values]);
@@ -80,7 +80,7 @@ export default class CommunicationsManageComponent {
         '640px': '90vw',
       },
     });
-    dialogRef.onClose.subscribe((result) => {
+    dialogRef?.onClose.subscribe((result) => {
       if (!result) return;
       const index = this.dataSource().findIndex(({ id }) => result.id === id);
       if (index !== -1) {

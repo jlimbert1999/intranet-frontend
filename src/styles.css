@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @plugin "tailwindcss-primeui";
 @import "primeicons/primeicons.css";
-@import "./styles/animations.css";
 
 .p-dialog-content {
   margin-bottom: 60px;
@@ -13,21 +12,6 @@
   bottom: 0;
   right: 0;
   width: 100%;
-}
-
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@theme {
-  --animate-fade-in: fade-in 0.6s ease-in-out;
 }
 
 .cdk-drag-animating {

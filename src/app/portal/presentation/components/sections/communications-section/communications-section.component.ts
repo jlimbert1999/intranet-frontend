@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { RouterModule } from '@angular/router';
+
 import { AnimateOnScroll } from 'primeng/animateonscroll';
 import { CarouselModule } from 'primeng/carousel';
-import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-
 @Component({
   selector: 'communications-section',
   imports: [
@@ -16,15 +16,30 @@ import { ButtonModule } from 'primeng/button';
   ],
   template: `
     <section
-      class="py-20  bg-gradient-to-b from-surface-600 via-primary-700 to-primary-900 text-white"
+      class="relative py-20 text-white"
+      pAnimateOnScroll
+      enterClass="animate-enter fade-in-20 slide-in-from-b-20 animate-duration-1000"
+      [once]="true"
+      [threshold]="0.15"
     >
-      <div class="max-w-7xl mx-auto px-2">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl md:text-4xl font-bold mb-3">Comunicados</h2>
-          <p class="text-primary-100 text-sm md:text-base max-w-2xl mx-auto">
-            Mantente informado con los últimos comunicados institucionales.
-          </p>
-        </div>
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-primary-400 via-primary-700 to-surface-900"
+      ></div>
+
+      <div
+        class="absolute -top-20 -left-40 w-[600px] h-[600px] bg-primary-200/15 rounded-full blur-3xl animate-float"
+      ></div>
+      <div
+        class="absolute top-40 right-0 w-[500px] h-[500px] bg-surface-100/20 rounded-full blur-3xl animate-float"
+      ></div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-6 text-center">
+        <h2 class="text-xl sm:text-4xl font-semibold mb-3 text-white">
+            Comunicados
+        </h2>
+        <p class="text-primary-100 mx-auto mb-12 text-sm sm:text-xl">
+          Mantente informado con los últimos comunicados institucionales.
+        </p>
         <p-carousel
           [value]="communications()"
           [numVisible]="3"
@@ -34,13 +49,16 @@ import { ButtonModule } from 'primeng/button';
         >
           <ng-template pTemplate="item" let-com>
             <a
-              class="relative block m-2 overflow-hidden rounded-2xl shadow-lg bg-white cursor-pointer
-                 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-              [routerLink]="['/communications', com.id]"
+              class="relative block m-2 overflow-hidden rounded-2xl shadow-lg bg-white cursor-pointer transition-all duration-300 hover:-translate-y-2"
+              [routerLink]="['communications', com.id]"
+              pAnimateOnScroll
+              enterClass="animate-enter fade-in-20 zoom-in-75 slide-in-from-b-10 animate-duration-1000"
+              [once]="true"
+              [threshold]="0.15"
             >
               <div class="absolute top-2 right-2 z-20">
                 <span
-                  class="text-xs font-semibold text-white bg-primary-600/90 px-2 py-1 rounded-md shadow-sm"
+                  class="text-sm font-semibold text-white bg-primary-800/90 px-2 py-1 rounded-md shadow-sm"
                 >
                   {{ com.type.name }}
                 </span>
@@ -50,7 +68,7 @@ import { ButtonModule } from 'primeng/button';
                 <img
                   [src]="com.previewUrl"
                   [alt]="com.reference"
-                  class="w-full h-[420px] sm:h-[520px] object-cover object-top bg-surface-100"
+                  class="w-full h-[350px] sm:h-[520px] object-cover object-top bg-surface-100"
                 />
                 <div
                   class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/95 via-black/70 to-transparent backdrop-blur-[2px]"
@@ -71,20 +89,15 @@ import { ButtonModule } from 'primeng/button';
             </a>
           </ng-template>
         </p-carousel>
-        <div class="text-center mt-10">
+
+        <div class="text-center mt-10 animate-enter">
           <a routerLink="communications" pButton [rounded]="true">
-            <span pButtonLabel>Ver mas comunicados</span>
+            <span pButtonLabel>Ver más comunicados</span>
             <i class="pi pi-arrow-right" pButtonIcon></i>
           </a>
         </div>
       </div>
     </section>
-  `,
-  styles: `
-    /*:host ::ng-deep .p-carousel-item {
-      max-width: 520px;
-      margin: 0 auto;
-    }*/
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,0 +1,37 @@
+<form [formGroup]="createInstanceForm" (ngSubmit)="save()" class="p-4 bg-white rounded-lg">
+  <h2 class="text-2xl font-semibold mb-6 text-gray-800">Crear Nuevo Tipo de Institución</h2>
+
+  <div class="flex flex-col gap-1 mb-6">
+    <label for="name" class="font-medium text-gray-700">Nombre de la Institución <span class="text-red-500">*</span></label>
+    <input
+      pInputText
+      type="text"
+      id="name"
+      formControlName="name"
+      placeholder="Ej: Ministerio de Salud, GAMS, Policía"
+      class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+    />
+    @if(isInvalid("name")){
+      <div class="mt-1">
+          <p-message severity="error" size="small" [text]="createInstanceForm.get('name')?.errors | formErrorMessages" />
+      </div>
+    }
+  </div>
+
+  <div class="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-200">
+    <p-button 
+        label="Cancelar" 
+        severity="secondary" 
+        (onClick)="close(null)" 
+        type="button" 
+        styleClass="p-button-outlined"
+    />
+    <p-button 
+        label="Guardar Institución" 
+        icon="pi pi-plus" 
+        type="submit" 
+        [disabled]="createInstanceForm.invalid"
+        severity="success"
+    />
+  </div>
+</form>

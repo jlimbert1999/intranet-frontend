@@ -1,0 +1,132 @@
+<form [formGroup]="contactForm" (ngSubmit)="save()" class="p-6 space-y-6">
+
+  <h2 class="text-2xl font-semibold text-gray-700">
+    {{ data ? 'Editar Contacto' : 'Nuevo Contacto' }}
+  </h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+    <div>
+      <label for="instancia" class="font-medium">Nombre de la Instancia *</label>
+      <input
+        pInputText
+        id="instancia"
+        formControlName="instancia"
+        placeholder="Ej: Gerencia de Servicios"
+        class="w-full mt-1"
+      />
+      <p-message
+        *ngIf="isInvalid('instancia')"
+        severity="error"
+        size="small"
+        [text]="contactForm.get('instancia')?.errors | formErrorMessages"
+      />
+    </div>
+
+    <div>
+      <label class="font-medium">Tipo de Instancia *</label>
+      <p-select
+        formControlName="instanceType"
+        [options]="(instanceTypes$ | async) ?? []"
+        optionLabel="name"
+        optionValue="id"          
+        placeholder="Seleccione una opción"
+        [filter]="true"
+        class="w-full mt-1"
+      >
+        <ng-template pTemplate="selectedItem" let-opt>
+          <div class="flex items-center gap-2" *ngIf="opt">
+            <i class="pi pi-building text-primary"></i>
+            <span>{{ opt.name }}</span>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="item" let-opt>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-building"></i>
+            <span>{{ opt.name }}</span>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <div class="p-3 border-t">
+            <p-button
+              label="Agregar Tipo de Instancia"
+              icon="pi pi-plus"
+              (onClick)="openCreateInstanceDialog()"
+              size="small"
+              text
+              class="w-full"
+            />
+          </div>
+        </ng-template>
+      </p-select>
+      <p-message
+        *ngIf="isInvalid('instanceType')"
+        severity="error"
+        size="small"
+        [text]="contactForm.get('instanceType')?.errors | formErrorMessages"
+      />
+    </div>
+
+    <div class="md:col-span-2">
+      <label class="font-medium">Dirección *</label>
+      <input
+        pInputText
+        formControlName="direccion"
+        placeholder="Dirección de la oficina"
+        class="w-full mt-1"
+      />
+      <p-message
+        *ngIf="isInvalid('direccion')"
+        severity="error"
+        size="small"
+        [text]="contactForm.get('direccion')?.errors | formErrorMessages"
+      />
+    </div>
+  </div>
+
+  <h3 class="text-lg font-semibold text-gray-600 pt-4 border-t">
+    Números de Contacto (Al menos uno obligatorio)
+  </h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+    <div>
+      <label class="font-medium">Jefe</label>
+      <p-inputNumber formControlName="jefe" [useGrouping]="false" class="w-full mt-1"/>
+      <p-message *ngIf="isInvalid('jefe')" severity="error" size="small" [text]="contactForm.get('jefe')?.errors | formErrorMessages"/>
+    </div>
+
+    <div>
+      <label class="font-medium">Soporte</label>
+      <p-inputNumber formControlName="soporte" [useGrouping]="false" class="w-full mt-1"/>
+      <p-message *ngIf="isInvalid('soporte')" severity="error" size="small" [text]="contactForm.get('soporte')?.errors | formErrorMessages"/>
+    </div>
+
+    <div>
+      <label class="font-medium">Secretaría</label>
+      <p-inputNumber formControlName="secretaria" [useGrouping]="false" class="w-full mt-1"/>
+      <p-message *ngIf="isInvalid('secretaria')" severity="error" size="small" [text]="contactForm.get('secretaria')?.errors | formErrorMessages"/>
+    </div>
+
+    <div>
+      <label class="font-medium">Teléfono Fijo</label>
+      <p-inputNumber formControlName="telefonoFijo" [useGrouping]="false" class="w-full mt-1"/>
+      <p-message *ngIf="isInvalid('telefonoFijo')" severity="error" size="small" [text]="contactForm.get('telefonoFijo')?.errors | formErrorMessages"/>
+    </div>
+  </div>
+
+  <p-message
+    *ngIf="contactForm.errors?.['atLeastOnePhoneRequired'] && (contactForm.touched || contactForm.dirty)"
+    severity="error"
+    size="small"
+    text="Debe proporcionar al menos un número de contacto (Jefe, Soporte, Secretaría o Teléfono Fijo) para la instancia."
+    class="block mt-4"
+  />
+
+  <div class="flex justify-end gap-3 pt-5 border-t">
+    <p-button label="Cancelar" severity="secondary" type="button" (onClick)="close(false)"/>
+    <p-button [label]="data ? 'Guardar Cambios' : 'Crear Contacto'" icon="pi pi-check" type="submit" [disabled]="contactForm.invalid"/>
+  </div>
+
+</form>

@@ -94,6 +94,13 @@ export const routes: Routes = [
             './administration/presentation/pages/calendar-manage.component/calendar-manage.component'
           ),
       },
+      {
+        path: 'tutorials-manage',
+        loadComponent: () =>
+          import(
+            './administration/presentation/pages/tutorial-manage/tutorial-manage'
+          ),
+      },
     ],
   },
   { path: '', redirectTo: '', pathMatch: 'full' },

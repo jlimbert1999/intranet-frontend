@@ -90,6 +90,11 @@ export class SidenavComponent {
           icon: 'pi pi-objects-column',
           routerLink: 'calendar-manage',
         },
+        {
+          label: 'Tutoriales',
+          icon: 'pi pi-video',
+          routerLink: 'tutorials-manage',
+        },
       ],
     },
   ];

@@ -1,0 +1,69 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
+
+import { DialogService } from 'primeng/dynamicdialog';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
+
+import { TutorialDialog } from '../../dialogs';
+import { TutorialData } from '../../services';
+
+@Component({
+  selector: 'app-tutorial-manage',
+  imports: [TableModule, ButtonModule],
+  templateUrl: './tutorial-manage.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export default class TutorialManage {
+  private dialogService = inject(DialogService);
+  private tutorialData = inject(TutorialData);
+
+  dataSource = rxResource({
+    stream: () => this.tutorialData.findAll(),
+    defaultValue: { tutorials: [], total: 0 },
+  });
+
+  openCreateDialog() {
+    const dialogRef = this.dialogService.open(TutorialDialog, {
+      header: 'Crear tutorial',
+      modal: true,
+      width: '35vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw',
+      },
+    });
+    dialogRef?.onClose.subscribe((result) => {
+      if (!result) return;
+      // this.dataSize.update((values) => (values += 1));
+      // this.dataSource.update((values) => [result, ...values]);
+    });
+  }
+
+  openUpdateDialog(item: any) {
+    const dialogRef = this.dialogService.open(TutorialDialog, {
+      header: 'Editar tutorial',
+      modal: true,
+      width: '35vw',
+      data: item,
+      breakpoints: {
+        '640px': '90vw',
+      },
+    });
+    dialogRef?.onClose.subscribe((result) => {
+      if (!result) return;
+      // const index = this.dataSource().findIndex(({ id }) => result.id === id);
+      // if (index !== -1) {
+      //   this.dataSource.update((values) => {
+      //     values[index] = result;
+      //     return [...values];
+      //   });
+      // }
+    });
+  }
+}

@@ -1,0 +1,82 @@
+<form [formGroup]="tutorialForm" (ngSubmit)="save()">
+  <div class="flex flex-col gap-y-2 mb-4">
+    <input
+      pInputText
+      formControlName="title"
+      type="text"
+      placeholder="Titulo"
+      class="w-full"
+    />
+    <textarea rows="2" pTextarea formControlName="description" placeholder="Descripcion"></textarea>
+  </div>
+  <div class="flex items-center justify-between p-2">
+    <span class="font-medium text-lg">Listado de videos</span>
+    <p-button
+      icon="pi pi-plus"
+      size="small"
+      label="Agregar"
+      (click)="imageInput.click()"
+    />
+    <input
+      #imageInput
+      type="file"
+      [hidden]="true"
+      [multiple]="true"
+      accept="video/mp4"
+      (change)="onFileSelected($event)"
+    />
+  </div>
+  <div
+    class="flex flex-col gap-y-4 max-h-[400px] p-4 overflow-y-auto border rounded-xl border-slate-300"
+    formArrayName="videos"
+  >
+    <div
+      *ngFor="let control of videosFormArray.controls; let i = index"
+      [formGroupName]="i"
+    >
+      <div
+        class="flex flex-col gap-y-3 rounded-lg border border-surface-200 px-4 py-2"
+      >
+        <div class="flex justify-between">
+          <div class="flex items-center gap-x-2">
+            <div class="font-semibold">Nro. {{ i + 1 }}</div>
+          </div>
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            size="small"
+            (onClick)="removeVideo(i)"
+          />
+        </div>
+        <div class="flex justify-center">
+          <video
+            [src]="videos()[i].previewUrl"
+            class="w-full sm:w-[400px] aspect-video rounded-md"
+            controls
+          ></video>
+        </div>
+        <div>
+          <input
+            pInputText
+            formControlName="title"
+            type="text"
+            placeholder="Titulo"
+            class="w-full"
+          />
+        </div>
+      </div>
+    </div>
+
+    @if(videosFormArray.controls.length===0){
+    <div class="font-medium">Sin elementos.</div>
+    }
+  </div>
+  <div class="p-dialog-footer">
+    <button pButton severity="secondary" type="button" (click)="close()">
+      <span pButtonLabel>Cancelar</span>
+    </button>
+    <button pButton type="submit" [disabled]="tutorialForm.invalid">
+      <span pButtonLabel>Guardar</span>
+    </button>
+  </div>
+</form>

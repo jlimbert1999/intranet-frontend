@@ -3,7 +3,12 @@ import { inject, Injectable } from '@angular/core';
 
 import { environment } from '../../../environments/environment';
 
-type FileGroup = 'hero-section' | 'document' | 'quick-access' | 'communication';
+type FileGroup =
+  | 'hero-section'
+  | 'document'
+  | 'quick-access'
+  | 'communication'
+  | 'tutorial';
 type MediaType = 'image' | 'audio' | 'video' | 'document';
 export interface UploadedFile {
   fileName: string;
@@ -37,6 +42,15 @@ export class FileUploadService {
   }
 
   uploadPdfThumbnail(file: File, group: FileGroup) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<UploadedPdfThumbnail>(
+      `${this.URL}/${group}`,
+      formData
+    );
+  }
+
+  uploadVideoWithThumbnail(file: File, group: FileGroup) {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post<UploadedPdfThumbnail>(

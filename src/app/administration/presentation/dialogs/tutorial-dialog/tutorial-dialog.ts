@@ -14,6 +14,7 @@ import {
   FormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
+
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -21,10 +22,14 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 
 import { CustomFormValidators } from '../../../../../helpers';
+import {
+  TutorialResponse,
+  TutorialVideoResponse,
+} from '../../../infrastructure';
 import { TutorialData } from '../../services';
 
 @Component({
-  selector: 'app-tutorial-dialog',
+  selector: 'tutorial-dialog',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -47,16 +52,25 @@ export class TutorialDialog {
     description: [''],
     videos: this.formBuilder.array([], CustomFormValidators.minLengthArray(1)),
   });
-  videos = signal<{ file: File; previewUrl: string }[]>([]);
+  videos = signal<{ file?: File; fileUrl: string }[]>([]);
+  uploadedVideos = signal<TutorialVideoResponse[]>([]);
 
-  readonly data: any | undefined = inject(DynamicDialogConfig).data;
+  image: File | null = null;
+  imagePreview = signal<string | null>(null);
+
+  readonly data: TutorialResponse | undefined =
+    inject(DynamicDialogConfig).data;
 
   constructor() {
     this.destroyRef.onDestroy(() => {
       this.videos().forEach((item) => {
-        URL.revokeObjectURL(item.previewUrl);
+        URL.revokeObjectURL(item.fileUrl);
       });
     });
+  }
+
+  ngOnInit() {
+    this.loadForm();
   }
 
   save() {
@@ -65,7 +79,7 @@ export class TutorialDialog {
       ...rest,
       videos: videos.map((video: { title: string }, index: number) => ({
         ...video,
-        file: this.videos()[index].file,
+        ...this.videos()[index],
       })),
     };
     const subscription = this.data
@@ -91,8 +105,8 @@ export class TutorialDialog {
   removeVideo(index: number) {
     this.videos.update((values) => {
       const item = values[index];
-      if (item.previewUrl) {
-        URL.revokeObjectURL(item.previewUrl);
+      if (item.fileUrl) {
+        URL.revokeObjectURL(item.fileUrl);
       }
       values.splice(index, 1);
       return [...values];
@@ -109,7 +123,7 @@ export class TutorialDialog {
     this.videosFormArray.push(this.createVideoFormGroup());
     this.videos.update((values) => [
       ...values,
-      { file, previewUrl: URL.createObjectURL(file) },
+      { file, fileUrl: URL.createObjectURL(file) },
     ]);
   }
 
@@ -125,12 +139,35 @@ export class TutorialDialog {
     const files = Array.from(inputElement.files).filter((file) => {
       return !this.videos().some(
         (v) =>
-          v.file.name === file.name &&
-          v.file.size === file.size &&
-          v.file.lastModified === file.lastModified
+          v.file?.name === file.name &&
+          v.file?.size === file.size &&
+          v.file?.lastModified === file.lastModified
       );
     });
     inputElement.value = ''; // * Empty file input;
     return files;
+  }
+
+  private loadForm(): void {
+    if (!this.data) return;
+    const { videos } = this.data;
+    this.videos.set(videos.map(({ fileUrl }) => ({ fileUrl })));
+    videos.forEach(() => {
+      this.videosFormArray.push(this.createVideoFormGroup());
+    });
+    this.tutorialForm.patchValue(this.data);
+  }
+
+  private onImageSelect(event: Event) {
+    // * Load image from local files
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview.set(reader.result as string);
+      this.image = file;
+    };
+    reader.readAsDataURL(file);
   }
 }

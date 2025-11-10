@@ -124,9 +124,6 @@ export class PortalService {
     );
   }
 
-  getQuickAccess() {
-    return this.http.get<any[]>(`${this.URL}/quick-access`);
-  }
 
   getCategoriesWithSections() {
     return this.http.get<CategoriesWithSectionsResponse[]>(
@@ -134,9 +131,6 @@ export class PortalService {
     );
   }
 
-  getOneCommunication(id: string) {
-    return this.http.get(`${this.URL}/communication/${id}`);
-  }
 
   private cleanFilterProps(form: object) {
     return Object.fromEntries(

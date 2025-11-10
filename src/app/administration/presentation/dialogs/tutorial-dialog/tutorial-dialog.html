@@ -2,12 +2,75 @@
   <div class="flex flex-col gap-y-2 mb-4">
     <input
       pInputText
-      formControlName="title"
       type="text"
+      formControlName="title"
       placeholder="Titulo"
       class="w-full"
     />
-    <textarea rows="2" pTextarea formControlName="description" placeholder="Descripcion"></textarea>
+    <textarea
+      rows="2"
+      pTextarea
+      formControlName="description"
+      placeholder="Descripcion"
+    ></textarea>
+  </div>
+  <div class="mb-4">
+    <div class="flex flex-col border border-slate-500 p-3 rounded-xl">
+      <figure class="flex justify-center items-center rounded-2xl mb-4">
+        <img
+          [src]="imagePreview()"
+          alt="Image preview"
+          class="object-contain rounded-2xl max-h-[350px]"
+        />
+      </figure>
+    </div>
+    <div
+      class="flex items-center justify-center gap-x-2 border border-slate-300 rounded-lg py-1"
+    >
+      <div class="text-lg">Imagen</div>
+      <div class="flex gap-x-4">
+        <p-button
+          icon="pi pi-image"
+          [rounded]="true"
+          [text]="true"
+          (click)="imageInput.click()"
+        />
+        <input
+          #imageInput
+          [hidden]="true"
+          [multiple]="true"
+          type="file"
+          accept="image/png, image/jpeg, image/jpg"
+        />
+        <!-- <button
+            matMiniFab
+            aria-label="Select image"
+            matTooltip="Seleccionar imagen"
+            (click)="imageInput.click()"
+          >
+            <mat-icon>image_search</mat-icon>
+          </button>
+          <input
+            #imageInput
+            [hidden]="true"
+            [multiple]="true"
+            type="file"
+            accept="image/png, image/jpeg, image/jpg"
+            (change)="onFileChange($event)"
+          />
+          @if(imageDataUrl()){
+          <button
+            matMiniFab
+            aria-label="Remove image"
+            matTooltip="Remover imagen"
+            (click)="removeImage(imageInput)"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+          } -->
+        <!-- </div> -->
+      </div>
+    </div>
   </div>
   <div class="flex items-center justify-between p-2">
     <span class="font-medium text-lg">Listado de videos</span>
@@ -35,7 +98,7 @@
       [formGroupName]="i"
     >
       <div
-        class="flex flex-col gap-y-3 rounded-lg border border-surface-200 px-4 py-2"
+        class="flex flex-col gap-y-3 rounded-lg border border-surface-300 px-4 py-2"
       >
         <div class="flex justify-between">
           <div class="flex items-center gap-x-2">
@@ -50,9 +113,10 @@
         </div>
         <div class="flex justify-center">
           <video
-            [src]="videos()[i].previewUrl"
-            class="w-full sm:w-[400px] aspect-video rounded-md"
+            [src]="videos()[i].fileUrl"
+            class="w-full sm:w-[400px] aspect-video rounded-xl"
             controls
+            preload="metadata"
           ></video>
         </div>
         <div>
@@ -66,7 +130,6 @@
         </div>
       </div>
     </div>
-
     @if(videosFormArray.controls.length===0){
     <div class="font-medium">Sin elementos.</div>
     }

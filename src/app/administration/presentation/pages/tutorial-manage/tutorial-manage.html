@@ -11,8 +11,8 @@
 <div class="card">
   <p-table
     #table
-    [value]="dataSource.value().tutorials"
-    [totalRecords]="dataSource.value().total"
+    [value]="dataSource()"
+    [totalRecords]="dataSize()"
     [globalFilterFields]="['name']"
     [paginator]="true"
     [rows]="10"
@@ -26,19 +26,17 @@
     </ng-template>
     <ng-template #header>
       <tr>
-        <th>Tipo</th>
-        <th>Cite</th>
-        <th>Nombre</th>
-        <th>Fecha</th>
+        <th>Titulo</th>
+        <th>Descripcion</th>
+        <th>Videos</th>
         <th style="width: 5rem"></th>
       </tr>
     </ng-template>
     <ng-template #body let-item>
       <tr>
-        <td>{{ item.type.name }}</td>
-        <td>{{ item.code }}</td>
-        <td>{{ item.reference }}</td>
-        <!-- <td>{{ item.publicationDate | date : "shortDate" }}</td> -->
+        <td>{{ item.title }}</td>
+        <td>{{ item.description }}</td>
+        <td style="width: 8rem">{{ item.videos.length }}</td>
         <td>
           <p-button
             icon="pi pi-pencil"

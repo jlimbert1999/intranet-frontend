@@ -1,0 +1,76 @@
+<section class="pt-16 pb-8 bg-surface-50 border-b border-surface-200">
+  <div class="max-w-7xl mx-auto px-4">
+    <h1 class="text-3xl font-semibold text-primary-700">Tutoriales</h1>
+    <p class="text-surface-600 mt-2">
+      Aprende a utilizar nuestros sistemas de manera guiada.
+    </p>
+  </div>
+</section>
+
+<section class="py-10">
+  <div class="max-w-7xl mx-auto px-4">
+    <!-- Buscador -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <!-- <p-inputText
+        [ngModel]="term"
+        (ngModelChange)="onSearch($event)"
+        placeholder="Buscar tutorial..."
+        class="w-full sm:max-w-xs"
+      ></p-inputText> -->
+    </div>
+
+    <!-- Loading -->
+    <!-- <p-progressSpinner
+      *ngIf="loading"
+      styleClass="mx-auto mt-10 block"
+    ></p-progressSpinner> -->
+
+    <!-- Grid -->
+    <div
+    
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10"
+    >
+      <article
+        *ngFor="let t of dataSource()"
+        class="cursor-pointer rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow"
+      >
+        <img
+          [src]="'https://c8.alamy.com/comp/2F448AT/earth-globe-on-an-open-book-on-a-blue-banner-background-knowledge-learning-study-concept-background-education-high-quality-photo-2F448AT.jpg'"
+          alt="thumbnail"
+          class="w-full h-48 object-cover"
+        />
+
+        <div class="p-6">
+          <h2 class="text-xl font-semibold text-surface-800 line-clamp-2">
+            {{ t.title }}
+          </h2>
+
+          <p class="text-surface-600 text-sm mt-3 line-clamp-3">
+            {{ t.description }}
+          </p>
+
+          <div class="mt-4 text-primary-600 text-sm flex items-center gap-1">
+            <i class="pi pi-video"></i>
+            {{ t.videos.length }} videos
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Sin resultados -->
+    <!-- <div *ngIf="!loading && tutorials.length === 0" class="text-center mt-20">
+      <p class="text-surface-600 text-lg">No se encontraron tutoriales.</p>
+    </div> -->
+
+    <!-- Paginación -->
+    <div class="mt-10 flex justify-center">
+      <!-- <p-paginator
+        [rows]="limit"
+        [totalRecords]="total"
+        [first]="(page - 1) * limit"
+        (onPageChange)="onPageChange($event.page + 1)"
+      >
+      </p-paginator> -->
+    </div>
+  </div>
+</section>

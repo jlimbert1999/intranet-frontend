@@ -43,6 +43,13 @@ export const routes: Routes = [
             './portal/presentation/pages/institutional-calendar/institutional-calendar.component'
           ),
       },
+      {
+        path: 'tutorials',
+        loadComponent: () =>
+          import(
+            './portal/presentation/pages/tutorials-page/tutorials-page'
+          ),
+      },
     ],
   },
   {

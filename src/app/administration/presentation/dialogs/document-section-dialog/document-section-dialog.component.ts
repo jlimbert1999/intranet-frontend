@@ -21,11 +21,11 @@ import { DocumentSectionService } from '../../services';
   selector: 'app-document-section-dialog',
   imports: [
     CommonModule,
-    ButtonModule,
     ReactiveFormsModule,
-    SelectModule,
     MultiSelectModule,
     InputTextModule,
+    ButtonModule,
+    SelectModule,
   ],
   templateUrl: './document-section-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -34,7 +34,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withViewTransitions(), withComponentInputBinding()),
+    provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(),
     provideAnimationsAsync(),
     providePrimeNG({

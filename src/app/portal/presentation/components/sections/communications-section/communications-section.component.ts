@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { AnimateOnScroll } from 'primeng/animateonscroll';
 import { CarouselModule } from 'primeng/carousel';
@@ -20,10 +20,10 @@ import { ButtonModule } from 'primeng/button';
       pAnimateOnScroll
       enterClass="animate-enter fade-in-20 slide-in-from-b-20 animate-duration-1000"
       [once]="true"
-      [threshold]="0.15"
+      [threshold]="0.10"
     >
       <div
-        class="absolute inset-0 bg-gradient-to-br from-primary-400 via-primary-700 to-surface-900"
+        class="absolute inset-0 bg-linear-to-br from-primary-400 via-primary-700 to-surface-900"
       ></div>
 
       <div
@@ -71,7 +71,7 @@ import { ButtonModule } from 'primeng/button';
                   class="w-full h-[350px] sm:h-[520px] object-cover object-top bg-surface-100"
                 />
                 <div
-                  class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/95 via-black/70 to-transparent backdrop-blur-[2px]"
+                  class="absolute bottom-0 left-0 right-0 p-5 bg-linear-to-t from-black/95 via-black/70 to-transparent backdrop-blur-[2px]"
                 >
                   <p class="text-sm text-white mb-1">
                     {{ com.publicationDate | date : 'd MMMM, y' }}

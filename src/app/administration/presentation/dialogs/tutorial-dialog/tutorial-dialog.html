@@ -15,7 +15,10 @@
     ></textarea>
   </div>
   <div class="mb-4">
-    <div class="flex flex-col border border-slate-500 p-3 rounded-xl">
+    <div
+      class="flex items-center flex-col gap-x-2 border border-slate-300 rounded-lg"
+    >
+      @if (imagePreview()) {
       <figure class="flex justify-center items-center rounded-2xl mb-4">
         <img
           [src]="imagePreview()"
@@ -23,25 +26,26 @@
           class="object-contain rounded-2xl max-h-[350px]"
         />
       </figure>
-    </div>
-    <div
-      class="flex items-center justify-center gap-x-2 border border-slate-300 rounded-lg py-1"
-    >
-      <div class="text-lg">Imagen</div>
-      <div class="flex gap-x-4">
-        <p-button
-          icon="pi pi-image"
-          [rounded]="true"
-          [text]="true"
-          (click)="imageInput.click()"
-        />
-        <input
-          #imageInput
-          [hidden]="true"
-          [multiple]="true"
-          type="file"
-          accept="image/png, image/jpeg, image/jpg"
-        />
+      }
+      <div class="flex items-center">
+        <div class="text-lg mr-4">Imagen</div>
+        <div class="flex gap-x-4">
+          <p-button
+            icon="pi pi-image"
+            [rounded]="true"
+            [text]="true"
+            (click)="imageInput.click()"
+          />
+          <input
+            #imageInput
+            [hidden]="true"
+            [multiple]="true"
+            type="file"
+            accept="image/png, image/jpeg, image/jpg"
+            (change)="onImageSelect($event)"
+          />
+        </div>
+
         <!-- <button
             matMiniFab
             aria-label="Select image"

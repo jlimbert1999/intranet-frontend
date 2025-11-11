@@ -114,6 +114,18 @@ export class TutorialDialog {
     this.videosFormArray.removeAt(index);
   }
 
+  onImageSelect(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview.set(reader.result as string);
+      this.image = file;
+    };
+    reader.readAsDataURL(file);
+  }
+
   get videosFormArray(): FormArray {
     return this.tutorialForm.get('videos') as FormArray;
   }
@@ -156,18 +168,5 @@ export class TutorialDialog {
       this.videosFormArray.push(this.createVideoFormGroup());
     });
     this.tutorialForm.patchValue(this.data);
-  }
-
-  private onImageSelect(event: Event) {
-    // * Load image from local files
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview.set(reader.result as string);
-      this.image = file;
-    };
-    reader.readAsDataURL(file);
   }
 }

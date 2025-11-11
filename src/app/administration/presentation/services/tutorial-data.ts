@@ -10,6 +10,7 @@ interface TutorialProps {
   title: string;
   description: string;
   videos: VideoItem[];
+  image?: File;
 }
 
 interface VideoItem {
@@ -34,7 +35,7 @@ export class TutorialData {
   }
 
   create(tutorial: TutorialProps) {
-    const { videos, ...props } = tutorial;
+    const { videos, image, ...props } = tutorial;
     return this.buildUploadTask(videos).pipe(
       switchMap((uploadedVideos) => {
         return this.http.post(`${this.URL}`, {

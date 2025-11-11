@@ -58,8 +58,9 @@ export class TutorialData {
     );
   }
 
-  private buildUploadTask(items: VideoItem[]) {
+  private buildUploadTask(items: VideoItem[], image?: File) {
     return forkJoin([
+      image ? this.uploadTutorialFile(image, 'image') : of(null),
       ...items.map(({ file, title, fileUrl }) => {
         if (!file) {
           return of({
@@ -67,21 +68,23 @@ export class TutorialData {
             fileName: fileUrl.split('/').pop(),
           });
         }
-        const formData = new FormData();
-        formData.append('file', file);
-        return this.http
-          .post<{ fileName: string }>(
-            `${environment.baseUrl}/files/tutorial`,
-            formData
+        return items.map((item) =>
+          this.uploadTutorialFile(file, 'video').pipe(
+            map(({ fileName }) => ({ title: item.title, fileName }))
           )
-          .pipe(
-            map(({ fileName }) => ({
-              title,
-              fileName,
-            })),
-            catchError(() => EMPTY)
-          );
+        );
       }),
     ]);
+  }
+
+  private uploadTutorialFile(file: File, type: 'image' | 'video') {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http
+      .post<{ fileName: string }>(
+        `${environment.baseUrl}/files/tutorial-${type}`,
+        formData
+      )
+      .pipe(catchError(() => EMPTY));
   }
 }

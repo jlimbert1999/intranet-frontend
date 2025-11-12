@@ -46,9 +46,12 @@ export const routes: Routes = [
       {
         path: 'tutorials',
         loadComponent: () =>
-          import(
-            './portal/presentation/pages/tutorials-page/tutorials-page'
-          ),
+          import('./portal/presentation/pages/tutorials-list/tutorials-list'),
+      },
+      {
+        path: 'tutorials/:slug',
+        loadComponent: () =>
+          import('./portal/presentation/pages/tutorials-detail/tutorials-detail'),
       },
     ],
   },

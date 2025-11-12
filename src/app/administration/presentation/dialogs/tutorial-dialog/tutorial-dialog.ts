@@ -33,10 +33,10 @@ import { TutorialData } from '../../services';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ButtonModule,
     FloatLabelModule,
     InputTextModule,
     TextareaModule,
+    ButtonModule,
   ],
   templateUrl: './tutorial-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,19 +47,25 @@ export class TutorialDialog {
   private destroyRef = inject(DestroyRef);
   private tutorialData = inject(TutorialData);
 
+  readonly data?: TutorialResponse = inject(DynamicDialogConfig).data;
+
   tutorialForm: FormGroup = this.formBuilder.nonNullable.group({
-    title: ['', Validators.required],
+    title: [
+      '',
+      [
+        Validators.required,
+        Validators.maxLength(80),
+        Validators.pattern(/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9\s]+$/),
+      ],
+    ],
     description: [''],
     videos: this.formBuilder.array([], CustomFormValidators.minLengthArray(1)),
   });
   videos = signal<{ file?: File; fileUrl: string }[]>([]);
   uploadedVideos = signal<TutorialVideoResponse[]>([]);
 
-  image: File | null = null;
-  imagePreview = signal<string | null>(null);
-
-  readonly data: TutorialResponse | undefined =
-    inject(DynamicDialogConfig).data;
+  imageFile: File | null = null;
+  localImagePreview = signal<string | null>(null);
 
   constructor() {
     this.destroyRef.onDestroy(() => {
@@ -77,6 +83,7 @@ export class TutorialDialog {
     const { videos, ...rest } = this.tutorialForm.value;
     const body = {
       ...rest,
+      image: { file: this.imageFile, fileUrl: this.data?.imageUrl },
       videos: videos.map((video: { title: string }, index: number) => ({
         ...video,
         ...this.videos()[index],
@@ -120,8 +127,8 @@ export class TutorialDialog {
     if (!file || !file.type.startsWith('image/')) return;
     const reader = new FileReader();
     reader.onload = () => {
-      this.imagePreview.set(reader.result as string);
-      this.image = file;
+      this.localImagePreview.set(reader.result as string);
+      this.imageFile = file;
     };
     reader.readAsDataURL(file);
   }

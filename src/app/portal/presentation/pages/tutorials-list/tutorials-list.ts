@@ -11,14 +11,16 @@ import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { PortalTutorialData } from '../../services';
+import { PaginatorModule } from 'primeng/paginator';
+import { RouterLink } from "@angular/router";
 
 @Component({
-  selector: 'app-tutorials-page',
-  imports: [CommonModule, InputTextModule],
-  templateUrl: './tutorials-page.html',
+  selector: 'app-tutorials-list',
+  imports: [CommonModule, InputTextModule, PaginatorModule, RouterLink],
+  templateUrl: './tutorials-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class TutorialsPage {
+export default class TutorialsList {
   private potalTutorialData = inject(PortalTutorialData);
 
   private resource = rxResource({

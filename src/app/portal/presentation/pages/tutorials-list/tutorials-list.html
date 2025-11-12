@@ -1,9 +1,12 @@
-<section class="pt-16 pb-8 bg-surface-50 border-b border-surface-200">
-  <div class="max-w-7xl mx-auto px-4">
-    <h1 class="text-3xl font-semibold text-primary-700">Tutoriales</h1>
-    <p class="text-surface-600 mt-2">
-      Aprende a utilizar nuestros sistemas de manera guiada.
+<section class="max-w-7xl mx-auto px-2 py-2 sm:py-6">
+  <div class="mb-4 text-center md:text-left">
+    <h1 class="text-xl lg:text-3xl font-semibold text-primary-700">
+      Tutoriales
+    </h1>
+    <p class="text-gray-600 text-sm md:text-base mt-1">
+      Anuncios y avisos oficiales para funcionarios municipales.
     </p>
+    <div class="mt-2 w-full h-0.5 bg-primary-600 rounded"></div>
   </div>
 </section>
 
@@ -26,16 +29,14 @@
     ></p-progressSpinner> -->
 
     <!-- Grid -->
-    <div
-    
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10"
-    >
-      <article
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+      <a
         *ngFor="let t of dataSource()"
         class="cursor-pointer rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow"
+        [routerLink]="t.slug"
       >
         <img
-          [src]="'https://c8.alamy.com/comp/2F448AT/earth-globe-on-an-open-book-on-a-blue-banner-background-knowledge-learning-study-concept-background-education-high-quality-photo-2F448AT.jpg'"
+          [src]="t.imageUrl"
           alt="thumbnail"
           class="w-full h-48 object-cover"
         />
@@ -54,7 +55,7 @@
             {{ t.videos.length }} videos
           </div>
         </div>
-      </article>
+      </a>
     </div>
 
     <!-- Sin resultados -->
@@ -64,13 +65,7 @@
 
     <!-- Paginación -->
     <div class="mt-10 flex justify-center">
-      <!-- <p-paginator
-        [rows]="limit"
-        [totalRecords]="total"
-        [first]="(page - 1) * limit"
-        (onPageChange)="onPageChange($event.page + 1)"
-      >
-      </p-paginator> -->
+      <p-paginator> </p-paginator>
     </div>
   </div>
 </section>

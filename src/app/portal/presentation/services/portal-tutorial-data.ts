@@ -8,7 +8,7 @@ import { TutorialResponse } from '../../../administration/infrastructure';
   providedIn: 'root',
 })
 export class PortalTutorialData {
-  private readonly URL = `${environment.baseUrl}/portal/tutorials`;
+  private readonly URL = `${environment.baseUrl}/portal/assistance`;
   private http = inject(HttpClient);
 
   constructor() {}
@@ -17,5 +17,9 @@ export class PortalTutorialData {
     return this.http.get<{ tutorials: TutorialResponse[]; total: number }>(
       this.URL
     );
+  }
+
+  findBySlug(slug: string) {
+    return this.http.get<TutorialResponse>(`${this.URL}/${slug}`);
   }
 }

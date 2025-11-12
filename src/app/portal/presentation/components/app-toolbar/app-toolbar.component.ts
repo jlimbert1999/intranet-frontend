@@ -80,7 +80,7 @@ export class AppToolbarComponent {
       routerLinkActiveOptions: { exact: true },
     },
     {
-      label: 'Tutorirales',
+      label: 'Tutoriales',
       routerLink: '/tutorials',
       routerLinkActiveOptions: { exact: true },
     },

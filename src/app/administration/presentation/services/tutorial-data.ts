@@ -10,13 +10,18 @@ interface TutorialProps {
   title: string;
   description: string;
   videos: VideoItem[];
-  image?: File;
+  image?: ImageItem;
 }
 
 interface VideoItem {
   title: string;
   fileUrl: string;
   file?: File;
+}
+
+interface ImageItem {
+  file?: File;
+  fileUrl?: string;
 }
 
 @Injectable({
@@ -26,8 +31,6 @@ export class TutorialData {
   private http = inject(HttpClient);
   private readonly URL = `${environment.baseUrl}/assistance`;
 
-  constructor() {}
-
   findAll() {
     return this.http.get<{ tutorials: TutorialResponse[]; total: number }>(
       `${this.URL}`
@@ -35,32 +38,40 @@ export class TutorialData {
   }
 
   create(tutorial: TutorialProps) {
+    console.log(tutorial);
     const { videos, image, ...props } = tutorial;
-    return this.buildUploadTask(videos).pipe(
-      switchMap((uploadedVideos) => {
+
+    return this.buildUploadTask(videos, image).pipe(
+      switchMap(([image, ...videos]) => {
+        console.log({ ...props, image, videos });
         return this.http.post(`${this.URL}`, {
           ...props,
-          videos: uploadedVideos,
+          image,
+          videos,
         });
       })
     );
   }
 
   update(id: string, tutorial: TutorialProps) {
-    const { videos, ...props } = tutorial;
-    return this.buildUploadTask(videos).pipe(
-      switchMap((uploadedVideos) =>
-        this.http.patch(`${this.URL}/${id}`, {
+    const { videos, image, ...props } = tutorial;
+    return this.buildUploadTask(videos, image).pipe(
+      switchMap(([image, ...videos]) => {
+        return this.http.patch(`${this.URL}/${id}`, {
           ...props,
-          videos: uploadedVideos,
-        })
-      )
+          image,
+          videos,
+        });
+      })
     );
   }
 
-  private buildUploadTask(items: VideoItem[], image?: File) {
+  private buildUploadTask(items: VideoItem[], image?: ImageItem) {
     return forkJoin([
-      image ? this.uploadTutorialFile(image, 'image') : of(null),
+      image?.file
+        ? this.uploadFile(image.file, 'image')
+        : of(image?.fileUrl?.split('/').pop()),
+
       ...items.map(({ file, title, fileUrl }) => {
         if (!file) {
           return of({
@@ -68,16 +79,14 @@ export class TutorialData {
             fileName: fileUrl.split('/').pop(),
           });
         }
-        return items.map((item) =>
-          this.uploadTutorialFile(file, 'video').pipe(
-            map(({ fileName }) => ({ title: item.title, fileName }))
-          )
+        return this.uploadFile(file, 'video').pipe(
+          map((fileName) => ({ title, fileName }))
         );
       }),
     ]);
   }
 
-  private uploadTutorialFile(file: File, type: 'image' | 'video') {
+  private uploadFile(file: File, type: 'image' | 'video') {
     const formData = new FormData();
     formData.append('file', file);
     return this.http
@@ -85,6 +94,9 @@ export class TutorialData {
         `${environment.baseUrl}/files/tutorial-${type}`,
         formData
       )
-      .pipe(catchError(() => EMPTY));
+      .pipe(
+        map(({ fileName }) => fileName),
+        catchError(() => EMPTY)
+      );
   }
 }

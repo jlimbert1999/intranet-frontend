@@ -22,7 +22,8 @@
 }
 .cdk-drag-preview {
   border-radius: 0.75rem;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
   border: 1px solid rgb(226, 232, 240);
   overflow-y: hidden;
 }
@@ -30,27 +31,32 @@
   opacity: 0;
 }
 
-
-
-/* Custom transition */
-@keyframes rotate-out {
-  to {
-    transform: rotate(90deg);
-  }
+.page-transition {
+  view-transition-name: content;
 }
 
-@keyframes rotate-in {
+@keyframes fade-out {
   from {
-    transform: rotate(-90deg);
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
-::view-transition-old(count),
-::view-transition-new(count) {
-  animation-duration: 200ms;
-  animation-name: -ua-view-transition-fade-in, rotate-in;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-::view-transition-old(count) {
-  animation-name: -ua-view-transition-fade-out, rotate-out;
+::view-transition-old(content) {
+ animation: fade-out 180ms ease-out;
+}
+
+::view-transition-new(content) {
+  animation: fade-in 180ms ease-in;
 }

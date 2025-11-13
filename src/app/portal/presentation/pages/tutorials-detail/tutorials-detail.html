@@ -1,86 +1,68 @@
-<main class="min-h-full ">
-  <header class="bg-surface-50 border-b border-surface-200">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-      <button
-        pButton
-        icon="pi pi-arrow-left"
-        (click)="goBack()"
-        class="p-button-text p-button-sm text-primary-700 hover:text-primary-900"
-      ></button>
-      <h2 class="text-lg font-semibold text-surface-700">Tutorial</h2>
-    </div>
+<main class="h-full flex flex-col">
+  <header class="shrink-0 px-6 pt-4 pb-3 flex items-center gap-3">
+    <button
+      pButton
+      icon="pi pi-arrow-left"
+      (click)="goBack()"
+      [rounded]="true"
+      [text]="true"
+    ></button>
+    <h1 class="text-2xl font-semibold text-surface-900">Tutorial</h1>
   </header>
 
-<section class="py-4">
-  <div class="max-w-7xl mx-auto px-4 space-y-8">
-    <div>
-      <h1 class="text-2xl sm:text-3xl font-semibold text-primary-800 leading-snug">
-        {{ dataResource.value()?.title }}
-      </h1>
-      <p class="text-surface-600 mt-1 max-w-3xl">
-        {{ dataResource.value()?.description }}
-      </p>
-    </div>
-
-    <div class="grid gap-8 lg:grid-cols-[1.6fr_1fr]">
-      <!-- 🟦 Reproductor -->
-      <div class="aspect-video rounded-xl overflow-hidden bg-black shadow-md flex items-center justify-center">
-        @if (currentVideo()) {
+  <section class="flex-1 min-h-0 px-4 pb-4 flex flex-col lg:flex-row gap-6">
+    <div class="w-full lg:w-2/3">
+      <div  class="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
+        @if(currentVideo()){
           <video
-            class="w-full h-full object-cover"
+            class="w-full h-full"
             [src]="currentVideo()?.fileUrl"
             controls
           ></video>
         }
-        @else {
-          <p class="text-white text-lg">Selecciona un video para comenzar</p>
+        @else{
+          <div class="w-full h-full flex items-center justify-center px-4">
+            <p class="text-lg sm:text-xl font-medium text-white">
+              Selecciona un video de la lista
+            </p>
+          </div>
         }
       </div>
-
-      <!-- 🟨 Lista de videos -->
-      <aside
-        class="bg-surface-0 rounded-xl shadow-md border border-surface-200 p-5 flex flex-col h-full"
-      >
-        <h3 class="text-lg font-semibold text-surface-800 mb-4">
-          Videos del tutorial
-        </h3>
-
-        <!-- Contenedor scrollable -->
-        <div class="flex-1 overflow-y-auto pr-1  bg-red-200">
-          <ul class="space-y-2">
-            @for (video of dataResource.value()?.videos; track $index) {
-              <li
-                (click)="selectVideo(video)"
-                class="cursor-pointer p-3 rounded-lg border border-surface-200 hover:bg-primary-50 transition"
-                [class.bg-primary-100]="currentVideo()?.id === video.id"
-              >
-                <div class="flex items-start gap-x-4">
-                  <i
-                    class="pi text-primary-600 mt-1"
-                    [ngClass]="[
-                      currentVideo()?.id === video.id
-                        ? 'pi-play-circle'
-                        : 'pi-video'
-                    ]"
-                  ></i>
-                  <div class="flex-1 min-w-0">
-                    <p
-                      class="font-medium text-surface-800 text-sm line-clamp-2 break-words"
-                    >
-                      {{ video.title }}
-                    </p>
-                    <p
-                      class="text-xs text-surface-600"
-                    >Video {{ $index + 1 }}</p>
-                  </div>
-                </div>
-              </li>
-            }
-          </ul>
-        </div>
-      </aside>
     </div>
-  </div>
-</section>
-
+    <aside class="w-full lg:w-1/3 flex flex-col min-h-0">
+      <h3 class="text-lg font-semibold text-surface-600 mb-2 px-1">
+        Lista de reproducción
+      </h3>
+      <div class="border border-surface-300 bg-surface-0 rounded-xl flex-1 min-h-0 overflow-y-auto p-3">
+        <ul class="space-y-2">
+          @for (video of dataResource.value()?.videos; track $index) {
+            <li
+              (click)="selectVideo(video)"
+              class="cursor-pointer px-4 py-2 rounded-lg border border-surface-200 hover:bg-primary-50 transition"
+              [class.bg-primary-100]="currentVideo()?.id === video.id"
+            >
+              <div class="flex items-center gap-x-4">
+                <i
+                  class="pi text-primary-600"
+                  [ngClass]="[
+                    currentVideo()?.id === video.id
+                      ? 'pi-play-circle'
+                      : 'pi-video'
+                  ]"
+                ></i>
+                <div class="flex-1 min-w-0">
+                  <p
+                    class="font-medium text-surface-800 text-sm line-clamp-2 wrap-break-word"
+                  >
+                    {{ video.title }}
+                  </p>
+                  <p class="text-xs text-surface-600">Video {{ $index + 1 }}</p>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    </aside>
+  </section>
 </main>

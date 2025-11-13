@@ -82,7 +82,7 @@ export class AppToolbarComponent {
     {
       label: 'Tutoriales',
       routerLink: '/tutorials',
-      routerLinkActiveOptions: { exact: true },
+      routerLinkActiveOptions: { exact: false },
     },
   ];
 }

@@ -14,30 +14,13 @@ import { map } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 
 import { TutorialVideoResponse } from '../../../../administration/infrastructure';
-import { PortalTutorialData } from '../../services';
 import { ScrollStateService } from '../../../../shared';
+import { PortalTutorialData } from '../../services';
 
 @Component({
   selector: 'app-tutorials-detail',
   imports: [CommonModule, ButtonModule],
   templateUrl: './tutorials-detail.html',
-  styles: `
-  .custom-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-.custom-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scroll::-webkit-scrollbar-thumb {
-  background-color: theme('colors.surface.300');
-  border-radius: 9999px;
-}
-.custom-scroll:hover::-webkit-scrollbar-thumb {
-  background-color: theme('colors.primary.300');
-}
-
-  
-  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class TutorialsDetail {

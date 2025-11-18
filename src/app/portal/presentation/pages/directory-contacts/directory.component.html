@@ -1,0 +1,120 @@
+<section class="max-w-7xl mx-auto px-2 py-2 sm:py-6">
+ <header class="mb-4 text-center md:text-left">
+  <h1 class="text-2xl md:text-3xl font-semibold text-primary-700">
+   Directorio Telefónico Institucional
+  </h1>
+  <p class="text-gray-600 text-base md:text-lg mt-1">
+   Encuentra los números de contacto de cada entidad municipal, junto con la información de sus responsables y ubicación.
+  </p>
+  <div class="mt-2 w-full h-[2px] bg-primary-600 rounded"></div>
+ </header>
+
+ <div class="w-full flex flex-col sm:flex-row justify-end gap-2 mb-3 items-end sm:items-center">
+  <div class="w-full sm:w-64 order-1 sm:order-1">
+   <search-input
+    [label]="'Buscar por Instancia'"
+    (search)="onSearchInstancia($event)"
+   ></search-input>
+  </div>
+
+  <div class="w-full sm:w-56 order-2 sm:order-2">
+   <p-select
+    [options]="instituciones()"
+    optionLabel="name"
+    optionValue="id"
+    placeholder="Seleccione una institución"
+    [filter]="true"
+    [showClear]="true"
+    [ngModel]="selectedInstitucion()"
+    (ngModelChange)="onFilterInstitucion($event)"
+    class="w-full"
+   >
+    <ng-template pTemplate="selectedItem" let-opt>
+     <div class="flex items-center gap-2" *ngIf="opt">
+      <i class="pi pi-building text-primary"></i>
+      <span>{{ opt.name }}</span>
+     </div>
+     <div *ngIf="!opt" class="text-gray-400 italic">Seleccione...</div>
+    </ng-template>
+
+    <ng-template pTemplate="item" let-opt>
+     <div class="flex items-center gap-2">
+      <i class="pi pi-building"></i>
+      <span>{{ opt.name }}</span>
+     </div>
+    </ng-template>
+   </p-select>
+  </div>
+ </div>
+
+ <div
+  *ngIf="error()"
+  class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 shadow-md"
+  role="alert"
+ >
+  <strong class="font-bold">Error:</strong>
+  <span class="block sm:inline">
+   No se pudo cargar la lista de contactos. Intenta nuevamente.
+  </span>
+ </div>
+
+  <div class="card shadow-lg border border-gray-200 rounded-xl">
+  <p-table
+   [value]="dataSource()"
+   [lazy]="true"
+   (onLazyLoad)="onPageChange($event)"
+   [rows]="limit()"
+   [totalRecords]="dataSize()"
+   [loading]="isLoading()"
+   [paginator]="true"
+      [responsiveLayout]="'stack'" 
+   [rowsPerPageOptions]="[10, 20, 50]"
+      styleClass="p-datatable-striped p-datatable-gridlines text-[1rem]"
+  >
+   <ng-template pTemplate="header">
+    <tr class="bg-gray-100 text-gray-800">
+     <th class="p-4 font-semibold text-left">INSTANCIA</th>
+     <th class="p-4 font-semibold text-left">INSTITUCIÓN</th>
+     <th class="p-4 font-semibold text-left">JEFE</th>
+     <th class="p-4 font-semibold text-left">SOPORTE</th>
+     <th class="p-4 font-semibold text-left">SECRETARIA</th>
+     <th class="p-4 font-semibold text-left">TELÉFONO</th>
+     <th class="p-4 font-semibold text-left">DIRECCIÓN</th>
+    </tr>
+   </ng-template>
+
+   <ng-template pTemplate="body" let-contact let-rowIndex="rowIndex">
+    <tr
+     class="hover:bg-gray-50 transition-colors"
+     [ngClass]="{ 'bg-gray-50': rowIndex % 2 === 0 }"
+    >
+     <td class="p-4">
+      {{ contact.instancia ? (contact.instancia | uppercaseOrDash) : '' }}
+     </td>
+     <td class="p-4">
+      {{
+       contact.instanceType?.name
+        ? (contact.instanceType.name | uppercaseOrDash)
+        : ''
+      }}
+     </td>
+     <td class="p-4">{{ contact.jefe ? contact.jefe : '' }}</td>
+     <td class="p-4">{{ contact.soporte ? contact.soporte : '' }}</td>
+     <td class="p-4">{{ contact.secretaria ? contact.secretaria : '' }}</td>
+     <td class="p-4">{{ contact.telefonoFijo ? contact.telefonoFijo : '' }}</td>
+     <td class="p-4">
+      {{ contact.direccion ? (contact.direccion | uppercaseOrDash) : '' }}
+     </td>
+    </tr>
+   </ng-template>
+
+   <ng-template pTemplate="emptymessage">
+    <tr>
+     <td colspan="7" class="text-center py-6 text-gray-500 text-base">
+      No se encontraron registros.
+     </td>
+    </tr>
+   </ng-template>
+  </p-table>
+ </div>
+</section>

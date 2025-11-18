@@ -77,5 +77,10 @@ export class AppToolbarComponent {
       routerLink: '/calendar',
       routerLinkActiveOptions: { exact: true },
     },
+     {
+      label: 'Directorio',
+      routerLink: '/directory',
+      routerLinkActiveOptions: { exact: true },
+    },
   ];
 }

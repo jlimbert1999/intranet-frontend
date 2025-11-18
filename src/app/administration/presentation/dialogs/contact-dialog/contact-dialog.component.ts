@@ -14,6 +14,7 @@ import { MessageModule } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
+import { MessageService } from 'primeng/api'; 
 
 import { ContactService } from '../../../infrastructure/services/contact.service';
 import { InstanceTypeService } from '../../../infrastructure/services/instance-type.service';
@@ -32,6 +33,11 @@ interface ContactFormValues {
   instanceType: string | null;
 }
 
+interface DialogResult {
+    success: boolean;
+    instancia: string;
+}
+
 @Component({
   selector: 'app-contact-dialog',
   standalone: true,
@@ -47,17 +53,18 @@ interface ContactFormValues {
   ],
   templateUrl: './contact-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService]
+  providers: [DialogService, MessageService] 
 })
 export class ContactDialogComponent implements OnInit {
   private formBuilder: NonNullableFormBuilder = inject(FormBuilder) as NonNullableFormBuilder;
-  private dialogRef = inject(DynamicDialogRef);
+  private dialogRef = inject(DynamicDialogRef<DialogResult>); 
   private contactService = inject(ContactService);
   private dialogConfig = inject(DynamicDialogConfig);
   private dialogService = inject(DialogService);
   private instanceTypeService = inject(InstanceTypeService);
+  private messageService = inject(MessageService); 
 
-  readonly data: Contacto | undefined = this.dialogConfig.data;
+  readonly data: (Contacto & { isEdit?: boolean }) | undefined = this.dialogConfig.data;
   instanceTypes$!: Observable<InstanceType[]>;
 
   private readonly phoneValidator = [
@@ -75,9 +82,9 @@ export class ContactDialogComponent implements OnInit {
   };
 
   contactForm = this.formBuilder.group({
-    instancia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    instancia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
     direccion: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-    instanceType: [null as string | null, [Validators.required]], // <-- ahora solo id
+    instanceType: [null as string | null, [Validators.required]], 
     jefe: [null as number | null, this.phoneValidator],
     soporte: [null as number | null, this.phoneValidator],
     secretaria: [null as number | null, this.phoneValidator],
@@ -95,7 +102,7 @@ export class ContactDialogComponent implements OnInit {
 
   openCreateInstanceDialog() {
     const ref = this.dialogService.open(CreateInstanceDialogComponent, {
-      header: 'Crear Tipo de Institución',
+      header: 'Crear Institución',
       width: '400px',
       modal: true
     });
@@ -128,13 +135,45 @@ export class ContactDialogComponent implements OnInit {
       instanceTypeId: formValues.instanceType ?? undefined, 
     };
 
-    const subscription = this.data
+    const subscription = this.data && this.data.id
       ? this.contactService.update(this.data.id, contactData)
       : this.contactService.create(contactData);
 
     subscription.subscribe({
-      next: () => this.close(true),
-      error: (err) => console.error('Error al guardar el contacto', err),
+      next: () => {
+        const action = this.data && this.data.id ? 'Edición' : 'Creación';
+        this.close({ success: true, instancia: formValues.instancia }); 
+        this.messageService.add({ 
+            severity: 'success', 
+            summary: `${action} Exitosa`, 
+            detail: `El contacto "${formValues.instancia}" fue guardado correctamente.` 
+        });
+      },
+      error: (err) => {
+        console.error('Error al guardar el contacto', err);
+        
+        const errorMessage = err?.error?.message || JSON.stringify(err);
+        let isDuplicateError = false;
+        
+        if (!this.data?.isEdit && (errorMessage.toLowerCase().includes('duplicate') || errorMessage.toLowerCase().includes('ya existe'))) {
+            this.contactForm.get('instancia')?.setErrors({ unique: true });
+            isDuplicateError = true;
+            this.messageService.add({ 
+                severity: 'warn', 
+                summary: 'Advertencia', 
+                detail: `La instancia "${formValues.instancia}" ya está registrada. Por favor, use un nombre diferente.` 
+            });
+        } else {
+            this.messageService.add({ 
+                severity: 'error', 
+                summary: 'Error', 
+                detail: `No se pudo guardar el contacto "${formValues.instancia}".` 
+            });
+        }
+        if (!isDuplicateError) {
+            this.close({ success: false, instancia: formValues.instancia }); 
+        }
+      },
     });
   }
 
@@ -149,8 +188,12 @@ export class ContactDialogComponent implements OnInit {
     });
   }
 
-  close(success: boolean = false) {
-    this.dialogRef.close(success);
+  close(result: boolean | DialogResult = false) { 
+    if (typeof result === 'boolean') {
+        this.dialogRef.close(result ? { success: true, instancia: this.contactForm.get('instancia')?.value } : null);
+    } else {
+        this.dialogRef.close(result);
+    }
   }
 
   isInvalid(controlName: keyof ContactFormValues): boolean {

@@ -1,18 +1,13 @@
 <form [formGroup]="contactForm" (ngSubmit)="save()" class="p-6 space-y-6">
 
-  <h2 class="text-2xl font-semibold text-gray-700">
-    {{ data ? 'Editar Contacto' : 'Nuevo Contacto' }}
-  </h2>
-
   <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
     <div>
       <label for="instancia" class="font-medium">Nombre de la Instancia *</label>
       <input
         pInputText
         id="instancia"
         formControlName="instancia"
-        placeholder="Ej: Gerencia de Servicios"
+        placeholder="Ej: Dirección Administrativa de Salud"
         class="w-full mt-1"
       />
       <p-message
@@ -24,7 +19,7 @@
     </div>
 
     <div>
-      <label class="font-medium">Tipo de Instancia *</label>
+      <label class="font-medium">Institución a la que pertenece *</label>
       <p-select
         formControlName="instanceType"
         [options]="(instanceTypes$ | async) ?? []"
@@ -51,7 +46,7 @@
         <ng-template pTemplate="footer">
           <div class="p-3 border-t">
             <p-button
-              label="Agregar Tipo de Instancia"
+              label="Agregar Institucion"
               icon="pi pi-plus"
               (onClick)="openCreateInstanceDialog()"
               size="small"

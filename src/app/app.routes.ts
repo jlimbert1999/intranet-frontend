@@ -42,6 +42,13 @@ export const routes: Routes = [
      './portal/presentation/pages/institutional-calendar/institutional-calendar.component'
      ),
    },
+    {
+     path: 'directory', 
+     loadComponent: () =>
+       import(
+         './portal/presentation/pages/directory-contacts/directory.component' 
+       ).then(m => m.default), 
+   },
   ],
  },
  {
@@ -79,20 +86,19 @@ export const routes: Routes = [
       './administration/presentation/pages/document-categories/document-categories.component'
      ),
    },
-   // ⬇️ NUEVA RUTA PARA CONTACTOS ⬇️
    {
     path: 'contact-manager',
     loadComponent: () =>
      import(
       './administration/presentation/pages/contact-manager/contact-manager.component'
-     ).then(m => m.ContactManagerComponent), // <-- SOLUCIÓN: Se accede al componente exportado
+     ).then(m => m.ContactManagerComponent), 
    },
    {
     path: 'communications-manage',
     loadComponent: () =>
      import(
       './administration/presentation/pages/communications-manage/communications-manage.component'
-     ),
+     )
    },
    {
     path: 'calendar-manage',

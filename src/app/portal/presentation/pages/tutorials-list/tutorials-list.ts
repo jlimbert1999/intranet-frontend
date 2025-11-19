@@ -7,12 +7,12 @@ import {
 
 import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from "@angular/router";
 
 import { InputTextModule } from 'primeng/inputtext';
+import { PaginatorModule } from 'primeng/paginator';
 
 import { PortalTutorialData } from '../../services';
-import { PaginatorModule } from 'primeng/paginator';
-import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-tutorials-list',

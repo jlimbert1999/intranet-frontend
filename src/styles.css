@@ -60,3 +60,18 @@
 ::view-transition-new(content) {
   animation: fade-in 180ms ease-in;
 }
+
+@keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-slide {
+  animation: fade-slide-in 0.4s ease-out;
+}

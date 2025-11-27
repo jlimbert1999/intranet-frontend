@@ -92,7 +92,7 @@ export class SidenavComponent {
     },
     {
      label: 'Calendario',
-     icon: 'pi pi-objects-column',
+     icon: 'pi pi-calendar',
      routerLink: 'calendar-manage',
     },
    ],

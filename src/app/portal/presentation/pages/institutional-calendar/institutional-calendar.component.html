@@ -1,13 +1,34 @@
 <section class="max-w-7xl mx-auto px-2 py-2 sm:py-6">
-  <header class="mb-4 text-center md:text-left">
-    <h1 class="text-xl lg:text-3xl font-semibold text-primary-700">
-      Calendario Institucional
-    </h1>
-    <p class="text-gray-600 text-sm md:text-base mt-1">
-      Fechas y actividades oficiales del Gobierno Autónomo Municipal de Sacaba.
-    </p>
-    <div class="mt-2 w-full h-[2px] bg-primary-600 rounded"></div>
-  </header>
+<header class="mb-4 text-center md:text-left">
+<h1 class="text-xl lg:text-3xl font-semibold text-primary-700">
+Calendario Institucional
+</h1>
+<p class="text-gray-600 text-sm md:text-base mt-1">
+Fechas y actividades oficiales del Gobierno Autónomo Municipal de Sacaba.
+</p>
+<div class="mt-2 w-full h-[2px] bg-primary-600 rounded"></div>
+</header>
 
-  <full-calendar class="rounded-xl shadow-sm border border-slate-300 bg-white p-4" [options]="calendarOptions"></full-calendar>
+<div class="mb-6 p-3 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+<h3 class="text-lg font-semibold text-gray-700 mb-2">Identificador de Eventos:</h3>
+<div class="flex flex-wrap gap-4">
+<div *ngFor="let item of eventTypeColors" class="flex items-center text-sm text-gray-700">
+<span 
+class="inline-block w-4 h-4 rounded-full mr-2 shadow-sm"
+[style.backgroundColor]="item.color"
+></span>
+{{ item.label }}
+</div>
+</div>
+</div>
+
+<full-calendar
+*ngIf="calendarReady()"
+class="rounded-xl shadow-sm border border-slate-300 bg-white p-4"
+[options]="calendarOptions"
+></full-calendar>
+
+<div *ngIf="!calendarReady()" class="p-8 text-center text-gray-500 border rounded-lg bg-white shadow-sm">
+Cargando calendario institucional...
+</div>
 </section>

@@ -46,23 +46,37 @@
           </tr>
         </ng-template>
 
-        <ng-template pTemplate="body" let-contact>
-          <tr>
-            <td>{{ contact.instancia }}</td>
-            <td>{{ contact.instanceType?.name }}</td>
-            <td>{{ contact.jefe || '' }}</td>
-            <td>{{ contact.soporte || '' }}</td>
-            <td>{{ contact.secretaria || '' }}</td>
-            <td>{{ contact.telefonoFijo || '' }}</td>
-            <td>{{ contact.direccion }}</td>
-            <td>
-              <div class="flex justify-center gap-2">
-                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="openEditContactDialog(contact)"></button>
-                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm p-button-danger" (click)="deleteContact(contact)"></button>
-              </div>
-            </td>
-          </tr>
+       <ng-template pTemplate="body" let-contact>
+        <tr>
+          <td>{{ contact.instancia | uppercase }}</td>
+          <td>{{ contact.instanceType?.name | uppercase }}</td>
+          <td>{{ (contact.jefe || '') | uppercase }}</td>
+          <td>{{ (contact.soporte || '') | uppercase }}</td>
+          <td>{{ (contact.secretaria || '') | uppercase }}</td>
+          <td>{{ (contact.telefonoFijo || '') | uppercase }}</td>
+          <td>{{ (contact.direccion || '') | uppercase }}</td>
+          <td>
+            <div class="flex justify-center gap-2">
+              <button
+                pButton
+                pRipple
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-text p-button-sm"
+                (click)="openEditContactDialog(contact)"
+              ></button>
+              <button
+                pButton
+                pRipple
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-text p-button-sm p-button-danger"
+                (click)="deleteContact(contact)"
+              ></button>
+            </div>
+          </td>
+        </tr>
         </ng-template>
+
+
 
         <ng-template pTemplate="emptymessage">
           <tr>

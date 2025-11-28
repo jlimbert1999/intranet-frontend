@@ -51,9 +51,16 @@ export const routes: Routes = [
       {
         path: 'tutorials/:slug',
         loadComponent: () =>
-          import('./portal/presentation/pages/tutorials-detail/tutorials-detail'),
+          import(
+            './portal/presentation/pages/tutorials-detail/tutorials-detail'
+          ),
       },
     ],
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./administration/presentation/layout/login-page/login-page'),
   },
   {
     path: 'admin',

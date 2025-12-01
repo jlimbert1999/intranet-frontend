@@ -49,13 +49,13 @@ export default class LoginPage {
     // Crear un formulario real del navegador
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = `http://localhost:3000/auth/authorize`;
+    form.action = `http://localhost:8000/auth/authorize`;
 
     form.innerHTML = `
     <input type="hidden" name="login" value="${login}">
   <input type="hidden" name="password" value="${password}">
   <input type="hidden" name="clientId" value="intranet">
-  <input type="hidden" name="redirectUri" value="http://localhost:3100/auth/callback">
+  <input type="hidden" name="redirectUri" value="http://localhost:3000/auth/callback">
   <input type="hidden" name="state" value="test">
   `;
 

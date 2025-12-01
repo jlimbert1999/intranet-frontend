@@ -1,12 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { tap } from 'rxjs';
+import { catchError, map, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthData {
-  URL = 'http://localhost:3000/auth';
+  URL = 'http://localhost:8000/auth';
   private http = inject(HttpClient);
 
   constructor() {}
@@ -21,7 +21,7 @@ export class AuthData {
     const params = new HttpParams({
       fromObject: {
         clientId: 'intranet',
-        redirectUri: 'http://localhost:3100/auth/callback',
+        redirectUri: 'http://localhost:3000/auth/callback',
         state: 'test',
       },
     });
@@ -37,6 +37,19 @@ export class AuthData {
       .pipe(
         tap((resp) => {
           console.log(resp);
+        })
+      );
+  }
+
+  checkAuthStatus() {
+    return this.http
+      .get('http://localhost:3000/auth/test/me', { withCredentials: true })
+      .pipe(
+        map(() => true),
+        catchError((err) => {
+          // Redirigir al IdentityHub
+          console.log('Not autenteciated', err);
+          return of(false);
         })
       );
   }

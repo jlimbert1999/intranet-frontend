@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { isAuthenticatedGuard } from './administration/presentation/guards/is-authenticated-guard';
 
 export const routes: Routes = [
   {
@@ -64,6 +65,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [isAuthenticatedGuard],
     loadComponent: () =>
       import(
         './administration/presentation/layout/admin-layout/admin-layout.component'

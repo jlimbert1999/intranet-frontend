@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CommonModule } from '@angular/common';
-import { CalendarOptions } from '@fullcalendar/core';
+import { CalendarOptions, EventInput } from '@fullcalendar/core'; 
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -13,222 +13,218 @@ import { environment } from '../../../../../environments/environment';
 import { RRule } from 'rrule';
 
 interface CalendarEvent {
- id: string;
- title: string;
- start?: string;
- end?: string;
- allDay?: boolean;
- rrule?: string | null;
- backgroundColor?: string;
- textColor?: string;
- description?: string;
+id: string;
+title: string;
+start?: string;
+end?: string;
+allDay?: boolean;
+rrule?: string | null;
+backgroundColor?: string;
+textColor?: string;
+description?: string;
 }
 
 interface EventTypeColor {
- label: string;
- color: string;
+label: string;
+color: string;
 }
 
 @Component({
- selector: 'app--institutional-calendar.component',
- imports: [FullCalendarModule, CommonModule],
- templateUrl: './institutional-calendar.component.html',
- changeDetection: ChangeDetectionStrategy.OnPush,
- standalone: true
+selector: 'app--institutional-calendar.component',
+imports: [FullCalendarModule, CommonModule],
+templateUrl: './institutional-calendar.component.html',
+changeDetection: ChangeDetectionStrategy.OnPush,
+standalone: true
 })
 export default class InstitutionalCalendarComponent implements OnInit {
- private http = inject(HttpClient);
+private http = inject(HttpClient);
+private baseUrl = `${environment.baseUrl}/calendar`; 
 
- eventTypeColors: EventTypeColor[] = [
-  { label: 'Actividades por Horas', color: '#3B82F6' },
-  { label: 'Feriados o Fechas Cívicas Fijas', color: '#EF4444' },
-  { label: 'Eventos de Jornada Completa', color: '#10B981' },
- ];
+eventTypeColors: EventTypeColor[] = [
+ { label: 'Actividades por Horas', color: '#3B82F6' },
+ { label: 'Feriados o Fechas Cívicas Fijas', color: '#EF4444' },
+ { label: 'Eventos de Jornada Completa', color: '#10B981' },
+];
 
- eventsList = signal<CalendarEvent[]>([]);
- calendarReady = signal(false);
+eventsList = signal<CalendarEvent[]>([]);
+calendarReady = signal(false);
 
- calendarOptions: CalendarOptions = {
-  plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, rrulePlugin],
-  initialView: 'dayGridMonth',
-  locale: esLocale,
+calendarOptions: CalendarOptions = {
+ plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, rrulePlugin],
+ initialView: 'dayGridMonth',
+ locale: esLocale,
+ 
+ events: this.fetchEvents.bind(this),
 
-  eventTimeFormat: {
-   hour: "2-digit",
-   minute: "2-digit",
-   meridiem: false,
-   hour12: false
+ eventTimeFormat: {
+ hour: "2-digit",
+ minute: "2-digit",
+ meridiem: false,
+ hour12: false
+ },
+
+ eventClick: (info) => this.onEventClick(info),
+ headerToolbar: {
+ left: 'prev,next today',
+ center: 'title',
+ right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+ },
+ buttonText: {
+ today: 'Hoy',
+ month: 'Mes',
+ week: 'Semana',
+ day: 'Día',
+ list: 'Lista'
+ },
+ timeZone: 'local',
+};
+
+ngOnInit() {
+ this.calendarReady.set(true);
+}
+
+fetchEvents(fetchInfo: any, successCallback: (events: EventInput[]) => void, failureCallback: (error: any) => void) {
+ 
+ const startStr = fetchInfo.startStr; 
+ const endStr = fetchInfo.endStr;
+  
+ this.http.get<CalendarEvent[]>(this.baseUrl, { 
+  params: { start: startStr, end: endStr } 
+ }).subscribe({
+  next: (events) => {
+   const fcEvents = events.map(e => this.transformToFcEvent(e));
+   
+   successCallback(fcEvents);
   },
+  error: (err) => {
+   console.error('Error cargando eventos institucionales:', err);
+   failureCallback(err);
+  }
+ });
+}
 
-  eventClick: (info) => this.onEventClick(info),
-  headerToolbar: {
-   left: 'prev,next today',
-   center: 'title',
-   right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-  },
-  buttonText: {
-   today: 'Hoy',
-   month: 'Mes',
-   week: 'Semana',
-   day: 'Día',
-   list: 'Lista'
-  },
-  timeZone: 'local',
-  events: []
- };
+private transformToFcEvent(e: CalendarEvent): EventInput {
+ let color: string;
+ let eventDisplay: 'auto' | 'block' | 'list-item' = 'auto';
+ let useStart = e.start;
+ let isAllDay = e.allDay ?? false;
 
- ngOnInit() {
-  this.loadEvents();
+ if (e.rrule) {
+  eventDisplay = 'block';
+
+  const freq = e.rrule.split(';').find(p => p.startsWith('FREQ='));
+  const freqValue = freq ? freq.replace('FREQ=', '') : '';
+
+  if (freqValue === 'YEARLY') {
+   color = this.eventTypeColors[1].color; 
+  } else {
+   color = this.eventTypeColors[0].color;
+  }
+
+  const hasTime =
+   e.start &&
+   (e.start.includes('T') || (e.start.includes(':') && e.start.length > 10));
+
+  if (!hasTime) {
+   useStart = e.start ? e.start.split('T')[0] : e.start;
+   isAllDay = true;
+  } else {
+   isAllDay = false;
+  }
+
+ } else if (e.allDay) {
+  color = this.eventTypeColors[2].color;
+  eventDisplay = 'block';
+
+ } else {
+  color = this.eventTypeColors[0].color;
+  eventDisplay = 'list-item';
  }
 
- private parseRrule(rruleStr: string, start?: string) {
-  try {
-   const ruleObj: any = {};
-   const parts = rruleStr.split(';');
+ color = e.backgroundColor ?? color;
 
-   parts.forEach(part => {
-    const [key, value] = part.split('=');
-    if (!key || !value) return;
+ const fcEvent: any = {
+  id: e.id,
+  title: e.title.toUpperCase(),
+  allDay: isAllDay,
+  color: color,
+  textColor: e.textColor ?? '#FFFFFF',
+  extendedProps: { description: e.description },
+  start: useStart,
+  end: e.end,
+  display: eventDisplay
+ };
 
-    switch (key) {
-     case 'FREQ':
-      ruleObj.freq = RRule[value as keyof typeof RRule];
-      break;
-     case 'INTERVAL':
-      ruleObj.interval = +value;
-      break;
-     case 'BYDAY':
-      ruleObj.byweekday = value.split(',').map(v => RRule[v as keyof typeof RRule]);
-      break;
-     case 'BYMONTH':
-      ruleObj.bymonth = +value;
-      break;
-     case 'BYMONTHDAY':
-      ruleObj.bymonthday = +value;
-      break;
-     case 'COUNT':
-      ruleObj.count = +value;
-      break;
-     case 'UNTIL':
-             
-                const datePart = value.substring(0, 8); 
-                const timePart = value.substring(9, 15); 
-                const timezonePart = value.substring(15); 
-                
-                const isoStr = `${datePart.substring(0, 4)}-${datePart.substring(4, 6)}-${datePart.substring(6, 8)}T${timePart.substring(0, 2)}:${timePart.substring(2, 4)}:${timePart.substring(4, 6)}${timezonePart}`;
+ if (e.rrule) {
+  const rruleObj = this.parseRrule(e.rrule, useStart);
+  if (rruleObj) fcEvent.rrule = rruleObj;
+  fcEvent.start = undefined;
+  fcEvent.end = undefined;
+ }
 
-                ruleObj.until = new Date(isoStr);
-       break;
-    }
-   });
+ return fcEvent;
+}
 
-   if (start) {
-    if (start.includes('T')) {
-     ruleObj.dtstart = start;
-    } else {
-     ruleObj.dtstart = start + 'T00:00:00';
-    }
-   }
 
-   return ruleObj;
+private parseRrule(rruleStr: string, start?: string) {
+ try {
+ const ruleObj: any = {};
+ const parts = rruleStr.split(';');
 
-  } catch (err) {
-   console.warn('parseRrule ERROR', err);
-   return null;
+ parts.forEach(part => {
+  const [key, value] = part.split('=');
+  if (!key || !value) return;
+
+  switch (key) {
+  case 'FREQ':
+   ruleObj.freq = RRule[value as keyof typeof RRule];
+   break;
+  case 'INTERVAL':
+   ruleObj.interval = +value;
+   break;
+  case 'BYDAY':
+   ruleObj.byweekday = value.split(',').map(v => RRule[v as keyof typeof RRule]);
+   break;
+  case 'BYMONTH':
+   ruleObj.bymonth = +value;
+   break;
+  case 'BYMONTHDAY':
+   ruleObj.bymonthday = +value;
+   break;
+  case 'COUNT':
+   ruleObj.count = +value;
+   break;
+  case 'UNTIL':
+       
+        const datePart = value.substring(0, 8); 
+        const timePart = value.substring(9, 15); 
+        const timezonePart = value.substring(15); 
+        
+        const isoStr = `${datePart.substring(0, 4)}-${datePart.substring(4, 6)}-${datePart.substring(6, 8)}T${timePart.substring(0, 2)}:${timePart.substring(2, 4)}:${timePart.substring(4, 6)}${timezonePart}`;
+
+        ruleObj.until = new Date(isoStr);
+   break;
+  }
+ });
+
+ if (start) {
+  if (start.includes('T')) {
+  ruleObj.dtstart = start;
+  } else {
+  ruleObj.dtstart = start + 'T00:00:00';
   }
  }
 
- loadEvents() {
-  this.http.get<CalendarEvent[]>(`${environment.baseUrl}/calendar`).subscribe({
-   next: (events) => {
-    this.eventsList.set(events.map(e => ({
-     ...e,
-     title: e.title.toUpperCase(),
-     rrule: e.rrule || null,
-     start: e.start,
-     end: e.end
-    })));
+ return ruleObj;
 
-    const fcEvents = this.eventsList().map(e => {
-     let color: string;
-     let eventDisplay: 'auto' | 'block' | 'list-item' = 'auto';
-     let useStart = e.start;
-     let isAllDay = e.allDay ?? false;
-
-     if (e.rrule) {
-      eventDisplay = 'block';
-
-      const freq = e.rrule.split(';').find(p => p.startsWith('FREQ='));
-      const freqValue = freq ? freq.replace('FREQ=', '') : '';
-
-      if (freqValue === 'YEARLY') {
-       color = this.eventTypeColors[1].color; 
-      } else {
-       color = this.eventTypeColors[0].color;
-      }
-
-      const hasTime =
-       e.start &&
-       (e.start.includes('T') || (e.start.includes(':') && e.start.length > 10));
-
-      if (!hasTime) {
-       useStart = e.start ? e.start.split('T')[0] : e.start;
-       isAllDay = true;
-      } else {
-       isAllDay = false;
-      }
-
-     } else if (e.allDay) {
-      color = this.eventTypeColors[2].color;
-      eventDisplay = 'block';
-
-     } else {
-      color = this.eventTypeColors[0].color;
-      eventDisplay = 'list-item';
-     }
-
-     color = e.backgroundColor ?? color;
-
-     const fcEvent: any = {
-      id: e.id,
-      title: e.title,
-      allDay: isAllDay,
-      color: color,
-      textColor: e.textColor ?? '#FFFFFF',
-      extendedProps: { description: e.description },
-      start: useStart,
-      end: e.end,
-      display: eventDisplay
-     };
-
-     if (e.rrule) {
-      const rruleObj = this.parseRrule(e.rrule, useStart);
-      if (rruleObj) fcEvent.rrule = rruleObj;
-      fcEvent.start = undefined;
-      fcEvent.end = undefined;
-     }
-
-     return fcEvent;
-    });
-
-    this.calendarOptions = {
-     ...this.calendarOptions,
-     events: [...fcEvents]
-    };
-
-    if (!this.calendarReady()) {
-     this.calendarReady.set(true);
-    }
-   },
-   error: (err) => {
-    console.error('Error cargando eventos institucionales:', err);
-    this.calendarReady.set(true);
-   }
-  });
+ } catch (err) {
+ console.warn('parseRrule ERROR', err);
+ return null;
  }
+}
 
- onEventClick(info: any) {
-  console.log('Evento Clicked:', info.event.title, info.event.extendedProps.description);
-  if (info.event.url) window.open(info.event.url, '_blank');
- }
+onEventClick(info: any) {
+ console.log('Evento Clicked:', info.event.title, info.event.extendedProps.description);
+ if (info.event.url) window.open(info.event.url, '_blank');
+}
 }

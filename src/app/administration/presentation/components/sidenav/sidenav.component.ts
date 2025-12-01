@@ -20,7 +20,7 @@ import { MenuItem } from 'primeng/api';
         <p-menu [model]="items" styleClass="p-2 h-full">
           <ng-template #start>
             <div class="flex items-center p-2 mb-2">
-              <img src="images/icons/app.png" class="h-8 w-8" alt="Icon app" />
+              <img src="images/icons/app.png" class="h-8" alt="Icon app" />
               <span class="text-lg ml-3 font-semibold">Intranet</span>
             </div>
           </ng-template>

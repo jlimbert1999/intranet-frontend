@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { environment } from '../../../../environments/environment';
-import { TutorialResponse } from '../../../administration/infrastructure';
+import { TutorialResponse } from '../../../features/administration/infrastructure';
 
 @Injectable({
   providedIn: 'root',

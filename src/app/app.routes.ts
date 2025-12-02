@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { isAuthenticatedGuard } from './administration/presentation/guards/is-authenticated-guard';
+// import { isAuthenticatedGuard } from './administration/presentation/guards/is-authenticated-guard';
 
 export const routes: Routes = [
   {
@@ -58,67 +58,77 @@ export const routes: Routes = [
       },
     ],
   },
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('./administration/presentation/layout/login-page/login-page'),
-  },
+  // {
+  //   path: 'login',
+  //   loadComponent: () =>
+  //     import('./administration/presentation/layout/login-page/login-page'),
+  // },
   {
     path: 'admin',
-    canActivate: [isAuthenticatedGuard],
+    // canActivate: [isAuthenticatedGuard],
     loadComponent: () =>
       import(
-        './administration/presentation/layout/admin-layout/admin-layout.component'
+        './features/administration/presentation/layout/admin-layout/admin-layout.component'
       ),
     children: [
+      // {
+      //   path: 'content-settings',
+      //   loadComponent: () =>
+      //     import(
+      //       './administration/presentation/pages/content-settings/content-settings'
+      //     ),
+      // },
+      // {
+      //   path: 'file-explorer',
+      //   loadComponent: () =>
+      //     import(
+      //       './administration/presentation/pages/document-management/document-management'
+      //     ),
+      // },
+      // {
+      //   path: 'document-sections',
+      //   loadComponent: () =>
+      //     import(
+      //       './administration/presentation/pages/document-sectons-manage/document-sectons-manage.component'
+      //     ),
+      // },
+      // {
+      //   path: 'document-categories',
+      //   loadComponent: () =>
+      //     import(
+      //       './administration/presentation/pages/document-categories/document-categories.component'
+      //     ),
+      // },
+      // {
+      //   path: 'communications-manage',
+      //   loadComponent: () =>
+      //     import(
+      //       './administration/presentation/pages/communications-manage/communications-manage.component'
+      //     ),
+      // },
+      // {
+      //   path: 'calendar-manage',
+      //   loadComponent: () =>
+      //     import(
+      //       './administration/presentation/pages/calendar-manage.component/calendar-manage.component'
+      //     ),
+      // },
+      // {
+      //   path: 'tutorials-manage',
+      //   loadComponent: () =>
+      //     import(
+      //       './administration/presentation/pages/tutorial-manage/tutorial-manage'
+      //     ),
+      // },
       {
-        path: 'content-settings',
+        path: 'users',
         loadComponent: () =>
-          import(
-            './administration/presentation/pages/content-settings/content-settings'
-          ),
+          import('./features/administration/pages/users-manage/users-manage'),
       },
       {
-        path: 'file-explorer',
+        path: 'roles',
         loadComponent: () =>
-          import(
-            './administration/presentation/pages/document-management/document-management'
-          ),
-      },
-      {
-        path: 'document-sections',
-        loadComponent: () =>
-          import(
-            './administration/presentation/pages/document-sectons-manage/document-sectons-manage.component'
-          ),
-      },
-      {
-        path: 'document-categories',
-        loadComponent: () =>
-          import(
-            './administration/presentation/pages/document-categories/document-categories.component'
-          ),
-      },
-      {
-        path: 'communications-manage',
-        loadComponent: () =>
-          import(
-            './administration/presentation/pages/communications-manage/communications-manage.component'
-          ),
-      },
-      {
-        path: 'calendar-manage',
-        loadComponent: () =>
-          import(
-            './administration/presentation/pages/calendar-manage.component/calendar-manage.component'
-          ),
-      },
-      {
-        path: 'tutorials-manage',
-        loadComponent: () =>
-          import(
-            './administration/presentation/pages/tutorial-manage/tutorial-manage'
-          ),
+          import('./features/administration/pages/roles-manage/roles-manage'),
       },
     ],
   },

@@ -13,9 +13,9 @@ import { map } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 
-import { TutorialVideoResponse } from '../../../../administration/infrastructure';
 import { ScrollStateService } from '../../../../shared';
 import { PortalTutorialData } from '../../services';
+import { TutorialVideoResponse } from '../../../../features/administration/infrastructure';
 
 @Component({
   selector: 'app-tutorials-detail',

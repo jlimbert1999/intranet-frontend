@@ -3,8 +3,8 @@ import { RouterModule } from '@angular/router';
 
 import { CarouselModule } from 'primeng/carousel';
 import { ButtonModule } from 'primeng/button';
+import { HeroSlideResponse } from '../../../../../features/administration/infrastructure';
 
-import { HeroSlideResponse } from '../../../../../administration/infrastructure';
 
 @Component({
   selector: 'hero-section',

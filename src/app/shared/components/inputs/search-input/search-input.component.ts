@@ -11,10 +11,10 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
   selector: 'search-input',
@@ -52,7 +52,7 @@ export class SearchInputComponent implements OnInit {
   ngOnInit(): void {
     this.searchControl.valueChanges
       .pipe(
-        debounceTime(400),
+        debounceTime(450),
         takeUntilDestroyed(this.destroyRef),
         distinctUntilChanged(),
         filter((term) => term !== null)

@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { ListboxModule } from 'primeng/listbox';
@@ -20,6 +20,7 @@ import { ButtonModule } from 'primeng/button';
 import { SelectItemGroup } from 'primeng/api';
 
 import { RoleDataSource } from '../../../datasources';
+import { RoleResponse } from '../../../interfaces';
 
 @Component({
   selector: 'app-role-dialog',
@@ -33,7 +34,7 @@ import { RoleDataSource } from '../../../datasources';
   ],
   template: `
     <form [formGroup]="roleForm" (ngSubmit)="save()">
-      <div class=" space-y-2 pt-2">
+      <div class=" space-y-4 pt-2">
         <p-floatlabel variant="on">
           <input
             id="name"
@@ -43,6 +44,16 @@ import { RoleDataSource } from '../../../datasources';
             formControlName="name"
           />
           <label for="name">Nombre</label>
+        </p-floatlabel>
+        <p-floatlabel variant="on">
+          <input
+            id="description"
+            [fluid]="true"
+            pInputText
+            autocomplete="off"
+            formControlName="description"
+          />
+          <label for="description">Descripcion</label>
         </p-floatlabel>
         <p-listbox
           [options]="permissions()"
@@ -80,8 +91,10 @@ import { RoleDataSource } from '../../../datasources';
 })
 export class RoleDialog {
   private roleDataSource = inject(RoleDataSource);
-  private _formBuilder = inject(FormBuilder);
   private dialogRef = inject(DynamicDialogRef);
+  private _formBuilder = inject(FormBuilder);
+
+  readonly data?: RoleResponse = inject(DynamicDialogConfig).data;
 
   permissions = computed<SelectItemGroup[]>(() =>
     this.roleDataSource.permissions().map(({ resource, actions }) => ({
@@ -96,17 +109,34 @@ export class RoleDialog {
 
   roleForm: FormGroup = this._formBuilder.nonNullable.group({
     name: ['', Validators.required],
+    description: [''],
     permissionIds: ['', [Validators.required, Validators.minLength(1)]],
   });
 
+  ngOnInit() {
+    this.loadForm();
+  }
+
   save() {
-    console.log(this.roleForm.value);
-    this.roleDataSource.create(this.roleForm.value).subscribe((data) => {
-      console.log(data);
+    const saveObservable = this.data
+      ? this.roleDataSource.update(this.data.id, this.roleForm.value)
+      : this.roleDataSource.create(this.roleForm.value);
+
+    saveObservable.subscribe((resp) => {
+      this.dialogRef.close(resp);
     });
   }
 
   close() {
     this.dialogRef.close();
+  }
+
+  private loadForm() {
+    if (!this.data) return;
+    const { permissions, ...props } = this.data;
+    this.roleForm.patchValue({
+      ...props,
+      permissionIds: permissions.map(({ id }) => id),
+    });
   }
 }

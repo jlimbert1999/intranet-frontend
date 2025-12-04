@@ -8,38 +8,35 @@
     (onClick)="openCreateDialog()"
   />
 </div>
-<div class="card">
-  <!-- <p-table
+<div>
+  <p-table
     #table
     [value]="dataSource()"
     [totalRecords]="dataSize()"
-    [globalFilterFields]="['name']"
+    [rows]="limit()"
     [paginator]="true"
-    [totalRecords]="dataSize()"
-    [rows]="10"
+    (onPage)="changePage($event)"
   >
     <ng-template #caption>
       <div class="flex sm:justify-end">
         <div class="w-full sm:w-1/4">
-          <search-input (search)="onSearch($event)" label="Referencia / Cite" />
+          <search-input (search)="searchRoles($event)" label="Buscar" />
         </div>
       </div>
     </ng-template>
     <ng-template #header>
       <tr>
-        <th>Tipo</th>
-        <th>Cite</th>
         <th>Nombre</th>
-        <th>Fecha</th>
+        <th>Descripcion</th>
+        <th class="sm:w-[200px]">Nro. Permisos</th>
         <th style="width: 5rem"></th>
       </tr>
     </ng-template>
     <ng-template #body let-item>
       <tr>
-        <td>{{ item.type.name }}</td>
-        <td>{{ item.code }}</td>
-        <td>{{ item.reference }}</td>
-        <td>{{ item.publicationDate | date : "shortDate" }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.permissions.length }}</td>
         <td>
           <p-button
             icon="pi pi-pencil"
@@ -51,5 +48,5 @@
         </td>
       </tr>
     </ng-template>
-  </p-table> -->
+  </p-table>
 </div>

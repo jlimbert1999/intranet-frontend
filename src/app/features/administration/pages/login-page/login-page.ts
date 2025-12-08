@@ -10,6 +10,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { AuthData } from '../../datasources/auth-data';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login-page',
   imports: [
@@ -26,6 +27,7 @@ export default class LoginPage {
   private _formBuilder = inject(FormBuilder);
 
   private authData = inject(AuthData);
+  private router = inject(Router);
 
   loginForm: FormGroup = this._formBuilder.group({
     login: ['', Validators.required],
@@ -42,24 +44,8 @@ export default class LoginPage {
   onSubmit() {
     if (this.loginForm.invalid) return;
     const { login, password, remember } = this.loginForm.value;
-    //   // this.authData.login(login, password, remember).subscribe(() => {
-    //   //   console.log('Logim completed on login page');
-    //   // });
-    //   // Crear un formulario real del navegador
-    //   const form = document.createElement('form');
-    //   form.method = 'POST';
-    //   form.action = `http://localhost:8000/auth/authorize`;
-    //   form.innerHTML = `
-    //   <input type="hidden" name="login" value="${login}">
-    // <input type="hidden" name="password" value="${password}">
-    // <input type="hidden" name="clientId" value="intranet">
-    // <input type="hidden" name="redirectUri" value="http://localhost:3000/auth/callback">
-    // <input type="hidden" name="state" value="test">
-    // `;
-    //   document.body.appendChild(form);
-    //   form.submit();
-    this.authData.direcLogin({ login, password }).subscribe((reso) => {
-      console.log(reso);
+    this.authData.login(login, password, remember).subscribe(() => {
+      this.router.navigateByUrl('/admin');
     });
   }
 

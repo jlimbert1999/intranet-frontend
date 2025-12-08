@@ -2,41 +2,39 @@
   <div class="absolute top-6 left-6 flex items-center">
     <img
       src="images/institution/alcaldia.webp"
-      class="h-16 sm:h-20 object-contain"
+      class="h-16 sm:h-22 object-contain"
     />
   </div>
   <div class="flex flex-1 items-center justify-center px-4">
     <div
-      class="bg-surface-0 shadow-lg p-6 sm:p-10 rounded-xl w-full max-w-lg flex flex-col gap-8"
+      class="bg-surface-0 shadow-lg p-4 sm:p-8 rounded-xl w-full max-w-lg flex flex-col gap-8"
     >
       <div class="flex flex-col items-center text-center">
-        <img src="assets/icono-sistema.png" class="h-14 mb-4" />
-
+        <img src="images/icons/app.png" class="h-16 mb-2" />
         <h2 class="text-2xl font-bold text-gray-800 tracking-tight">
-          Sistema SUI
+          Sistema Intranet
         </h2>
-
-        <p class="mt-1 text-gray-500 text-sm">Inicio de sesión</p>
+        <p class="mt-1 text-gray-500 text-lg">Inicio de sesión</p>
       </div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="flex flex-col gap-6 w-full">
-          <div class="flex flex-col gap-2 w-full">
+          <div class="flex flex-col gap-1 w-full">
             <label
               for="login"
               class="text-surface-900 font-medium leading-normal"
-              >Nombre de usuario</label
-            >
+              >Nombre de usuario
+            </label>
             <input
               pInputText
               id="login"
               type="text"
-              placeholder="Email address"
+              placeholder="Ingrese su nombre de usuario"
               class="w-full px-3 py-2 shadow-sm rounded-lg"
               formControlName="login"
             />
           </div>
-          <div class="flex flex-col gap-2 w-full">
+          <div class="flex flex-col gap-1 w-full">
             <label
               for="password"
               class="text-surface-900 font-medium leading-normal"
@@ -46,34 +44,22 @@
               pInputText
               id="password"
               type="password"
-              placeholder="Contraseña"
+              placeholder="Ingrese su contraseña"
               class="w-full px-3 py-2 shadow-sm rounded-lg"
               formControlName="password"
             />
           </div>
           <div class="flex items-center gap-2">
-            <p-checkbox id="rememberme1" [binary]="true"></p-checkbox>
-            <label for="rememberme1" class="text-surface-900 leading-normal"
-              >Remember me</label
-            >
+            <p-checkbox id="rememberme" [binary]="true"></p-checkbox>
+            <label for="rememberme" class="text-surface-900 leading-normal">
+              Recordar usuario
+            </label>
           </div>
+          <button pButton type="submit" class="w-full">
+            <span pButtonLabel>Ingresar</span>
+          </button>
         </div>
-        <button
-          pButton
-          class="w-full py-2 rounded-lg flex justify-center items-center gap-2"
-          type="submit"
-        >
-          <i pButtonIcon class="pi pi-user text-base! leading-normal!"></i>
-          <span pButtonLabel>Ingresar</span>
-        </button>
       </form>
     </div>
   </div>
-
-  <footer
-    class="flex justify-between text-gray-600 text-xs sm:text-base px-6 py-4"
-  >
-    <span>Versión 1.0.0</span>
-    <span>Gobierno Autónomo Municipal de Sacaba</span>
-  </footer>
 </div>

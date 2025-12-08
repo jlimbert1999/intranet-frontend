@@ -9,17 +9,19 @@ import {
   withViewTransitions,
   withComponentInputBinding,
 } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import localeBo from '@angular/common/locales/es-BO';
 import { registerLocaleData } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { definePreset, palette } from '@primeuix/themes';
 import { providePrimeNG } from 'primeng/config';
+import { MessageService } from 'primeng/api';
 import theme from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 import { handleTransitionCreated } from './core/view-transition.config';
+import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor';
 
 registerLocaleData(localeBo, 'es');
 
@@ -39,7 +41,7 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions({ onViewTransitionCreated: handleTransitionCreated }),
       withComponentInputBinding()
     ),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([HttpErrorInterceptor])),
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
@@ -50,5 +52,6 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     { provide: LOCALE_ID, useValue: 'es-BO' },
+    MessageService,
   ],
 };

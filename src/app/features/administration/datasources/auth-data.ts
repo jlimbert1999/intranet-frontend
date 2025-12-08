@@ -12,38 +12,13 @@ export class AuthData {
   constructor() {}
 
   login(login: string, password: string, remember: boolean = false) {
-    console.log('login');
     if (remember) {
       localStorage.setItem('login', login);
     } else {
       localStorage.removeItem('login');
     }
-    const params = new HttpParams({
-      fromObject: {
-        clientId: 'intranet',
-        redirectUri: 'http://localhost:3000/auth/callback',
-        state: 'test',
-      },
-    });
     return this.http
-      .post(
-        `${this.URL}/authorize`,
-        {
-          login,
-          password,
-        },
-        { params }
-      )
-      .pipe(
-        tap((resp) => {
-          console.log(resp);
-        })
-      );
-  }
-
-  direcLogin(form: object) {
-    return this.http
-      .post(`${this.URL}/login`, form, { withCredentials: true })
+      .post(`${this.URL}/login`, { login, password }, { withCredentials: true })
       .pipe(
         tap((resp) => {
           console.log(resp);
@@ -52,15 +27,13 @@ export class AuthData {
   }
 
   checkAuthStatus() {
-    return this.http
-      .get('http://localhost:3000/auth/test/me', { withCredentials: true })
-      .pipe(
-        map(() => true),
-        catchError((err) => {
-          // Redirigir al IdentityHub
-          console.log('Not autenteciated', err);
-          return of(false);
-        })
-      );
+    return this.http.get(`${this.URL}/status`, { withCredentials: true }).pipe(
+      tap((resp) => console.log(resp)),
+      map(() => true),
+      catchError((err) => {
+        console.log(err);
+        return of(false);
+      })
+    );
   }
 }

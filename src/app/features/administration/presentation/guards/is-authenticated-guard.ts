@@ -4,13 +4,12 @@ import { lastValueFrom, tap } from 'rxjs';
 import { AuthData } from '../../datasources/auth-data';
 import { environment } from '../../../../../environments/environment';
 
-export const isAuthenticatedGuard: CanActivateFn =  (route, state) => {
+export const isAuthenticatedGuard: CanActivateFn = (route, state) => {
   const authData = inject(AuthData);
   return authData.checkAuthStatus().pipe(
     tap((isAuth) => {
       if (!isAuth) {
-        console.log(isAuth);
-        window.location.href = `${environment.baseUrl}/auth/test`
+        window.location.href = `${environment.baseUrl}/auth/login?returnUrl=${state.url}`;
       }
     })
   );

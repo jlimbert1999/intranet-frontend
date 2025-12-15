@@ -6,7 +6,7 @@ import { inject } from '@angular/core';
 import { MessageService, ToastMessageOptions } from 'primeng/api';
 import { catchError, throwError } from 'rxjs';
 
-export const HttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
+export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const messageService = inject(MessageService);
   return next(req).pipe(
     catchError((error) => {

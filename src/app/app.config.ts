@@ -21,7 +21,9 @@ import theme from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 import { handleTransitionCreated } from './core/view-transition.config';
-import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor';
+import { httpErrorInterceptor } from './core/interceptors/http-error-interceptor';
+import { authInterceptor } from './core/interceptors/auth-interceptor';
+import { DialogService } from 'primeng/dynamicdialog';
 
 registerLocaleData(localeBo, 'es');
 
@@ -41,7 +43,9 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions({ onViewTransitionCreated: handleTransitionCreated }),
       withComponentInputBinding()
     ),
-    provideHttpClient(withInterceptors([HttpErrorInterceptor])),
+    provideHttpClient(
+      withInterceptors([httpErrorInterceptor, authInterceptor])
+    ),
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
@@ -53,5 +57,6 @@ export const appConfig: ApplicationConfig = {
     }),
     { provide: LOCALE_ID, useValue: 'es-BO' },
     MessageService,
+    DialogService,
   ],
 };

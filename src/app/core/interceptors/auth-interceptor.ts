@@ -14,43 +14,43 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const http = inject(HttpClient);
 
   return next(req).pipe(
-    catchError((error: HttpErrorResponse) => {
-      console.log(error);
-      if (error.status !== 401) {
-        return throwError(() => error);
-      }
+    // catchError((error: HttpErrorResponse) => {
+    //   console.log(error);
+    //   if (error.status !== 401) {
+    //     return throwError(() => error);
+    //   }
 
-      // Evitar loop con el refresh
-      if (req.url.includes('/auth/refresh')) {
-        return throwError(() => error);
-      }
+    //   // Evitar loop con el refresh
+    //   if (req.url.includes('/auth/refresh')) {
+    //     return throwError(() => error);
+    //   }
 
-      if (isRefreshing) {
-        return refreshSubject.pipe(
-          take(1),
-          switchMap(() => next(req))
-        );
-      }
+    //   if (isRefreshing) {
+    //     return refreshSubject.pipe(
+    //       take(1),
+    //       switchMap(() => next(req))
+    //     );
+    //   }
 
-      isRefreshing = true;
-      console.log('front client, start refresh');
-      return http
-        .post(
-          `${environment.baseUrl}/auth/refresh`,
-          {},
-          { withCredentials: true }
-        )
-        .pipe(
-          switchMap(() => {
-            isRefreshing = false;
-            refreshSubject.next();
-            return next(req);
-          }),
-          catchError((refreshError) => {
-            isRefreshing = false;
-            return throwError(() => refreshError);
-          })
-        );
-    })
+    //   isRefreshing = true;
+    //   console.log('front client, start refresh');
+    //   return http
+    //     .post(
+    //       `${environment.baseUrl}/auth/refresh`,
+    //       {},
+    //       { withCredentials: true }
+    //     )
+    //     .pipe(
+    //       switchMap(() => {
+    //         isRefreshing = false;
+    //         refreshSubject.next();
+    //         return next(req);
+    //       }),
+    //       catchError((refreshError) => {
+    //         isRefreshing = false;
+    //         return throwError(() => refreshError);
+    //       })
+    //     );
+    // })
   );
 };

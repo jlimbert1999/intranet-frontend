@@ -13,7 +13,13 @@ const refreshSubject = new Subject<void>();
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const http = inject(HttpClient);
 
-  return next(req).pipe(
+   const reqWithHeader = req.clone({
+    withCredentials: true,
+  });
+
+  console.log(req.url);
+
+  return next(reqWithHeader).pipe(
     // catchError((error: HttpErrorResponse) => {
     //   console.log(error);
     //   if (error.status !== 401) {

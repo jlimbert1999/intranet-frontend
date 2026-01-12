@@ -1,4 +1,4 @@
-export * from './users/role-dialog/role-dialog';
+export * from './users/role-editor/role-editor';
 export * from './calendar-dialog/calendar-dialog.component';
 export * from './communication-dialog/communication-dialog.component';
 export * from './document-category-dialog/document-category-dialog.component';
@@ -7,3 +7,4 @@ export * from './document-section-dialog/document-section-dialog.component';
 export * from './hero-slide-config-dialog/hero-slide-config-dialog.component';
 export * from './quick-access-config-dialog/quick-access-config-dialog.component';
 export * from './tutorial-dialog/tutorial-dialog';
+export * from './user-editor/user-editor';

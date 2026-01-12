@@ -20,7 +20,7 @@ import { DocumentsToManageResponse } from '../../infrastructure';
 import { DocumentDialogComponent } from '../../dialogs';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { SearchInputComponent } from '../../../../shared';
-import { DocumentService } from '../../datasources/document.service';
+import { DocumentService } from '../../services/document.service';
 
 interface Document {
   id: number;

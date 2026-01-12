@@ -5,49 +5,48 @@
     icon="pi pi-plus"
     iconPos="left"
     size="small"
-    (onClick)="openCreateDialog()"
+    (onClick)="openRoleDialog()"
   />
 </div>
-<div>
-  <p-table
-    #table
-    [value]="dataSource()"
-    [totalRecords]="dataSize()"
-    [rows]="limit()"
-    [paginator]="true"
-    (onPage)="changePage($event)"
-    size="small"
-  >
-    <ng-template #caption>
-      <div class="flex sm:justify-end">
-        <div class="w-full sm:w-1/4">
-          <search-input (search)="searchRoles($event)" label="Buscar" />
-        </div>
+
+<p-table
+  #table
+  [value]="dataSource()"
+  [totalRecords]="dataSize()"
+  [rows]="limit()"
+  [paginator]="true"
+  (onPage)="changePage($event)"
+  size="small"
+>
+  <ng-template #caption>
+    <div class="flex sm:justify-end">
+      <div class="w-full sm:w-1/4">
+        <search-input (search)="searchRoles($event)" label="Buscar" />
       </div>
-    </ng-template>
-    <ng-template #header>
-      <tr>
-        <th>Nombre</th>
-        <th>Descripcion</th>
-        <th class="sm:w-[200px]">Nro. Permisos</th>
-        <th style="width: 5rem"></th>
-      </tr>
-    </ng-template>
-    <ng-template #body let-item>
-      <tr>
-        <td>{{ item.name }}</td>
-        <td>{{ item.description }}</td>
-        <td>{{ item.permissions.length }}</td>
-        <td>
-          <p-button
-            icon="pi pi-pencil"
-            size="small"
-            (click)="openUpdateDialog(item)"
-            severity="secondary"
-            rounded
-          />
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-</div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th>Nombre</th>
+      <th>Descripcion</th>
+      <th class="sm:w-[200px]">Nro. Permisos</th>
+      <th style="width: 5rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    <tr>
+      <td>{{ item.name }}</td>
+      <td>{{ item.description }}</td>
+      <td>{{ item.permissions.length }}</td>
+      <td>
+        <p-button
+          icon="pi pi-pencil"
+          size="small"
+          (click)="openRoleDialog(item)"
+          severity="secondary"
+          rounded
+        />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

@@ -11,8 +11,7 @@ import { FormsModule } from '@angular/forms';
 
 import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
-import { PrimengFileIconPipe } from '../../../../../shared';
-
+import { PrimengFileIconPipe } from '../../../../shared';
 
 interface UploadedFile {
   id: string;

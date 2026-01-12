@@ -26,7 +26,7 @@ import {
   TutorialVideoResponse,
 } from '../../infrastructure';
 import { CustomFormValidators } from '../../../../../helpers';
-import { TutorialData } from '../../datasources/tutorial-data';
+import { TutorialData } from '../../services/tutorial-data';
 
 @Component({
   selector: 'tutorial-dialog',

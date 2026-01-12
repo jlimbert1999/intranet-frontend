@@ -15,7 +15,7 @@ import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 
 import { DocSectionWithCategoriesResponse } from '../../infrastructure';
-import { DocumentSectionService } from '../../datasources/document-section.service';
+import { DocumentSectionService } from '../../services/document-section.service';
 
 @Component({
   selector: 'app-document-section-dialog',

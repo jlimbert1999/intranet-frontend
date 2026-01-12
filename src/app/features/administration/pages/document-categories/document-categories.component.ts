@@ -12,7 +12,7 @@ import {
   DocumentSectionDialogComponent,
 } from '../../dialogs';
 import { SearchInputComponent } from '../../../../shared';
-import { DocumentCategoryService } from '../../datasources/document-category.service';
+import { DocumentCategoryService } from '../../services/document-category.service';
 
 @Component({
   selector: 'app-document-categories',

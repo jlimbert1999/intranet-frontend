@@ -25,7 +25,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 
 import { CustomFormValidators } from '../../../../../helpers';
-import { QuickAccessService } from '../../datasources/quick-access.service';
+import { QuickAccessService } from '../../services/quick-access.service';
 
 interface QuickAccessItem {
   file?: File;

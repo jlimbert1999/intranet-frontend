@@ -24,7 +24,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 
 import { HeroSlideResponse } from '../../infrastructure';
-import { HeroSlideService } from '../../datasources/hero-slide.service';
+import { HeroSlideService } from '../../services/hero-slide.service';
 
 interface SlideItem {
   id?: number;

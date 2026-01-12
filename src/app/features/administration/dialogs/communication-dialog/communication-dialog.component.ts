@@ -18,7 +18,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
-import { CommunicationManageService } from '../../datasources/communication-manage.service';
+import { CommunicationManageDataSource } from '../../services/communication-manage-data-source';
 
 
 @Component({
@@ -38,7 +38,7 @@ export class CommunicationDialogComponent {
   private diagloRef = inject(DynamicDialogRef);
   readonly data?: any = inject(DynamicDialogConfig).data;
 
-  private communicationService = inject(CommunicationManageService);
+  private communicationService = inject(CommunicationManageDataSource);
 
   types = this.communicationService.types;
 

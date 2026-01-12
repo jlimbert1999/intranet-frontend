@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { isAuthenticatedGuard } from './features/administration/presentation/guards/is-authenticated-guard';
+import { isAuthenticatedGuard } from './features/administration/guards/is-authenticated-guard';
 // import { isAuthenticatedGuard } from './administration/presentation/guards/is-authenticated-guard';
 
 export const routes: Routes = [
@@ -60,16 +60,12 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'login',
-    loadComponent: () =>
-      import('./features/administration/pages/login-page/login-page'),
-  },
-  {
     path: 'admin',
     canActivate: [isAuthenticatedGuard],
+    title: 'Administracion',
     loadComponent: () =>
       import(
-        './features/administration/presentation/layout/admin-layout/admin-layout.component'
+        './features/administration/layout/admin-layout/admin-layout.component'
       ),
     children: [
       {
@@ -123,11 +119,13 @@ export const routes: Routes = [
       // },
       {
         path: 'users',
+        title: 'Usuarios',
         loadComponent: () =>
-          import('./features/administration/pages/users-manage/users-manage'),
+          import('./features/administration/pages/users-admin/users-admin'),
       },
       {
         path: 'roles',
+        title: 'Roles',
         loadComponent: () =>
           import('./features/administration/pages/roles-manage/roles-manage'),
       },

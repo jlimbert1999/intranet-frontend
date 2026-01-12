@@ -23,9 +23,9 @@ import {
   DocumentsToManageResponse,
   CategoriesWithSectionsResponse,
 } from '../../infrastructure';
-import { DocumentFileUploaderComponent } from '../../presentation/components';
 import { DocumentsToManage } from '../../domain';
-import { DocumentService } from '../../datasources/document.service';
+import { DocumentService } from '../../services/document.service';
+import { DocumentFileUploaderComponent } from '../../components';
 
 interface UploadedDocument {
   id: string;

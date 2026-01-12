@@ -3,9 +3,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Observable, of, switchMap } from 'rxjs';
+
 import { environment } from '../../../../environments/environment';
 import { FileUploadService } from '../../../shared';
-
 
 interface GetCommunicationsParams {
   term?: string;
@@ -16,7 +16,7 @@ interface GetCommunicationsParams {
 @Injectable({
   providedIn: 'root',
 })
-export class CommunicationManageService {
+export class CommunicationManageDataSource {
   private fileUploadService = inject(FileUploadService);
   private http = inject(HttpClient);
   private readonly URL = `${environment.baseUrl}/communications`;

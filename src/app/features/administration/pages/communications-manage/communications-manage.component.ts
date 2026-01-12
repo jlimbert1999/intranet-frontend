@@ -15,7 +15,7 @@ import { TableModule } from 'primeng/table';
 
 import { CommunicationDialogComponent } from '../../dialogs';
 import { SearchInputComponent } from '../../../../shared';
-import { CommunicationManageService } from '../../datasources/communication-manage.service';
+import { CommunicationManageDataSource } from '../../services/communication-manage-data-source';
 
 @Component({
   selector: 'app-communications-manage',
@@ -25,7 +25,7 @@ import { CommunicationManageService } from '../../datasources/communication-mana
 })
 export default class CommunicationsManageComponent {
   private dialogService = inject(DialogService);
-  private communicationServce = inject(CommunicationManageService);
+  private communicationServce = inject(CommunicationManageDataSource);
 
   limit = signal(10);
   index = signal(0);

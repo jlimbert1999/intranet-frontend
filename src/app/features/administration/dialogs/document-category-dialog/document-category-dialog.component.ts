@@ -14,7 +14,7 @@ import { ButtonModule } from 'primeng/button';
 
 import { DocumentCategoryResponse } from '../../infrastructure';
 import { FormErrorMessagesPipe } from '../../../../shared';
-import { DocumentCategoryService } from '../../datasources/document-category.service';
+import { DocumentCategoryService } from '../../services/document-category.service';
 
 @Component({
   selector: 'app-document-category-dialog',

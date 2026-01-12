@@ -19,11 +19,11 @@ import { ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
 import { SelectItemGroup } from 'primeng/api';
 
-import { RoleDataSource } from '../../../datasources';
+import { RoleDataSource } from '../../../services';
 import { RoleResponse } from '../../../interfaces';
 
 @Component({
-  selector: 'app-role-dialog',
+  selector: 'app-role-editor',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -89,7 +89,7 @@ import { RoleResponse } from '../../../interfaces';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RoleDialog {
+export class RoleEditor {
   private roleDataSource = inject(RoleDataSource);
   private dialogRef = inject(DynamicDialogRef);
   private _formBuilder = inject(FormBuilder);

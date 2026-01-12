@@ -6,25 +6,33 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { MenuItem } from 'primeng/api';
 
 import { SearchInputComponent } from '../../../../shared';
-import { RoleDataSource } from '../../services';
-import { RoleResponse } from '../../interfaces';
-import { RoleEditor } from '../../dialogs';
+import { UserDataSource } from '../../services';
+import { UserEditor } from '../../dialogs';
 
 @Component({
-  selector: 'app-roles-manage',
-  imports: [ButtonModule, TableModule, SearchInputComponent],
-  templateUrl: './roles-manage.html',
+  selector: 'app-users-admin',
+  imports: [
+    CommonModule,
+    ButtonModule,
+    TableModule,
+    TagModule,
+    SearchInputComponent,
+  ],
+  templateUrl: './users-admin.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class RolesManage {
+export default class UsersAdmin {
   private dialogService = inject(DialogService);
-  private roleDataSource = inject(RoleDataSource);
+  private clientDataSource = inject(UserDataSource);
 
   limit = signal(10);
   offset = signal(0);
@@ -36,16 +44,12 @@ export default class RolesManage {
       term: this.searchTerm(),
     }),
     stream: ({ params }) =>
-      this.roleDataSource.findAll({
-        limit: params.limit,
-        offset: params.offset,
-        term: params.term,
-      }),
+      this.clientDataSource.findAll(params.limit, params.offset, params.term),
   });
 
   dataSource = linkedSignal(() => {
     if (!this.roleResource.hasValue()) return [];
-    return this.roleResource.value().roles;
+    return this.roleResource.value().users;
   });
 
   dataSize = linkedSignal(() => {
@@ -53,27 +57,29 @@ export default class RolesManage {
     return this.roleResource.value().total;
   });
 
-  openRoleDialog(role?: RoleResponse) {
-    const dialogRef = this.dialogService.open(RoleEditor, {
-      header: role ? 'Editar rol' : 'Crear rol',
+  menuOptions = signal<MenuItem[]>([]);
+
+  openUserDialog(user?: any) {
+    const dialogRef = this.dialogService.open(UserEditor, {
+      header: user ? 'Editar usuario' : 'Crear usuario',
       modal: true,
       draggable: false,
       closeOnEscape: true,
       closable: true,
-      width: '30vw',
-      data: role,
+      width: '40vw',
+      data: user,
       breakpoints: {
         '960px': '75vw',
         '640px': '90vw',
       },
     });
-    dialogRef?.onClose.subscribe((result?: RoleResponse) => {
+    dialogRef?.onClose.subscribe((result?: any) => {
       if (!result) return;
       this.updateItemDataSource(result);
     });
   }
 
-  searchRoles(term: string) {
+  search(term: string) {
     this.offset.set(0);
     this.searchTerm.set(term);
   }
@@ -83,7 +89,7 @@ export default class RolesManage {
     this.offset.set(event.first);
   }
 
-  private updateItemDataSource(item: RoleResponse): void {
+  private updateItemDataSource(item: any): void {
     const index = this.dataSource().findIndex(({ id }) => item.id === id);
     if (index === -1) {
       this.dataSource.update((values) => [item, ...values]);

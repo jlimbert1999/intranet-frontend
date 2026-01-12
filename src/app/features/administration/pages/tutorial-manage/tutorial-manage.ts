@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 
 import { TutorialDialog } from '../../dialogs';
-import { TutorialData } from '../../datasources/tutorial-data';
+import { TutorialData } from '../../services/tutorial-data';
 
 @Component({
   selector: 'app-tutorial-manage',

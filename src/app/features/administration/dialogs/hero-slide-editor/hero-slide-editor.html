@@ -1,5 +1,6 @@
 <form [formGroup]="form">
-  <div class="flex items-center justify-end p-2">
+  <div class="flex items-center justify-between p-2">
+    <div class="text-xl font-medium">Banners</div>
     <p-button
       icon="pi pi-plus"
       size="small"
@@ -22,31 +23,47 @@
     formArrayName="slides"
   >
     <div
-      *ngFor="let control of slidesFormArray.controls; let i = index"
+      *ngFor="let control of slides.controls; let i = index"
       [formGroupName]="i"
       cdkDrag
     >
       <div
-        class="flex flex-col bg-surface-0 rounded-xl shadow-md border border-surface-200 px-4 py-2"
+        class="flex flex-col rounded-xl bg-surface-0 border border-surface-300 px-4 py-2"
       >
         <div class="flex justify-between mb-2">
           <div class="flex items-center gap-x-2">
             <div class="font-semibold">Slide {{ i + 1 }}</div>
-            @if (slides()[i].id) {
-              <p-tag severity="success" value="Completado" />
-            }
-            @else {
-              <p-tag severity="warn" value="Pendiente" />
+            @if (slidesProperties()[i].imageUrl) {
+            <p-tag severity="success" value="Completado" />
+            } @else {
+            <p-tag severity="warn" value="Pendiente" />
             }
           </div>
           <div class="flex gap-x-2">
-              <p-button cdkDragHandle icon="pi pi-arrows-alt" size="small" [text]="true" />
-              <p-button icon="pi pi-trash" severity="danger" size="small" (onClick)="removeSlide(i)"/>
+            <p-button
+              cdkDragHandle
+              icon="pi pi-arrows-alt"
+              size="small"
+              [text]="true"
+            />
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              size="small"
+              (onClick)="removeSlide(i)"
+            />
           </div>
         </div>
         <div class="flex flex-col sm:flex-row items-center gap-6">
           <div class="w-full sm:w-1/3">
-            <img [src]="slides()[i].image" class="object-cover" />
+            @if(slidesProperties()[i].imageUrl){
+            <img [src]="slidesProperties()[i].imageUrl" class="object-cover" />
+            } @else {
+            <img
+              [src]="slidesProperties()[i].localImage?.preview"
+              class="object-cover"
+            />
+            }
           </div>
           <div class="w-full sm:w-2/3 flex flex-col gap-4">
             <p-floatlabel variant="on">
@@ -72,10 +89,8 @@
         </div>
       </div>
     </div>
-    @if(slides().length===0){
-      <div class="font-medium">
-        No se encontraron elementos.
-      </div>
+    @if(slidesProperties().length===0){
+    <div class="font-medium">No se encontraron elementos.</div>
     }
   </div>
   <div class="p-dialog-footer">

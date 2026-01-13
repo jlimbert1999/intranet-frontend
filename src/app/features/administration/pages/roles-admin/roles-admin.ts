@@ -17,12 +17,12 @@ import { RoleResponse } from '../../interfaces';
 import { RoleEditor } from '../../dialogs';
 
 @Component({
-  selector: 'app-roles-manage',
+  selector: 'app-roles-admin',
   imports: [ButtonModule, TableModule, SearchInputComponent],
-  templateUrl: './roles-manage.html',
+  templateUrl: './roles-admin.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class RolesManage {
+export default class RolesAdmin {
   private dialogService = inject(DialogService);
   private roleDataSource = inject(RoleDataSource);
 

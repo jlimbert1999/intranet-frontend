@@ -1,4 +1,4 @@
-import { HeroSlideResponse, QuickAccessResponse } from "../../../features/administration/infrastructure";
+import { HeroSlideResponse, QuickAccessResponse } from "../../../features/administration/interfaces";
 
 export interface HomePortalDataResponse {
   slides: HeroSlideResponse[];

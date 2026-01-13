@@ -1,13 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { ChipModule } from 'primeng/chip';
 
-import {
-  HeroSlideConfigDialogComponent,
-  QuickAccessConfigDialogComponent,
-} from '../../dialogs';
+import { HeroSlideEditor, QuickAccessEditor } from '../../dialogs';
 
 @Component({
   selector: 'app-content-settings',
@@ -19,7 +17,7 @@ export default class ContentSettings {
   private dialogService = inject(DialogService);
 
   showHeroSectionDialog() {
-    this.dialogService.open(HeroSlideConfigDialogComponent, {
+    this.dialogService.open(HeroSlideEditor, {
       header: 'Configuración banner',
       modal: true,
       width: '60vw',
@@ -31,7 +29,7 @@ export default class ContentSettings {
   }
 
   showQuickAccessDialog() {
-    this.dialogService.open(QuickAccessConfigDialogComponent, {
+    this.dialogService.open(QuickAccessEditor, {
       header: 'Configuración accesos directos',
       modal: true,
       width: '35vw',

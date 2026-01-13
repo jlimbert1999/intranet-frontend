@@ -16,9 +16,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule, TablePageEvent } from 'primeng/table';
 
-import { DocumentsToManageResponse } from '../../infrastructure';
 import { DocumentDialogComponent } from '../../dialogs';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { SearchInputComponent } from '../../../../shared';
 import { DocumentService } from '../../services/document.service';
 

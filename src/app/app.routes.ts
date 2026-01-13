@@ -127,7 +127,7 @@ export const routes: Routes = [
         path: 'roles',
         title: 'Roles',
         loadComponent: () =>
-          import('./features/administration/pages/roles-manage/roles-manage'),
+          import('./features/administration/pages/roles-admin/roles-admin'),
       },
     ],
   },

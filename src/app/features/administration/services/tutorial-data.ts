@@ -3,8 +3,8 @@ import { inject, Injectable } from '@angular/core';
 
 import { catchError, EMPTY, forkJoin, map, of, switchMap } from 'rxjs';
 
-import { TutorialResponse } from '../infrastructure';
 import { environment } from '../../../../environments/environment';
+import { TutorialResponse } from '../interfaces';
 
 interface TutorialProps {
   title: string;

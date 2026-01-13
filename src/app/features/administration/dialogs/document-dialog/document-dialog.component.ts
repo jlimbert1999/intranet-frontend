@@ -18,14 +18,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 
-import {
-  SectionCategoriesResponse,
-  DocumentsToManageResponse,
-  CategoriesWithSectionsResponse,
-} from '../../infrastructure';
 import { DocumentsToManage } from '../../domain';
 import { DocumentService } from '../../services/document.service';
 import { DocumentFileUploaderComponent } from '../../components';
+import { CategoriesWithSectionsResponse, SectionCategoriesResponse } from '../../interfaces';
 
 interface UploadedDocument {
   id: string;

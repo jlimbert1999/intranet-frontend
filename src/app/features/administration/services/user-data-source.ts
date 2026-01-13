@@ -2,9 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { inject, Injectable } from '@angular/core';
 
-import { tap } from 'rxjs';
-
 import { environment } from '../../../../environments/environment';
+import { UserResponse } from '../interfaces';
 
 interface roles {
   id: string;
@@ -27,14 +26,12 @@ export class UserDataSource {
     const params = new HttpParams({
       fromObject: { limit, offset, ...(term && { term }) },
     });
-    return this.http
-      .get<{ users: any[]; total: number }>(this.URL, {
-        params,
-      })
-      .pipe(
-        tap((resp) => {
-          console.log(resp);
-        })
-      );
+    return this.http.get<{ users: UserResponse[]; total: number }>(this.URL, {
+      params,
+    });
+  }
+
+  update(id: string, roleIds: string[]) {
+    return this.http.patch(`${this.URL}/${id}`, { roleIds });
   }
 }

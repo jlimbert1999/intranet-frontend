@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
-import { PermisssionResponse, RoleResponse } from '../interfaces';
+import { PermissionResponse, RoleResponse } from '../interfaces';
 
 interface FindRolesParams {
   term: string;
@@ -18,7 +18,7 @@ export class RoleDataSource {
   private URL = `${environment.baseUrl}/roles`;
 
   permissions = toSignal(
-    this.http.get<PermisssionResponse[]>(`${this.URL}/permissions`),
+    this.http.get<PermissionResponse[]>(`${this.URL}/permissions`),
     { initialValue: [] }
   );
 

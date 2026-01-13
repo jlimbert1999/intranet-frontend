@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { QuickAccessResponse } from '../../../../../features/administration/infrastructure';
+import { QuickAccessResponse } from '../../../../../features/administration/interfaces';
 
 
 @Component({

@@ -3,16 +3,15 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { forkJoin, map, of, switchMap, tap } from 'rxjs';
 
-import {
-  CategoriesWithSectionsResponse,
-  DocumentCategoryResponse,
-  DocumentsToManageMapper,
-  DocumentsToManageResponse,
-} from '../infrastructure';
-
 import { DocumentsToManage } from '../domain';
 import { environment } from '../../../../environments/environment';
 import { FileUploadService } from '../../../shared';
+import { DocumentsToManageMapper } from '../infrastructure/mappers/document-category-with-documents.mapper';
+import {
+  CategoriesWithSectionsResponse,
+  DocumentCategoryResponse,
+  DocumentsToManageResponse,
+} from '../interfaces';
 
 interface GetDocumentsToManageProps {
   limit: number;

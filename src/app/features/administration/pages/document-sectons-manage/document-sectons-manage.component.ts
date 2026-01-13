@@ -4,10 +4,10 @@ import { TableModule, TablePageEvent } from 'primeng/table';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
 
-import { DocSectionWithCategoriesResponse } from '../../infrastructure';
 import { DocumentSectionDialogComponent } from '../../dialogs';
 import { SearchInputComponent } from '../../../../shared';
 import { DocumentSectionService } from '../../services/document-section.service';
+import { DocSectionWithCategoriesResponse } from '../../interfaces';
 
 @Component({
   selector: 'app-document-sectons-manage',

@@ -12,9 +12,9 @@ import { MessageModule } from 'primeng/message';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 
-import { DocumentCategoryResponse } from '../../infrastructure';
 import { FormErrorMessagesPipe } from '../../../../shared';
 import { DocumentCategoryService } from '../../services/document-category.service';
+import { DocumentCategoryResponse } from '../../interfaces';
 
 @Component({
   selector: 'app-document-category-dialog',

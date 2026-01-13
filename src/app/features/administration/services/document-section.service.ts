@@ -3,8 +3,8 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, tap } from 'rxjs';
 
-import { DocSectionWithCategoriesResponse } from '../infrastructure';
 import { environment } from '../../../../environments/environment';
+import { DocSectionWithCategoriesResponse } from '../interfaces';
 
 interface PaginationParams {
   limit: number;

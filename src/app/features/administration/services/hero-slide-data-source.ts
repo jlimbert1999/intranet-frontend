@@ -2,15 +2,17 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, switchMap, forkJoin, EMPTY, map, of } from 'rxjs';
 
-import { HeroSlideResponse } from '../infrastructure';
 import { environment } from '../../../../environments/environment';
 import { FileUploadService } from '../../../shared';
+import { HeroSlideResponse } from '../interfaces';
 
 interface HeroSlideItem {
-  id?: number;
-  image: string;
+  imageUrl: string;
   order: number;
-  file?: File;
+  localImage: {
+    preview: string;
+    file: File;
+  };
   title?: string;
   description?: string;
   redirectUrl?: string;
@@ -19,7 +21,7 @@ interface HeroSlideItem {
 @Injectable({
   providedIn: 'root',
 })
-export class HeroSlideService {
+export class HeroSlideDataSource {
   private http = inject(HttpClient);
 
   private fileUploadService = inject(FileUploadService);
@@ -31,33 +33,29 @@ export class HeroSlideService {
   }
 
   getCurrentSlides() {
-    return this.http
-      .get<HeroSlideResponse[]>(this.URL)
-      .pipe(
-        map((resp) =>
-          resp.map(({ image, title, description, redirecttUrl }) => ({
-            image,
-            title,
-            description,
-            redirecttUrl,
-          }))
-        )
-      );
+    return this.http.get<HeroSlideResponse[]>(this.URL).pipe(
+      map((resp) =>
+        resp.map(({ imageUrl: image, title, description, redirecttUrl }) => ({
+          image,
+          title,
+          description,
+          redirecttUrl,
+        }))
+      )
+    );
   }
 
-  syncDocuments(items: HeroSlideItem[]) {
+  replaceSlides(items: HeroSlideItem[]) {
     const existingSlides = items
-      .filter(
-        (item) => item.id && item.image && !item.image.startsWith('blob:')
-      )
-      .map(({ image, ...props }) => ({
-        image: image?.split('/').pop(), // * extrack fileName from build url,
+      .filter((item) => item.imageUrl)
+      .map(({ imageUrl, ...props }) => ({
+        image: imageUrl?.split('/').pop(), // * extrack fileName from build url,
         ...props,
       }));
-      
-      return this.buildUploadTask(items).pipe(
-        map((newSlides) => [...existingSlides, ...newSlides]),
-        switchMap((allSlides) => {
+
+    return this.buildUploadTask(items).pipe(
+      map((newSlides) => [...existingSlides, ...newSlides]), // TODO replace order
+      switchMap((allSlides) => {
         return this.http.put<HeroSlideResponse[]>(this.URL, {
           slides: allSlides,
         });
@@ -65,11 +63,27 @@ export class HeroSlideService {
     );
   }
 
+  //   map((newSlides) => {
+  //   const newMap = new Map(newSlides.map(s => [s.order, s]));
+  //   return items.map(item => {
+  //     if (item.localImage) {
+  //       return newMap.get(item.order)!;
+  //     }
+  //     return {
+  //       image: item.imageUrl?.split('/').pop(),
+  //       title: item.title,
+  //       description: item.description,
+  //       redirectUrl: item.redirectUrl,
+  //       order: item.order,
+  //     };
+  //   });
+  // })
+
   private buildUploadTask(items: HeroSlideItem[]) {
     const itemsToUpload = items
-      .filter((item) => item.file !== undefined)
-      .map(({ file, ...props }) => ({
-        file: file as File,
+      .filter((item) => item.localImage !== undefined)
+      .map(({ localImage, ...props }) => ({
+        file: localImage.file,
         ...props,
       }));
 

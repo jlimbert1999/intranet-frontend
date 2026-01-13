@@ -8,5 +8,6 @@ export interface RoleResponse {
 export interface PermissionResponse {
   id: string;
   resource: string;
-  action: string;
+  actions: any[];
 }
+

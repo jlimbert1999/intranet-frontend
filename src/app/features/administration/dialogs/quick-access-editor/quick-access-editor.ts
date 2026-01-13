@@ -34,7 +34,7 @@ interface QuickAccessItem {
 }
 
 @Component({
-  selector: 'app-quick-access-config-dialog',
+  selector: 'app-quick-access-editor',
   imports: [
     CommonModule,
     DragDropModule,
@@ -44,10 +44,10 @@ interface QuickAccessItem {
     TextareaModule,
     ButtonModule,
   ],
-  templateUrl: './quick-access-config-dialog.component.html',
+  templateUrl: './quick-access-editor.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class QuickAccessConfigDialogComponent {
+export class QuickAccessEditor {
   private formBuilder = inject(FormBuilder);
   private dialogRef = inject(DynamicDialogRef);
   private quickAccessService = inject(QuickAccessService);

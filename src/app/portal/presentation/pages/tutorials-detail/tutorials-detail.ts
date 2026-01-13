@@ -15,7 +15,7 @@ import { ButtonModule } from 'primeng/button';
 
 import { ScrollStateService } from '../../../../shared';
 import { PortalTutorialData } from '../../services';
-import { TutorialVideoResponse } from '../../../../features/administration/infrastructure';
+import { TutorialVideoResponse } from '../../../../features/administration/interfaces';
 
 @Component({
   selector: 'app-tutorials-detail',

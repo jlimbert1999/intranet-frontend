@@ -21,12 +21,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 
-import {
-  TutorialResponse,
-  TutorialVideoResponse,
-} from '../../infrastructure';
 import { CustomFormValidators } from '../../../../../helpers';
 import { TutorialData } from '../../services/tutorial-data';
+import { TutorialResponse, TutorialVideoResponse } from '../../interfaces';
 
 @Component({
   selector: 'tutorial-dialog',

@@ -2,9 +2,9 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, switchMap, forkJoin, EMPTY, map, of } from 'rxjs';
 
-import { HeroSlideResponse, QuickAccessResponse } from '../infrastructure';
 import { environment } from '../../../../environments/environment';
 import { FileUploadService } from '../../../shared';
+import { HeroSlideResponse, QuickAccessResponse } from '../interfaces';
 
 interface QuickAccessItem {
   name: string;

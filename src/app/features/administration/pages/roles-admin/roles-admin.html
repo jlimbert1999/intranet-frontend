@@ -30,7 +30,7 @@
       <th>Nombre</th>
       <th>Descripcion</th>
       <th class="sm:w-[200px]">Nro. Permisos</th>
-      <th style="width: 5rem"></th>
+      <th style="width: 2.5rem"></th>
     </tr>
   </ng-template>
   <ng-template #body let-item>
@@ -40,11 +40,11 @@
       <td>{{ item.permissions.length }}</td>
       <td>
         <p-button
+          [text]="true"
+          [rounded]="true"
           icon="pi pi-pencil"
           size="small"
           (click)="openRoleDialog(item)"
-          severity="secondary"
-          rounded
         />
       </td>
     </tr>

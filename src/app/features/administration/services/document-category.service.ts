@@ -3,8 +3,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 
-import { DocumentCategoryResponse } from '../infrastructure';
 import { environment } from '../../../../environments/environment';
+import { DocumentCategoryResponse } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',

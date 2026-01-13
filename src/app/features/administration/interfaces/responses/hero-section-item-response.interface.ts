@@ -1,6 +1,6 @@
 export interface HeroSlideResponse {
   id: number;
-  image: string;
+  imageUrl: string;
   order: number;
   title: string | null;
   description: string | null;

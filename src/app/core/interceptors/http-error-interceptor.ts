@@ -40,12 +40,6 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
             break;
 
           default:
-            console.log(error);
-            messageConfig = {
-              severity: 'info',
-              summary: 'Error no controlado',
-              detail: 'No se pudo determinar el tipo de error.',
-            };
             break;
         }
         messageService.add({ ...messageConfig, life: 3000 });

@@ -4,7 +4,7 @@ import { catchError, switchMap, forkJoin, EMPTY, map, of } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import { FileUploadService } from '../../../shared';
-import { HeroSlideResponse, QuickAccessResponse } from '../interfaces';
+import { HeroSlideResponse, QuickAccessResponse } from '../content-settings/interfaces';
 
 interface QuickAccessItem {
   name: string;

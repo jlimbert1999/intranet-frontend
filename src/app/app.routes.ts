@@ -3,62 +3,62 @@ import { isAuthenticatedGuard } from './features/administration/guards/is-authen
 // import { isAuthenticatedGuard } from './administration/presentation/guards/is-authenticated-guard';
 
 export const routes: Routes = [
-  {
-    path: '',
-    loadComponent: () =>
-      import(
-        './portal/presentation/layouts/portal-layout/portal-layout.component'
-      ),
-    children: [
-      {
-        path: '',
-        loadComponent: () =>
-          import(
-            './portal/presentation/pages/landing-page/landing-page.component'
-          ),
-      },
-      {
-        path: 'repository',
-        loadComponent: () =>
-          import(
-            './portal/presentation/pages/document-repository/document-repository.component'
-          ),
-      },
-      {
-        path: 'communications',
-        loadComponent: () =>
-          import(
-            './portal/presentation/pages/communications/communications.component'
-          ),
-      },
-      {
-        path: 'communications/:id',
-        loadComponent: () =>
-          import(
-            './portal/presentation/pages/communication-detail/communication-detail'
-          ),
-      },
-      {
-        path: 'calendar',
-        loadComponent: () =>
-          import(
-            './portal/presentation/pages/institutional-calendar/institutional-calendar.component'
-          ),
-      },
-      {
-        path: 'tutorials',
-        loadComponent: () =>
-          import('./portal/presentation/pages/tutorials-list/tutorials-list'),
-      },
-      {
-        path: 'tutorials/:slug',
-        loadComponent: () =>
-          import(
-            './portal/presentation/pages/tutorials-detail/tutorials-detail'
-          ),
-      },
-    ],
-  },
+  // {
+  //   path: '',
+  //   loadComponent: () =>
+  //     import(
+  //       './portal/presentation/layouts/portal-layout/portal-layout.component'
+  //     ),
+  //   children: [
+  //     {
+  //       path: '',
+  //       loadComponent: () =>
+  //         import(
+  //           './portal/presentation/pages/landing-page/landing-page.component'
+  //         ),
+  //     },
+  //     {
+  //       path: 'repository',
+  //       loadComponent: () =>
+  //         import(
+  //           './portal/presentation/pages/document-repository/document-repository.component'
+  //         ),
+  //     },
+  //     {
+  //       path: 'communications',
+  //       loadComponent: () =>
+  //         import(
+  //           './portal/presentation/pages/communications/communications.component'
+  //         ),
+  //     },
+  //     {
+  //       path: 'communications/:id',
+  //       loadComponent: () =>
+  //         import(
+  //           './portal/presentation/pages/communication-detail/communication-detail'
+  //         ),
+  //     },
+  //     {
+  //       path: 'calendar',
+  //       loadComponent: () =>
+  //         import(
+  //           './portal/presentation/pages/institutional-calendar/institutional-calendar.component'
+  //         ),
+  //     },
+  //     {
+  //       path: 'tutorials',
+  //       loadComponent: () =>
+  //         import('./portal/presentation/pages/tutorials-list/tutorials-list'),
+  //     },
+  //     {
+  //       path: 'tutorials/:slug',
+  //       loadComponent: () =>
+  //         import(
+  //           './portal/presentation/pages/tutorials-detail/tutorials-detail'
+  //         ),
+  //     },
+  //   ],
+  // },
   {
     path: 'admin',
     canActivate: [isAuthenticatedGuard],
@@ -72,7 +72,7 @@ export const routes: Routes = [
         path: 'content-settings',
         loadComponent: () =>
           import(
-            './features/administration/pages/content-settings/content-settings'
+            './features/administration/content-settings/pages/content-settings-list/content-settings-list'
           ),
       },
       // {
@@ -82,13 +82,13 @@ export const routes: Routes = [
       //       './administration/presentation/pages/document-management/document-management'
       //     ),
       // },
-      // {
-      //   path: 'document-sections',
-      //   loadComponent: () =>
-      //     import(
-      //       './administration/presentation/pages/document-sectons-manage/document-sectons-manage.component'
-      //     ),
-      // },
+      {
+        path: 'document-sections',
+        loadComponent: () =>
+          import(
+            './features/administration/documents/pages/document-sectons-admin/document-sectons-admin'
+          ),
+      },
       // {
       //   path: 'document-categories',
       //   loadComponent: () =>
@@ -121,13 +121,17 @@ export const routes: Routes = [
         path: 'users',
         title: 'Usuarios',
         loadComponent: () =>
-          import('./features/administration/pages/users-admin/users-admin'),
+          import(
+            './features/administration/access/pages/users-admin/users-admin'
+          ),
       },
       {
         path: 'roles',
         title: 'Roles',
         loadComponent: () =>
-          import('./features/administration/pages/roles-admin/roles-admin'),
+          import(
+            './features/administration/access/pages/roles-admin/roles-admin'
+          ),
       },
     ],
   },

@@ -1,5 +1,5 @@
 import { DocumentsToManage } from '../../domain';
-import { DocumentsToManageResponse } from '../../interfaces/responses/document-response.interface';
+import { DocumentsToManageResponse } from '../../documents/interfaces/responses/document-response.interface';
 
 export class DocumentsToManageMapper {
   static fromResponse(response: DocumentsToManageResponse): DocumentsToManage {

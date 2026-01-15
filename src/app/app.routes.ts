@@ -89,13 +89,13 @@ export const routes: Routes = [
             './features/administration/documents/pages/document-sectons-admin/document-sectons-admin'
           ),
       },
-      // {
-      //   path: 'document-categories',
-      //   loadComponent: () =>
-      //     import(
-      //       './administration/presentation/pages/document-categories/document-categories.component'
-      //     ),
-      // },
+      {
+        path: 'document-categories',
+        loadComponent: () =>
+          import(
+            './features/administration/documents/pages/document-type-admin/document-type-admin'
+          ),
+      },
       // {
       //   path: 'communications-manage',
       //   loadComponent: () =>

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
 import { QuickAccessResponse } from '../../../../../administration/content-settings/interfaces';
 
 @Component({
@@ -24,7 +25,7 @@ import { QuickAccessResponse } from '../../../../../administration/content-setti
         >
           @for (access of quickAccess(); track $index) {
           <a
-            [href]="access.url"
+            [href]="access.redirectUrl"
             target="_blank"
             rel="noopener noreferrer"
             class="group relative bg-surface-50 rounded-2xl shadow-md
@@ -39,7 +40,7 @@ import { QuickAccessResponse } from '../../../../../administration/content-setti
                  group-hover:bg-primary-50 transition-colors"
             >
               <img
-                [src]="access.icon"
+                [src]="access.iconUrl"
                 [alt]="access.name"
                 class="w-12 h-12 object-contain"
                 loading="lazy"

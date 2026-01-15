@@ -9,10 +9,10 @@ import { TableModule } from 'primeng/table';
 
 import { SearchInputComponent } from '../../../../../shared';
 import { DocumentCategoryDataSource } from '../../services';
-import { DocumentCategoryEditor } from '../../dialogs';
+import { DocumentTypeEditor } from '../../dialogs';
 
 @Component({
-  selector: 'app-document-categories-admin',
+  selector: 'app-document-type-admin',
   imports: [
     TableModule,
     ButtonModule,
@@ -21,26 +21,26 @@ import { DocumentCategoryEditor } from '../../dialogs';
     IconFieldModule,
     SearchInputComponent,
   ],
-  templateUrl: './document-categories-admin.html',
+  templateUrl: './document-type-admin.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class DocumentCategoriesAdmin {
+export default class DocumentTypeAdmin {
   private sectionService = inject(DocumentCategoryDataSource);
   private dialogService = inject(DialogService);
 
   dataSource = this.sectionService.dataSource;
 
   openCreateDialog() {
-    this.dialogService.open(DocumentCategoryEditor, {
-      header: 'Crear categoria',
+    this.dialogService.open(DocumentTypeEditor, {
+      header: 'Crear tipo de documento',
       modal: true,
       width: '30vw',
     });
   }
 
   openUpdateDialog(item: any) {
-    this.dialogService.open(DocumentCategoryEditor, {
-      header: 'Editar categoria',
+    this.dialogService.open(DocumentTypeEditor, {
+      header: 'Editar tipo de documento',
       modal: true,
       data: item,
       width: '30vw',

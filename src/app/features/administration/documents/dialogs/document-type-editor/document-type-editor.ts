@@ -1,33 +1,39 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
+import {
+  FormArray,
   FormGroup,
   Validators,
   FormBuilder,
   ReactiveFormsModule,
-  FormArray,
 } from '@angular/forms';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
+import { CheckboxModule } from 'primeng/checkbox';
 import { MessageModule } from 'primeng/message';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 
-import { DocumentCategoryDataSource } from '../../services/document-category-data-source';
-import { FormErrorMessagesPipe } from '../../../../../shared';
-import { DocumentCategoryResponse } from '../../../interfaces';
+import { DocumentTypeDataSource } from '../../services';
+import { DocumentTypeResponse, SubtypeResponse } from '../../interfaces';
+import { FormUtils } from '../../../../../helpers';
 
 @Component({
   selector: 'app-document-type-editor',
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FloatLabelModule,
+    CheckboxModule,
     InputTextModule,
     MessageModule,
     ButtonModule,
-    FloatLabelModule,
-    FormErrorMessagesPipe,
   ],
   templateUrl: './document-type-editor.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,32 +41,33 @@ import { DocumentCategoryResponse } from '../../../interfaces';
 export class DocumentTypeEditor {
   private formBuilder = inject(FormBuilder);
   private diagloRef = inject(DynamicDialogRef);
-  private sectionService = inject(DocumentCategoryDataSource);
+  private sectionService = inject(DocumentTypeDataSource);
 
-  readonly data: DocumentCategoryResponse | undefined =
-    inject(DynamicDialogConfig).data;
+  readonly data?: DocumentTypeResponse = inject(DynamicDialogConfig).data;
 
-  documentTypeForm: FormGroup = this.formBuilder.nonNullable.group({
+  form: FormGroup = this.formBuilder.nonNullable.group({
     name: [
       '',
       [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
     ],
-    subTypes: this.formBuilder.array([]),
+    subtypes: this.formBuilder.array([]),
+    isActive: [true, Validators.required],
   });
+
+  subtypesIds: number[] = [];
+
+  formUtils = FormUtils;
 
   ngOnInit() {
     this.loadForm();
   }
 
   save() {
-    const { name } = this.documentTypeForm.value;
-
-    const subscription = this.data
-      ? this.sectionService.update(this.data.id, name)
-      : this.sectionService.create(name);
+    if (this.form.invalid) return;
+    const subscription = this.buildSavedMethod();
 
     subscription.subscribe(() => {
-      this.close();
+      this.diagloRef.close();
     });
   }
 
@@ -68,29 +75,42 @@ export class DocumentTypeEditor {
     this.diagloRef.close();
   }
 
-  isInvalid(controlName: string) {
-    const control = this.documentTypeForm.get(controlName);
-    return control?.invalid && (control.touched || control.dirty);
-  }
-
   addSubType() {
     this.subTypes.push(
-      this.formBuilder.group({ name: ['', Validators.required] })
+      this.formBuilder.group({
+        name: ['', [Validators.required, Validators.minLength(3)]],
+        isActive: [true, Validators.required],
+      })
     );
   }
 
   removeSubType(index: number) {
     this.subTypes.removeAt(index);
+    this.subtypesIds.splice(index, 1);
   }
 
   get subTypes() {
-    return this.documentTypeForm.get('subTypes') as FormArray;
+    return this.form.get('subtypes') as FormArray;
+  }
+
+  private buildSavedMethod() {
+    if (!this.data) return this.sectionService.create(this.form.value);
+    const { subtypes, ...rest } = this.form.value;
+    return this.sectionService.update(this.data.id, {
+      ...rest,
+      subtypes: this.subtypesIds.map((id, index) => ({
+        id,
+        ...subtypes[index],
+      })),
+    });
   }
 
   private loadForm() {
     if (!this.data) return;
-    this.documentTypeForm.patchValue({
-      name: this.data.name,
+    this.data.subtypes.forEach((item) => {
+      this.addSubType();
+      this.subtypesIds.push(item.id);
     });
+    this.form.patchValue(this.data);
   }
 }

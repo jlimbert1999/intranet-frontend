@@ -1,20 +1,21 @@
-<form [formGroup]="documentTypeForm" (ngSubmit)="save()">
-  <div class="flex flex-col gap-1">
-    <input
-      pInputText
-      type="text"
-      formControlName="name"
-      placeholder="Nombre"
-      class="w-full"
-    />
-    @if(isInvalid("name")){
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="flex flex-col gap-1 pt-1">
+    <p-floatlabel variant="on">
+      <label> Nombre</label>
+      <input pInputText class="w-full" formControlName="name" />
+    </p-floatlabel>
+    @if(formUtils.isInvalid(form.get("name"))){
     <p-message severity="error" size="small" variant="simple">
-      {{ documentTypeForm.get("name")?.errors | formErrorMessages }}
+      {{ formUtils.getErrorMessage(form.get("name")) }}
     </p-message>
     }
   </div>
-  <div class="flex items-center justify-between p-2 mt-2">
-    <span class="font-medium text-lg">Subtipos </span>
+  <div class="flex items-center px-2 mt-2">
+    <p-checkbox name="pizza" [binary]="true" formControlName="isActive" />
+    <label class="ml-2"> Habilitado </label>
+  </div>
+  <div class="flex items-center justify-between p-2 mt-4">
+    <span class="font-medium text-lg">Listado de subtipos</span>
     <p-button
       icon="pi pi-plus"
       size="small"
@@ -22,31 +23,50 @@
       (click)="addSubType()"
     />
   </div>
-  <div
-    class="flex flex-col gap-y-6 p-4 border rounded-lg border-slate-300"
-    formArrayName="subTypes"
-  >
-    @for (subtype of subTypes.controls; track $index; let i = $index) {
-    <div [formGroupName]="i" class="flex items-center gap-x-2">
-      <div class="flex-1">
-        <p-floatlabel variant="on">
-          <label> {{ i + 1 }}. Nombre subtipo</label>
-          <input pInputText class="w-full" formControlName="name" />
-        </p-floatlabel>
+  <div class="p-4 border max-h-[400px] overflow-y-auto rounded-lg border-surface-300">
+    <div class="flex flex-col gap-y-4" formArrayName="subtypes">
+      <div
+        *ngFor="let item of subTypes.controls; let i = index"
+        [formGroupName]="i"
+      >
+        <div class="flex gap-x-4 items-center">
+          <div class="flex-1">
+            <div class="flex flex-col gap-1">
+              <p-floatlabel variant="on">
+                <label>Nombre subtipo {{ i + 1 }}</label>
+                <input pInputText class="w-full" formControlName="name" />
+              </p-floatlabel>
+              @if(formUtils.isInvalid(item.get("name"))){
+              <p-message severity="error" size="small" variant="simple">
+                {{ formUtils.getErrorMessage(item.get("name")) }}
+              </p-message>
+              }
+            </div>
+          </div>
+          <div class="flex items-center">
+            <p-checkbox
+              name="pizza"
+              [binary]="true"
+              formControlName="isActive"
+            />
+            <label class="ml-2"> Habilitado </label>
+          </div>
+          <p-button
+            icon="pi pi-trash"
+            [rounded]="true"
+            [text]="true"
+            (onClick)="removeSubType(i)"
+          />
+        </div>
       </div>
-      <p-button icon="pi pi-trash" [rounded]="true" [text]="true" (onClick)="removeSubType(i)" />
+      @if(subTypes.controls.length===0){
+      <span>Sin elementos.</span>
+      }
     </div>
-    } @empty {
-    <div>Sin subtipos.</div>
-    }
   </div>
 
   <div class="p-dialog-footer">
     <p-button label="Cancelar" severity="secondary" (onClick)="close()" />
-    <p-button
-      type="submit"
-      label="Guardar"
-      [disabled]="documentTypeForm.invalid"
-    />
+    <p-button type="submit" label="Guardar" [disabled]="form.invalid" />
   </div>
 </form>

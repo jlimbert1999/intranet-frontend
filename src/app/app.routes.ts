@@ -64,37 +64,22 @@ export const routes: Routes = [
     canActivate: [isAuthenticatedGuard],
     title: 'Administracion',
     loadComponent: () =>
-      import(
-        './features/administration/layout/admin-layout/admin-layout.component'
-      ),
+      import('./features/administration/layout/admin-layout/admin-layout.component'),
     children: [
       {
-        path: 'content-settings',
+        path: 'document-types',
         loadComponent: () =>
-          import(
-            './features/administration/content-settings/pages/content-settings-list/content-settings-list'
-          ),
+          import('./features/administration/documents/pages/document-types-admin/document-types-admin'),
       },
-      // {
-      //   path: 'file-explorer',
-      //   loadComponent: () =>
-      //     import(
-      //       './administration/presentation/pages/document-management/document-management'
-      //     ),
-      // },
       {
         path: 'document-sections',
         loadComponent: () =>
-          import(
-            './features/administration/documents/pages/document-sectons-admin/document-sectons-admin'
-          ),
+          import('./features/administration/documents/pages/document-sectons-admin/document-sectons-admin'),
       },
       {
-        path: 'document-categories',
+        path: 'documents',
         loadComponent: () =>
-          import(
-            './features/administration/documents/pages/document-type-admin/document-type-admin'
-          ),
+          import('./features/administration/documents/pages/document-admin/document-admin'),
       },
       // {
       //   path: 'communications-manage',
@@ -121,17 +106,18 @@ export const routes: Routes = [
         path: 'users',
         title: 'Usuarios',
         loadComponent: () =>
-          import(
-            './features/administration/access/pages/users-admin/users-admin'
-          ),
+          import('./features/administration/access/pages/users-admin/users-admin'),
       },
       {
         path: 'roles',
         title: 'Roles',
         loadComponent: () =>
-          import(
-            './features/administration/access/pages/roles-admin/roles-admin'
-          ),
+          import('./features/administration/access/pages/roles-admin/roles-admin'),
+      },
+      {
+        path: 'content-settings',
+        loadComponent: () =>
+          import('./features/administration/content-settings/pages/content-settings-list/content-settings-list'),
       },
     ],
   },

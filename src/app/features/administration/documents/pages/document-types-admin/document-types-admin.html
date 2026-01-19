@@ -17,23 +17,35 @@
     [globalFilterFields]="['name']"
     [paginator]="true"
     [rows]="10"
+    size="small"
   >
-    <ng-template #caption>
+    <!-- <ng-template #caption>
       <div class="flex sm:justify-end">
         <div class="w-full sm:w-1/4">
           <search-input label="Buscar" />
         </div>
       </div>
-    </ng-template>
+    </ng-template> -->
     <ng-template #header>
       <tr>
         <th>Nombre</th>
-        <th style="width: 5rem"></th>
+        <th>Subtipos</th>
+        <th>Estado</th>
+        <th style="width: 2.5rem"></th>
       </tr>
     </ng-template>
     <ng-template #body let-item>
       <tr>
         <td>{{ item.name }}</td>
+        <td>{{ item.subtypes.length }}</td>
+        <td>
+          @if (item.isActive) {
+            <p-tag severity="success" value="Activo"></p-tag>
+          } @else {
+            <p-tag severity="danger" value="Inactivo"></p-tag>
+          }
+        </td>
+
         <td>
           <p-button
             icon="pi pi-pencil"

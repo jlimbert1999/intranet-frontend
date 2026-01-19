@@ -9,23 +9,28 @@ import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { MultiSelectModule } from 'primeng/multiselect';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
+import { CheckboxModule } from 'primeng/checkbox';
+import { MessageModule } from 'primeng/message';
+import { ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
 
-import { DocumentSectionDataSource } from '../../services/document-section-data-source';
-import { DocSectionWithCategoriesResponse } from '../../../interfaces';
+import { DocumentSectionDataSource } from '../../services';
+import { DocumentSectionResponse } from '../../interfaces';
+import { FormUtils } from '../../../../../helpers';
 
 @Component({
   selector: 'app-document-section-editor',
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MultiSelectModule,
+    FloatLabelModule,
     InputTextModule,
+    CheckboxModule,
+    MessageModule,
+    ListboxModule,
     ButtonModule,
-    SelectModule,
   ],
   templateUrl: './document-section-editor.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,17 +40,18 @@ export class DocumentSectionEditor {
   private formBuilder = inject(FormBuilder);
   private sectionService = inject(DocumentSectionDataSource);
 
-  readonly data: DocSectionWithCategoriesResponse | undefined =
-    inject(DynamicDialogConfig).data;
+  readonly data?: DocumentSectionResponse = inject(DynamicDialogConfig).data;
 
-  categories = toSignal(this.sectionService.getCategories(), {
+  documentTypes = toSignal(this.sectionService.getDocumentTypes(), {
     initialValue: [],
   });
 
   sectionForm: FormGroup = this.formBuilder.nonNullable.group({
     name: ['', Validators.required],
-    categoriesIds: ['', Validators.required],
+    documentTypesIds: [[], [Validators.required, Validators.minLength(1)]],
+    isActive: [true],
   });
+  formUtils = FormUtils;
 
   ngOnInit() {
     this.loadForm();
@@ -56,10 +62,9 @@ export class DocumentSectionEditor {
   }
 
   save() {
-    const { name, categoriesIds } = this.sectionForm.value;
     const subscription = this.data
-      ? this.sectionService.update(this.data.id, name, categoriesIds)
-      : this.sectionService.create(name, categoriesIds);
+      ? this.sectionService.update(this.data.id, this.sectionForm.value)
+      : this.sectionService.create(this.sectionForm.value);
     subscription.subscribe((resp) => {
       this.diagloRef.close(resp);
     });
@@ -67,8 +72,9 @@ export class DocumentSectionEditor {
 
   private loadForm(): void {
     if (!this.data) return;
-    const { name, categories } = this.data;
-    const categoriesIds = categories.map(({ id }) => id);
-    this.sectionForm.patchValue({ name, categoriesIds });
+    console.log(this.data);
+    const { sectionDocumentTypes, ...props } = this.data;
+    const documentTypesIds = sectionDocumentTypes.map(({ type }) => type.id);
+    this.sectionForm.patchValue({ ...props, documentTypesIds });
   }
 }

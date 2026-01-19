@@ -1,17 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-import { TableModule, TablePageEvent } from 'primeng/table';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 
+import { DocumentSectionResponse } from '../../interfaces';
+import { DocumentSectionDataSource } from '../../services';
 import { DocumentSectionEditor } from '../../../dialogs';
-import { SearchInputComponent } from '../../../../../shared';
-import { DocumentSectionDataSource } from '../../services/document-section-data-source';
-import { DocSectionWithCategoriesResponse } from '../../../interfaces';
 
 @Component({
   selector: 'app-document-sectons-admin',
-  imports: [ButtonModule, TableModule, SearchInputComponent],
+  imports: [CommonModule, ButtonModule, TableModule, TagModule],
   templateUrl: './document-sectons-admin.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
@@ -19,34 +20,22 @@ import { DocSectionWithCategoriesResponse } from '../../../interfaces';
 export default class DocumentSectonsAdmin {
   private dialogService = inject(DialogService);
   private sectionService = inject(DocumentSectionDataSource);
+
   dataSource = this.sectionService.dataSource;
-  dataSize = this.sectionService.dataSize;
 
-  openCreateDialog() {
+  openDocumentSectionDialog(item?: DocumentSectionResponse) {
     this.dialogService.open(DocumentSectionEditor, {
-      header: 'Crear seccion',
+      header: item ? 'Editar seccion documento' : 'Crear seccion documento',
       modal: true,
-      width: '30vw',
-    });
-  }
-
-  openUpdateDialog(item: DocSectionWithCategoriesResponse) {
-    this.dialogService.open(DocumentSectionEditor, {
-      header: 'Crear seccion',
-      modal: true,
+      draggable: false,
+      closeOnEscape: true,
+      closable: true,
+      width: '35vw',
       data: item,
-      width: '30vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw',
+      },
     });
-  }
-
-  onPageChange($event: TablePageEvent) {
-    this.sectionService.setPage({
-      index: $event.first,
-    });
-  }
-
-  onSearch(term: string) {
-    this.sectionService.setPage({ index: 0 });
-    this.sectionService.term.set(term);
   }
 }

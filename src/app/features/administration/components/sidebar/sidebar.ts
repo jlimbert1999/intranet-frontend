@@ -38,7 +38,7 @@ import { AuthDataSource } from '../../services';
   styles: `
     :host ::ng-deep .p-menu {
       border: none !important;
-    } 
+    }
   `,
 })
 export class Sidebar {
@@ -58,9 +58,9 @@ export class Sidebar {
       label: 'Repositorio',
       items: [
         {
-          label: 'Categorias',
+          label: 'Tipos',
           icon: 'pi pi-objects-column',
-          routerLink: 'document-categories',
+          routerLink: 'document-types',
         },
         {
           label: 'Secciones',
@@ -68,9 +68,9 @@ export class Sidebar {
           routerLink: 'document-sections',
         },
         {
-          label: 'Archivos',
+          label: 'Documentos',
           icon: 'pi pi-file',
-          routerLink: 'file-explorer',
+          routerLink: 'documents',
         },
       ],
     },

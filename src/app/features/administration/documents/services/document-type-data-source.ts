@@ -23,7 +23,7 @@ export class DocumentTypeDataSource {
     return this.http.post<DocumentTypeResponse>(this.URL, form).pipe(
       tap((resp) => {
         this.addItem(resp);
-      })
+      }),
     );
   }
 
@@ -33,7 +33,21 @@ export class DocumentTypeDataSource {
       .pipe(
         tap((resp) => {
           this.addItem(resp);
-        })
+        }),
+      );
+  }
+
+  removeSubtype(typeId: number, subtypeId: number) {
+    return this.http
+      .delete<{
+        ok: boolean;
+        message: string;
+      }>(`${this.URL}/subtype/${subtypeId}`)
+      .pipe(
+        tap(({ ok }) => {
+          if (!ok) return;
+          this.removeSubItem(typeId, subtypeId);
+        }),
       );
   }
 
@@ -47,5 +61,16 @@ export class DocumentTypeDataSource {
     } else {
       this.dataSource.update((values) => [newItem, ...values]);
     }
+  }
+
+  private removeSubItem(typeId: number, subtypeId: number) {
+    const typeIndex = this.dataSource().findIndex(({ id }) => id === typeId);
+    if (typeIndex === -1) return;
+    this.dataSource.update((values) => {
+      values[typeIndex].subtypes = values[typeIndex].subtypes?.filter(
+        (subtype) => subtype.id !== subtypeId,
+      );
+      return [...values];
+    });
   }
 }

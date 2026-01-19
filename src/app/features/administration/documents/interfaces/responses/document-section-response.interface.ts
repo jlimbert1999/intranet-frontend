@@ -1,10 +1,17 @@
-export interface DocSectionWithCategoriesResponse {
+import { DocumentTypeResponse } from './document-type-response.interface';
+
+export interface DocumentSectionResponse {
   id: number;
   name: string;
-  categories: CategoryItem[];
+  sectionDocumentTypes: SectionDocumentTypeResponse[];
 }
 
-interface CategoryItem {
+export interface SectionDocumentTypeResponse {
+  id: number;
+  type: DocumentTypeResponse;
+}
+
+export interface DocumentTypeInSectionResponse {
   id: number;
   name: string;
 }

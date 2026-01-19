@@ -20,7 +20,7 @@
       icon="pi pi-plus"
       size="small"
       label="Agregar"
-      (click)="addSubType()"
+      (click)="addSubtype()"
     />
   </div>
   <div class="p-4 border max-h-[400px] overflow-y-auto rounded-lg border-surface-300">
@@ -55,7 +55,7 @@
             icon="pi pi-trash"
             [rounded]="true"
             [text]="true"
-            (onClick)="removeSubType(i)"
+            (onClick)="removeSubtype(i)"
           />
         </div>
       </div>
@@ -70,3 +70,4 @@
     <p-button type="submit" label="Guardar" [disabled]="form.invalid" />
   </div>
 </form>
+<p-confirmdialog />

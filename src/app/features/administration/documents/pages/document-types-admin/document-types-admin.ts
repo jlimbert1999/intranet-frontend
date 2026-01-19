@@ -5,21 +5,21 @@ import {
   signal,
 } from '@angular/core';
 
-import { TableModule, TablePageEvent } from 'primeng/table';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 
-import { SearchInputComponent } from '../../../../../shared';
 import { DocumentTypeDataSource } from '../../services';
 import { DocumentTypeEditor } from '../../dialogs';
 
 @Component({
-  selector: 'app-document-type-admin',
-  imports: [TableModule, ButtonModule, SearchInputComponent],
-  templateUrl: './document-type-admin.html',
+  selector: 'app-document-types-admin',
+  imports: [TableModule, ButtonModule, TagModule],
+  templateUrl: './document-types-admin.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class DocumentTypeAdmin {
+export default class DocumentTypesAdmin {
   private sectionService = inject(DocumentTypeDataSource);
   private dialogService = inject(DialogService);
 

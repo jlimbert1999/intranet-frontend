@@ -5,41 +5,43 @@
     icon="pi pi-plus"
     iconPos="right"
     size="small"
-    (onClick)="openCreateDialog()"
+    (onClick)="openDocumentSectionDialog()"
   />
 </div>
 
 <div class="card">
-  <p-table
-    [value]="dataSource.value()"
-    [totalRecords]="dataSize()"
-    [paginator]="true"
-    (onPage)="onPageChange($event)"
-    [rows]="10"
-  >
-    <ng-template #caption>
+  <p-table [value]="dataSource()" [paginator]="true" [rows]="10" size="small">
+    <!-- <ng-template #caption>
       <div class="flex sm:justify-end">
         <div class="w-full sm:w-1/4">
-          <search-input (search)="onSearch($event)"/>
+          <search-input (search)="onSearch($event)" />
         </div>
       </div>
-    </ng-template>
+    </ng-template> -->
     <ng-template #header>
       <tr>
         <th>Nombre</th>
-        <th>Categorias</th>
-        <th style="width: 5rem"></th>
+        <th>Tipos</th>
+        <th>Estado</th>
+        <th style="width: 3rem"></th>
       </tr>
     </ng-template>
     <ng-template #body let-item>
       <tr>
         <td>{{ item.name }}</td>
-        <td>{{ item.categories.length }}</td>
+        <td>{{ item.sectionDocumentTypes.length }}</td>
+        <td>
+          @if (item.isActive) {
+            <p-tag severity="success" value="Activo"></p-tag>
+          } @else {
+            <p-tag severity="danger" value="Inactivo"></p-tag>
+          }
+        </td>
         <td>
           <p-button
             icon="pi pi-pencil"
             size="small"
-            (click)="openUpdateDialog(item)"
+            (click)="openDocumentSectionDialog(item)"
             severity="secondary"
             rounded
           />

@@ -70,8 +70,8 @@ export default class DocumentAdmin {
   private documentService = inject(DocumentDataSource);
   private dialogService = inject(DialogService);
 
-  dataSize = this.documentService.dataSize;
-  dataSource = this.documentService.dataSource;
+  // dataSize = this.documentService.dataSize;
+  // dataSource = this.documentService.dataSource;
 
   constructor() {}
 

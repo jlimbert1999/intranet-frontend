@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
-import { DocumentSectionResponse } from '../../interfaces';
+import { DocumentSectionWithTypesResponse } from '../../interfaces';
 import { DocumentSectionDataSource } from '../../services';
 import { DocumentSectionEditor } from '../../../dialogs';
 
@@ -23,7 +23,7 @@ export default class DocumentSectonsAdmin {
 
   dataSource = this.sectionService.dataSource;
 
-  openDocumentSectionDialog(item?: DocumentSectionResponse) {
+  openDocumentSectionDialog(item?: DocumentSectionWithTypesResponse) {
     this.dialogService.open(DocumentSectionEditor, {
       header: item ? 'Editar seccion documento' : 'Crear seccion documento',
       modal: true,

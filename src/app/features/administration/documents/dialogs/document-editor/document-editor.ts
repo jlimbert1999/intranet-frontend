@@ -5,6 +5,7 @@ import {
   signal,
 } from '@angular/core';
 import {
+  FormArray,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -15,13 +16,21 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { StepperModule } from 'primeng/stepper';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 
 import { DocumentsToManage } from '../../../domain';
-import { DocumentDataSource } from '../../services/document-data-source';
 import { DocumentFileUploaderComponent } from '../../../components';
-import { CategoriesWithSectionsResponse, SectionCategoriesResponse } from '../../../interfaces';
+
+import { DatePickerModule } from 'primeng/datepicker';
+import { DocumentDataSource } from '../../services';
+import {
+  DocumentSubtypeResponse,
+  DocumentTypeResponse,
+} from '../../interfaces';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
 
 interface UploadedDocument {
   id: string;
@@ -39,6 +48,10 @@ interface UploadedDocument {
     SelectModule,
     InputTextModule,
     DocumentFileUploaderComponent,
+    DatePickerModule,
+    StepperModule,
+    FloatLabelModule,
+    FileUploadModule,
   ],
   templateUrl: './document-editor.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,15 +65,17 @@ export class DocumentEditor {
 
   documentForm: FormGroup = this.formBuilder.nonNullable.group({
     relationId: ['', Validators.required],
+    attachments: this.formBuilder.array([]),
   });
 
-  categories = toSignal(this.docService.getCategoriesWithSections(), {
-    initialValue: [],
-  });
+  sections = toSignal(this.docService.getSections(), { initialValue: [] });
+  types = signal<DocumentTypeResponse[]>([]);
+  subtypes = signal<DocumentSubtypeResponse[]>([]);
 
-  sections = signal<SectionCategoriesResponse[]>([]);
   uploadedDocuments = signal<UploadedDocument[]>([]);
-  documentsToUpload = signal<{ file: File; fiscalYear: Date }[]>([]);
+  documentsToUpload = signal<{ file: File }[]>([]);
+
+  files = signal<File[]>([]);
 
   ngOnInit() {
     console.log(this.data);
@@ -72,27 +87,90 @@ export class DocumentEditor {
   }
 
   save() {
-    if (this.documentForm.invalid) return;
-    const relationId = this.data
-      ? this.data.id
-      : this.documentForm.value['relationId'];
-    this.docService
-      .syncDocuments(
-        relationId,
-        this.documentsToUpload(),
-        this.uploadedDocuments()
-      )
-      .subscribe((resp) => {
-        this.diagloRef.close(resp);
-      });
+    // if (this.documentForm.invalid) return;
+    // const relationId = this.data
+    //   ? this.data.id
+    //   : this.documentForm.value['relationId'];
+    // this.docService
+    //   .syncDocuments(
+    //     relationId,
+    //     this.documentsToUpload(),
+    //     this.uploadedDocuments(),
+    //   )
+    //   .subscribe((resp) => {
+    //     this.diagloRef.close(resp);
+    //   });
   }
 
   close() {
     this.diagloRef.close();
   }
 
-  onSelectCategory(item: CategoriesWithSectionsResponse) {
-    this.sections.set(item.sectionCategories);
+  onSelectSection(id: number) {
+    this.docService.getTypesBySection(id).subscribe((items) => {
+      this.types.set(items);
+      this.subtypes.set([]);
+    });
+  }
+
+  onSelectType(id: number) {
+    this.docService.getSubtypesByType(id).subscribe((items) => {
+      this.subtypes.set(items);
+    });
+  }
+
+  onFileSelect(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    if (!inputElement.files || inputElement.files.length === 0) return;
+    const selectedFiles = Array.from(inputElement.files);
+    const files = selectedFiles.filter((file) => !this.isFileDuplicate(file));
+    if (files.length === 0) return;
+    for (let file of files) {
+      this.addAttachment(file);
+    }
+  }
+
+  removeFile(index: number) {
+    this.files.update((files) => {
+      files.splice(index, 1);
+      return [...files];
+    });
+    this.fileMetadata.removeAt(index);
+  }
+
+  addAttachment(file: File) {
+    this.files.update((files) => [...files, file]);
+    this.fileMetadata.push(
+      this.formBuilder.group({
+        displayName: [file.name, Validators.required],
+      }),
+    );
+  }
+
+  getFileIcon(extension: string): string {
+    const icons: any = {
+      pdf: 'pi-file-pdf text-red-500',
+      doc: 'pi-file-word text-blue-500',
+      docx: 'pi-file-word text-blue-500',
+      jpg: 'pi-image text-green-500',
+      png: 'pi-image text-green-500',
+      zip: 'pi-box text-yellow-600',
+      default: 'pi-file text-gray-500',
+    };
+    return `pi ${icons[extension.toLowerCase()] || icons['default']} text-2xl`;
+  }
+
+  get fileMetadata() {
+    return this.documentForm.get('attachments') as FormArray;
+  }
+
+  private isFileDuplicate(selectedFile: File): boolean {
+    return this.files().some(
+      (item) =>
+        item.name === selectedFile.name &&
+        item.size === selectedFile.size &&
+        item.lastModified === selectedFile.lastModified,
+    );
   }
 
   private loadForm() {

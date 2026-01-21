@@ -89,7 +89,7 @@ export default class DocumentAdmin {
     this.dialogService.open(DocumentEditor, {
       header: 'Editar documentacion',
       modal: true,
-      width: '50vw',
+      width: '40vw',
       data: item,
     });
   }

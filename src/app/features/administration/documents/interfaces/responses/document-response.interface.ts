@@ -23,3 +23,9 @@ interface DocumentItem {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface DocumentSectionResponse {
+  id: number;
+  name: string;
+  isActive: boolean;
+}

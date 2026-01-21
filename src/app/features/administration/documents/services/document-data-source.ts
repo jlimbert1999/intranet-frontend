@@ -9,9 +9,12 @@ import { DocumentsToManageMapper } from '../../infrastructure/mappers/document-c
 import {
   CategoriesWithSectionsResponse,
   DocumentCategoryResponse,
+  DocumentSectionResponse,
   DocumentsToManageResponse,
+  SectionCategoriesResponse,
 } from '../../interfaces';
 import { DocumentsToManage } from '../../domain';
+import { DocumentSubtypeResponse, DocumentTypeResponse } from '../interfaces';
 
 interface GetDocumentsToManageProps {
   limit: number;
@@ -79,12 +82,20 @@ export class DocumentDataSource {
 
   getCategoriesWithSections() {
     return this.http.get<CategoriesWithSectionsResponse[]>(
-      `${this.URL}/categories-sections`
+      `${this.URL}/sections`,
     );
   }
 
   getSections() {
-    return this.http.get<DocumentCategoryResponse[]>(`${this.URL}/sections`);
+    return this.http.get<DocumentSectionResponse[]>(`${this.URL}/sections`);
+  }
+
+  getTypesBySection(id: number) {
+    return this.http.get<DocumentTypeResponse[]>(`${this.URL}/types/${id}`);
+  }
+
+  getSubtypesByType(id: number) {
+    return this.http.get<DocumentSubtypeResponse[]>(`${this.URL}/subtypes/${id}`);
   }
 
   getDocumentsByCategory() {
@@ -116,7 +127,7 @@ export class DocumentDataSource {
       .pipe(
         map(({ items, total }) => ({
           items: items.map((item) =>
-            DocumentsToManageMapper.fromResponse(item)
+            DocumentsToManageMapper.fromResponse(item),
           ),
           total,
         })),
@@ -125,14 +136,14 @@ export class DocumentDataSource {
           this.cache.set(key, result.items);
           this.dataSize.set(result.total);
         }),
-        map((result) => result.items)
+        map((result) => result.items),
       );
   }
 
   syncDocuments(
     relationId: number,
     documents: DocumentItem[],
-    uploadedDocuments: UploadedDocument[] = []
+    uploadedDocuments: UploadedDocument[] = [],
   ) {
     return this.buildUploadTask(documents).pipe(
       switchMap((uploadedResult) =>
@@ -148,17 +159,17 @@ export class DocumentDataSource {
                   fileName,
                   originalName,
                   fiscalYear: fiscalYear.getFullYear(),
-                })
+                }),
               ),
             ],
-          }
-        )
+          },
+        ),
       ),
       map((resp) => DocumentsToManageMapper.fromResponse(resp)),
       tap((res) => {
         this.dataSize.update((value) => (value += 1));
         this.updateDocumentsCache(res);
-      })
+      }),
     );
   }
 
@@ -170,8 +181,8 @@ export class DocumentDataSource {
           originalName,
           sizeBytes,
           fiscalYear: doc.fiscalYear.getFullYear(),
-        }))
-      )
+        })),
+      ),
     );
     return documents.length > 0 ? forkJoin(uploadItems) : of([]);
   }

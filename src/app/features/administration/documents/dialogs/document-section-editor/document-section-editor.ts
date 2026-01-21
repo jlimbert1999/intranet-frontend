@@ -17,7 +17,7 @@ import { ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
 
 import { DocumentSectionDataSource } from '../../services';
-import { DocumentSectionResponse } from '../../interfaces';
+import { DocumentSectionWithTypesResponse } from '../../interfaces';
 import { FormUtils } from '../../../../../helpers';
 
 @Component({
@@ -40,7 +40,7 @@ export class DocumentSectionEditor {
   private formBuilder = inject(FormBuilder);
   private sectionService = inject(DocumentSectionDataSource);
 
-  readonly data?: DocumentSectionResponse = inject(DynamicDialogConfig).data;
+  readonly data?: DocumentSectionWithTypesResponse = inject(DynamicDialogConfig).data;
 
   documentTypes = toSignal(this.sectionService.getDocumentTypes(), {
     initialValue: [],
@@ -73,8 +73,8 @@ export class DocumentSectionEditor {
   private loadForm(): void {
     if (!this.data) return;
     console.log(this.data);
-    const { sectionDocumentTypes, ...props } = this.data;
-    const documentTypesIds = sectionDocumentTypes.map(({ type }) => type.id);
+    const { documentTypes, ...props } = this.data;
+    const documentTypesIds = documentTypes.map((type) => type.id);
     this.sectionForm.patchValue({ ...props, documentTypesIds });
   }
 }

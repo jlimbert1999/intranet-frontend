@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 
 import { environment } from '../../../../../environments/environment';
-import { DocumentSectionResponse } from '../interfaces';
+import { DocumentSectionWithTypesResponse } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,7 @@ export class DocumentSectionDataSource {
 
   private readonly URL = `${environment.baseUrl}/document-sections`;
 
-  resource = toSignal(this.http.get<DocumentSectionResponse[]>(this.URL), {
+  resource = toSignal(this.http.get<DocumentSectionWithTypesResponse[]>(this.URL), {
     initialValue: [],
   });
   dataSource = linkedSignal(() => this.resource());
@@ -23,13 +23,13 @@ export class DocumentSectionDataSource {
 
   create(form: object) {
     return this.http
-      .post<DocumentSectionResponse>(this.URL, form)
+      .post<DocumentSectionWithTypesResponse>(this.URL, form)
       .pipe(tap((resp) => this.addItem(resp)));
   }
 
   update(id: number, form: object) {
     return this.http
-      .patch<DocumentSectionResponse>(`${this.URL}/${id}`, form)
+      .patch<DocumentSectionWithTypesResponse>(`${this.URL}/${id}`, form)
       .pipe(tap((resp) => this.addItem(resp)));
   }
 
@@ -37,7 +37,7 @@ export class DocumentSectionDataSource {
     return this.http.get<any[]>(`${this.URL}/doc-types`);
   }
 
-  private addItem(newItem: DocumentSectionResponse) {
+  private addItem(newItem: DocumentSectionWithTypesResponse) {
     const index = this.dataSource().findIndex((item) => item.id === newItem.id);
     if (index !== -1) {
       this.dataSource.update((values) => {

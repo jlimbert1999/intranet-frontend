@@ -17,7 +17,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MessageModule } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
 
-import { DocumentTypeResponse, SubtypeResponse } from '../../interfaces';
+import { DocumentTypeWithSubTypesResponse, DocumentSubtypeResponse } from '../../interfaces';
 import { DocumentTypeDataSource } from '../../services';
 import { FormUtils } from '../../../../../helpers';
 
@@ -43,7 +43,7 @@ export class DocumentTypeEditor {
   private documentTypeDataSource = inject(DocumentTypeDataSource);
   private confirmationService = inject(ConfirmationService);
 
-  readonly data?: DocumentTypeResponse = inject(DynamicDialogConfig).data;
+  readonly data?: DocumentTypeWithSubTypesResponse = inject(DynamicDialogConfig).data;
 
   form: FormGroup = this.formBuilder.nonNullable.group({
     name: [
@@ -75,7 +75,7 @@ export class DocumentTypeEditor {
     this.diagloRef.close();
   }
 
-  addSubtype(subtype?: SubtypeResponse) {
+  addSubtype(subtype?: DocumentSubtypeResponse) {
     this.subTypes.push(
       this.formBuilder.group({
         id: [subtype?.id ?? null],

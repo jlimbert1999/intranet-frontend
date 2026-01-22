@@ -8,10 +8,8 @@ import { FileUploadService } from '../../../../shared';
 import { DocumentsToManageMapper } from '../../infrastructure/mappers/document-category-with-documents.mapper';
 import {
   CategoriesWithSectionsResponse,
-  DocumentCategoryResponse,
-  DocumentSectionResponse,
   DocumentsToManageResponse,
-  SectionCategoriesResponse,
+  DocumentSectionResponse,
 } from '../../interfaces';
 import { DocumentsToManage } from '../../domain';
 import { DocumentSubtypeResponse, DocumentTypeResponse } from '../interfaces';
@@ -37,6 +35,19 @@ interface UploadedDocument {
 interface DocumentItem {
   file: File;
   fiscalYear: Date;
+}
+
+interface CreateDocumentProps {
+  sectionId: number;
+  typeId: number;
+  subtypeId: number;
+  date: Date;
+  documents: DocumentTest[];
+  files: File[];
+}
+
+interface DocumentTest {
+  displayName: string;
 }
 
 @Injectable({
@@ -80,6 +91,10 @@ export class DocumentDataSource {
 
   constructor() {}
 
+  findAll() {
+    return this.http.get<{ documents: any[]; total: number }>(this.URL);
+  }
+
   getCategoriesWithSections() {
     return this.http.get<CategoriesWithSectionsResponse[]>(
       `${this.URL}/sections`,
@@ -95,7 +110,9 @@ export class DocumentDataSource {
   }
 
   getSubtypesByType(id: number) {
-    return this.http.get<DocumentSubtypeResponse[]>(`${this.URL}/subtypes/${id}`);
+    return this.http.get<DocumentSubtypeResponse[]>(
+      `${this.URL}/subtypes/${id}`,
+    );
   }
 
   getDocumentsByCategory() {
@@ -138,6 +155,23 @@ export class DocumentDataSource {
         }),
         map((result) => result.items),
       );
+  }
+
+  create(data: CreateDocumentProps) {
+    const { documents, files, date, ...rest } = data;
+    return this.buildUpoloadTaskTest(files).pipe(
+      switchMap((uploadedFiles) => {
+        const documentsToCreate = uploadedFiles.map((uploadedFile, index) => ({
+          displayName: documents[index].displayName,
+          ...uploadedFile,
+        }));
+        return this.http.post<DocumentsToManageResponse>(this.URL, {
+          ...rest,
+          fiscalYear: date.getFullYear(),
+          documents: documentsToCreate,
+        });
+      }),
+    );
   }
 
   syncDocuments(
@@ -195,5 +229,12 @@ export class DocumentDataSource {
         return item;
       });
     });
+  }
+
+  private buildUpoloadTaskTest(files: File[]) {
+    const uploadItems = files.map((file) =>
+      this.fileUploadService.newUploadFile(file, 'document'),
+    );
+    return forkJoin(uploadItems);
   }
 }

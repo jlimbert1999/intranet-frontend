@@ -5,39 +5,32 @@ import {
   signal,
 } from '@angular/core';
 import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
   ReactiveFormsModule,
+  FormBuilder,
   Validators,
+  FormArray,
+  FormGroup,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DatePickerModule } from 'primeng/datepicker';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
-import { StepperModule } from 'primeng/stepper';
-import { SelectModule } from 'primeng/select';
+import { MessageModule } from 'primeng/message';
 import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
 
 import { DocumentsToManage } from '../../../domain';
-import { DocumentFileUploaderComponent } from '../../../components';
-
-import { DatePickerModule } from 'primeng/datepicker';
 import { DocumentDataSource } from '../../services';
 import {
-  DocumentSubtypeResponse,
   DocumentTypeResponse,
+  DocumentSubtypeResponse,
 } from '../../interfaces';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
-
-interface UploadedDocument {
-  id: string;
-  fileName: string;
-  originalName: string;
-  fiscalYear: Date;
-}
+import { FileIcon } from '../../components';
+import { FileSizePipe } from '../../pipes';
+import { CustomFormValidator, FormUtils } from '../../../../../helpers';
 
 @Component({
   selector: 'app-document-editor',
@@ -46,60 +39,52 @@ interface UploadedDocument {
     ReactiveFormsModule,
     ButtonModule,
     SelectModule,
+    MessageModule,
     InputTextModule,
-    DocumentFileUploaderComponent,
     DatePickerModule,
-    StepperModule,
     FloatLabelModule,
-    FileUploadModule,
+    FileSizePipe,
+    FileIcon,
   ],
   templateUrl: './document-editor.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentEditor {
   private formBuilder = inject(FormBuilder);
-  private docService = inject(DocumentDataSource);
+  private documentDataSource = inject(DocumentDataSource);
   private diagloRef = inject(DynamicDialogRef);
 
   readonly data: DocumentsToManage = inject(DynamicDialogConfig).data;
 
-  documentForm: FormGroup = this.formBuilder.nonNullable.group({
-    relationId: ['', Validators.required],
-    attachments: this.formBuilder.array([]),
+  readonly currentDate = new Date();
+  readonly minDateValue: Date = new Date(2000, 0, 1);
+  readonly maxDateValue = new Date(this.currentDate.getFullYear() + 1, 11, 31);
+
+  form: FormGroup = this.formBuilder.nonNullable.group({
+    sectionId: ['', Validators.required],
+    typeId: ['', Validators.required],
+    subtypeId: [''],
+    documents: this.formBuilder.array([]),
+    date: [this.currentDate, Validators.required],
   });
 
-  sections = toSignal(this.docService.getSections(), { initialValue: [] });
+  readonly sections = toSignal(this.documentDataSource.getSections(), {
+    initialValue: [],
+  });
   types = signal<DocumentTypeResponse[]>([]);
   subtypes = signal<DocumentSubtypeResponse[]>([]);
-
-  uploadedDocuments = signal<UploadedDocument[]>([]);
-  documentsToUpload = signal<{ file: File }[]>([]);
-
+  
   files = signal<File[]>([]);
+  readonly formUtils = FormUtils;
 
-  ngOnInit() {
-    console.log(this.data);
-    this.loadForm();
-  }
-
-  onSelectFiles(files: { file: File; fiscalYear: Date }[]) {
-    this.documentsToUpload.set(files);
-  }
+  ngOnInit() {}
 
   save() {
-    // if (this.documentForm.invalid) return;
-    // const relationId = this.data
-    //   ? this.data.id
-    //   : this.documentForm.value['relationId'];
-    // this.docService
-    //   .syncDocuments(
-    //     relationId,
-    //     this.documentsToUpload(),
-    //     this.uploadedDocuments(),
-    //   )
-    //   .subscribe((resp) => {
-    //     this.diagloRef.close(resp);
-    //   });
+    this.documentDataSource
+      .create({ ...this.form.value, files: this.files() })
+      .subscribe((resp) => {
+        this.diagloRef.close(resp);
+      });
   }
 
   close() {
@@ -107,24 +92,20 @@ export class DocumentEditor {
   }
 
   onSelectSection(id: number) {
-    this.docService.getTypesBySection(id).subscribe((items) => {
+    this.documentDataSource.getTypesBySection(id).subscribe((items) => {
       this.types.set(items);
       this.subtypes.set([]);
     });
   }
 
   onSelectType(id: number) {
-    this.docService.getSubtypesByType(id).subscribe((items) => {
+    this.documentDataSource.getSubtypesByType(id).subscribe((items) => {
       this.subtypes.set(items);
     });
   }
 
   onFileSelect(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    if (!inputElement.files || inputElement.files.length === 0) return;
-    const selectedFiles = Array.from(inputElement.files);
-    const files = selectedFiles.filter((file) => !this.isFileDuplicate(file));
-    if (files.length === 0) return;
+    const files = this.getFilesFormEvent(event);
     for (let file of files) {
       this.addAttachment(file);
     }
@@ -135,33 +116,38 @@ export class DocumentEditor {
       files.splice(index, 1);
       return [...files];
     });
-    this.fileMetadata.removeAt(index);
+    this.documentsFormArray.removeAt(index);
   }
 
-  addAttachment(file: File) {
+  get documentsFormArray() {
+    return this.form.get('documents') as FormArray;
+  }
+
+  private addAttachment(file: File) {
     this.files.update((files) => [...files, file]);
-    this.fileMetadata.push(
-      this.formBuilder.group({
-        displayName: [file.name, Validators.required],
-      }),
-    );
+    this.documentsFormArray.push(this.createDocumentForm(file));
   }
 
-  getFileIcon(extension: string): string {
-    const icons: any = {
-      pdf: 'pi-file-pdf text-red-500',
-      doc: 'pi-file-word text-blue-500',
-      docx: 'pi-file-word text-blue-500',
-      jpg: 'pi-image text-green-500',
-      png: 'pi-image text-green-500',
-      zip: 'pi-box text-yellow-600',
-      default: 'pi-file text-gray-500',
-    };
-    return `pi ${icons[extension.toLowerCase()] || icons['default']} text-2xl`;
+  private createDocumentForm(file: File) {
+    return this.formBuilder.group({
+      displayName: [
+        this.removeExtension(file.name),
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(150),
+          Validators.pattern(/^[\p{L}\p{N} .,'()\-–—]+$/u),
+          CustomFormValidator.notOnlyWhitespace,
+        ],
+      ],
+    });
   }
 
-  get fileMetadata() {
-    return this.documentForm.get('attachments') as FormArray;
+  private getFilesFormEvent(event: Event): File[] {
+    const inputElement = event.target as HTMLInputElement;
+    if (!inputElement.files || inputElement.files.length === 0) return [];
+    const selectedFiles = Array.from(inputElement.files);
+    return selectedFiles.filter((file) => !this.isFileDuplicate(file));
   }
 
   private isFileDuplicate(selectedFile: File): boolean {
@@ -173,9 +159,8 @@ export class DocumentEditor {
     );
   }
 
-  private loadForm() {
-    if (!this.data) return;
-    this.documentForm.removeControl('relationId');
-    this.uploadedDocuments.set(this.data.documents);
+  private removeExtension(fileName: string): string {
+    const lastDot = fileName.lastIndexOf('.');
+    return lastDot === -1 ? fileName : fileName.substring(0, lastDot);
   }
 }

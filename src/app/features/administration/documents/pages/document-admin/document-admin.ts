@@ -2,7 +2,9 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
+  linkedSignal,
   signal,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,6 +20,8 @@ import { TableModule, TablePageEvent } from 'primeng/table';
 import { SearchInputComponent } from '../../../../../shared';
 import { DocumentDataSource } from '../../services';
 import { DocumentEditor } from '../../dialogs';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { FileSizePipe } from '../../pipes';
 
 interface Document {
   id: number;
@@ -46,6 +50,7 @@ interface DocumentSection {
     MessageModule,
     TableModule,
     SearchInputComponent,
+    FileSizePipe,
   ],
   templateUrl: './document-admin.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,21 +62,30 @@ export default class DocumentAdmin {
   subSections: DocumentSection[] = [];
   documents: Document[] = [];
 
-  test: { label: string }[] = [];
-  home = { icon: 'pi pi-home', routerLink: '/' };
-
-  isSectionDialogOpen = signal(false);
-
-  sectionName = new FormControl<string>('', {
-    nonNullable: true,
-    validators: [Validators.required],
-  });
-
   private documentService = inject(DocumentDataSource);
   private dialogService = inject(DialogService);
 
-  // dataSize = this.documentService.dataSize;
-  // dataSource = this.documentService.dataSource;
+  limit = signal(10);
+  offset = signal(0);
+  searchTerm = signal('');
+  roleResource = rxResource({
+    params: () => ({
+      offset: this.offset(),
+      limit: this.limit(),
+      term: this.searchTerm(),
+    }),
+    stream: ({ params }) => this.documentService.findAll(),
+  });
+
+  dataSource = linkedSignal(() => {
+    if (!this.roleResource.hasValue()) return [];
+    return this.roleResource.value().documents;
+  });
+
+  dataSize = linkedSignal(() => {
+    if (!this.roleResource.hasValue()) return 0;
+    return this.roleResource.value().total;
+  });
 
   constructor() {}
 
@@ -81,6 +95,7 @@ export default class DocumentAdmin {
     this.dialogService.open(DocumentEditor, {
       header: 'Crear documentacion',
       modal: true,
+      focusOnShow: false,
       width: '50vw',
     });
   }

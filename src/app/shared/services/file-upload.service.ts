@@ -23,6 +23,13 @@ export interface UploadedPdfThumbnail {
   previewName: string | null;
 }
 
+interface UploadedFileResponse {
+  fileName: string;
+  originalName: string;
+  mimeType: string;
+  sizeBytes: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -41,12 +48,21 @@ export class FileUploadService {
     return this.http.post<UploadedFile>(`${this.URL}/${group}`, formData);
   }
 
+  newUploadFile(file: File, group: FileGroup) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<UploadedFileResponse>(
+      `${this.URL}/${group}`,
+      formData,
+    );
+  }
+
   uploadPdfThumbnail(file: File, group: FileGroup) {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post<UploadedPdfThumbnail>(
       `${this.URL}/${group}`,
-      formData
+      formData,
     );
   }
 
@@ -55,7 +71,7 @@ export class FileUploadService {
     formData.append('file', file);
     return this.http.post<UploadedPdfThumbnail>(
       `${this.URL}/${group}`,
-      formData
+      formData,
     );
   }
 
